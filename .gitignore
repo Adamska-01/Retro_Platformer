@@ -1,0 +1,12 @@
+# Directories
+.vs/
+Binaries/
+Logs/
+
+# Files
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+*.log
+Makefile
