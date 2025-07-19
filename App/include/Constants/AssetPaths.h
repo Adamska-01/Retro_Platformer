@@ -19,7 +19,7 @@ namespace AssetPaths
 
 		inline constexpr std::string_view APP_AUDIO_ALIAS = "app_audio";
 
-		inline constexpr std::string_view APP_ALIAS = "app";
+		inline constexpr std::string_view APP_ASSETS_ALIAS = "app";
 
 
 		inline static const ResourceMount APP_FONTS = { std::string(APP_FONTS_ALIAS), "App/Assets/Fonts/" };
@@ -32,7 +32,7 @@ namespace AssetPaths
 
 		inline static const ResourceMount APP_AUDIO = { std::string(APP_AUDIO_ALIAS), "App/Assets/Audio/" };
 
-		inline static const ResourceMount APP_ROOT = { std::string(APP_ALIAS), "App/" };
+		inline static const ResourceMount APP_ASSETS = { std::string(APP_ASSETS_ALIAS), "App/Assets/" };
 	}
 
 
@@ -81,6 +81,6 @@ namespace AssetPaths
 
 
 		// Other
-		inline const ResolvedPath CREDITS = { std::string(Folders::APP_ALIAS), "credits.txt" };
+		inline const ResolvedPath CREDITS = { std::string(Folders::APP_ASSETS_ALIAS), "credits.txt" };
 	}
 }
