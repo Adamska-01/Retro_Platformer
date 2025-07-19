@@ -14,18 +14,21 @@
 #include <SubSystems/TextureManager.h>
 #include <Tools/Helpers/EventHelpers.h>
 #include <Tools/Helpers/Guards.h>
+#include <Management/SceneManager.h>
 
 
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)
 	: transform(nullptr),
 	rigidBody(nullptr),
 	spriteAnimator(nullptr),
+	startPos(Vector2F::Zero),
 	flipState(SDL_RendererFlip::SDL_FLIP_NONE),
 	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource),
 	footContacts(0),
 	speed(6.5f),
-	jumpImpulse(50.0f)
+	jumpImpulse(50.0f),
+	yThreshold(0.0f)
 {
 	spriteCache =
 	{
@@ -140,6 +143,14 @@ void PlayerController::Start()
 
 	auto boxCollider = OwningObject.lock()->GetComponent<BoxCollider2D>();
 
+	auto tileRenderer = SceneManager::FindObjectOfType<CustomTileMapRenderer2D>();
+	
+	auto mapFullSize = tileRenderer->GetMapFullSize();
+
+	auto tileRendererPos = tileRenderer->GetGameObject().lock()->GetTransform()->GetWorldPosition();
+
+	yThreshold = tileRendererPos.y + mapFullSize.y + 100.0f; // Add some gap
+
 	if (boxCollider == nullptr)
 		return;
 
@@ -152,6 +163,13 @@ void PlayerController::Update(float deltaTime)
 	Move();
 	Jump();
 	AnimationState();
+
+	auto pos = transform->GetWorldPosition();
+
+	if (pos.y > yThreshold)
+	{
+		LoseLife();
+	}
 }
 
 void PlayerController::Draw()

@@ -38,6 +38,8 @@ private:
 
 	float jumpImpulse;
 
+	float yThreshold;
+
 
 	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
 
