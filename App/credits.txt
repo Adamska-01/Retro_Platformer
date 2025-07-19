@@ -1,0 +1,57 @@
+			====================================================================================
+											Development Team
+			====================================================================================
+- [Salvatore Galeotta] — Programming, Game Design
+
+
+			====================================================================================
+												Assets
+			====================================================================================
+[Fonts]
+- Gameplay by "Geronimo Font Studios"  
+  Link: https://www.dafont.com/gameplay.font  
+  License: Free for personal use
+
+[Sound Effects]
+- 95 SFX Pack (Beats Warrior Nian) by "liujiajun"
+  Link: https://opengameart.org/content/95-sfx-pack-beats-warrior-nian  
+  License: CC0 1.0 Universal
+
+- Victory Sound by "celestialghost8" 
+  Link: https://opengameart.org/content/victory  
+  License: CC0 1.0 Universal
+
+- Game Over Sound (Old School) by "den_yes"
+  Link: https://opengameart.org/content/game-over-soundold-school  
+  License: CC0 1.0 Universal
+
+[Graphics]
+- Coin Sprite by "Puddin"
+  Link: https://opengameart.org/content/rotating-coin  
+  License: CC0 1.0 Universal
+
+- Ground Monster Sprite Sheets by "bevouliin.com"
+  Link: https://opengameart.org/content/grumpy-land-monster-sprite-sheets  
+  License: CC0 1.0 Universal
+
+- Key Sprite by "Zeffir"
+  Link: https://www.dreamstime.com/illustrazione-di-stock-chiave-differente-di-rotazione-image61745342  
+  License: Unknown  
+  Note: Used in good faith for non-commercial use. 
+		If you are the creator and wish for removal or proper credit, please get in touch.
+
+[Other Sprites]
+- Source: Unknown  
+  License: Unknown  
+  Note: Used in good faith for non-commercial use. 
+		If you are the creator and wish for removal or proper credit, please get in touch.
+
+
+			====================================================================================
+											Tools & Engine
+			====================================================================================
+- Engine: DeadFrame2D  
+  Link: https://github.com/Adamska-01/DeadFrame2D
+
+- Build System: Premake
+  Link: https://premake.github.io
