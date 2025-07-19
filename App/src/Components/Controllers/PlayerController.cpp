@@ -164,9 +164,7 @@ void PlayerController::Update(float deltaTime)
 	Jump();
 	AnimationState();
 
-	auto pos = transform->GetWorldPosition();
-
-	if (pos.y > yThreshold)
+	if (transform->GetWorldPosition().y > yThreshold)
 	{
 		LoseLife();
 	}
