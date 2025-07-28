@@ -48,7 +48,3 @@ Use your IDE (Visual Studio, CLion, etc.) or run make/ninja depending on the gen
   - [Box2D](https://github.com/erincatto/box2d)
   - [TinyXML2](https://github.com/leethomason/tinyxml2)
   - [nlohmann](https://github.com/nlohmann/json)
- 
-
-## 🔗 Links
-Check out the [Itch.io page](https://salvg.itch.io/bobble-blast) to download the latest release!
