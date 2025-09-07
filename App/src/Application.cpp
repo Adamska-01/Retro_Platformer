@@ -1,6 +1,6 @@
 #include "Application.h"
+#include <Core/SubSystems/Systems/Window.h>
 #include <Scenes/MainMenuScene.h>
-#include <SubSystems/Window.h>
 
 
 Application::Application()
