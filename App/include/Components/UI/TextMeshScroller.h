@@ -1,8 +1,8 @@
 #pragma once
-#include <Components/GameComponent.h>
-#include <Coroutines/Task.h>
-#include <EventSystem/DispatchableEvent.h>
-#include <Math/Vector2.h>
+#include <Core/Coroutines/Task.h>
+#include <Core/Math/Vector2.h>
+#include <Engine/Components/GameComponent.h>
+#include <Engine/EngineEvents/DispatchableEvent.h>
 
 
 class TextMesh;

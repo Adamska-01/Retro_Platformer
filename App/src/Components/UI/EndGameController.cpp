@@ -2,16 +2,16 @@
 #include "Components/UI/EndGameController.h"
 #include "Components/UI/MenuManager.h"
 #include "Constants/AssetPaths.h"
-#include <Blueprints/Audio/AudioClipBlueprint.h>
-#include <Components/UI/TextMesh.h>
-#include <Coroutines/CoroutineScheduler.h>
+#include <Core/Framerate/FrameTimer.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <CustomEvents/GameEndedEvent.h>
-#include <EventSystem/EventDispatcher.h>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
-#include <Tools/FrameTimer.h>
-#include <Tools/Helpers/EventHelpers.h>
-#include <Tools/Helpers/Guards.h>
+#include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
+#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 EndGameController::EndGameController()

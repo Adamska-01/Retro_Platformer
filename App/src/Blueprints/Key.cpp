@@ -1,17 +1,17 @@
 #include "Blueprints/Key.h"
 #include "Blueprints/Player.h"
 #include "Components/Controllers/PlayerController.h"
-#include "Components/Transform.h"
 #include "CustomEvents/GameEndedEvent.h"
-#include <Components/Collisions/CircleCollider2D.h>
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/Rendering/Sprite.h>
-#include <Components/SpriteAnimator.h>
 #include <CustomEvents/PointsScoredEvent.h>
 #include <Data/Collision/CollisionInfo.h>
 #include <Data/Collision/PhysicsMaterial.h>
 #include <Data/Physics/BodyDefinition2D.h>
-#include <Tools/Helpers/EventHelpers.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Collisions/CircleCollider2D.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Transform.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 Key::Key(Vector2F startPos, std::string_view spriteSource)

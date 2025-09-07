@@ -1,6 +1,6 @@
 #pragma once
-#include <GameObject.h>
-#include <Math/Vector2.h>
+#include <Core/Math/Vector2.h>
+#include <Engine/Entity/GameObject.h>
 #include <SDL.h>
 #include <string_view>
 

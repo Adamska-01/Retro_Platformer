@@ -1,8 +1,8 @@
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Components/Transform.h>
-#include <GameObject.h>
-#include <SubSystems/Renderer.h>
-#include <SubSystems/TextureManager.h>
+#include <Core/SubSystems/Systems/Renderer.h>
+#include <Core/SubSystems/Systems/TextureManager.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Entity/GameObject.h>
 
 
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)

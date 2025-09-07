@@ -1,9 +1,9 @@
 #include "Components/UI/Abstractions/MenuBase.h"
 #include "Components/UI/MenuManager.h"
-#include <Components/UI/Abstractions/IInteractableUI.h>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
-#include <Tools/Helpers/Guards.h>
+#include <Engine/Components/UI/Abstractions/IInteractableUI.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
 
 
 MenuBase::MenuBase()

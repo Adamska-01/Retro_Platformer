@@ -1,6 +1,6 @@
 #pragma once
 #include "Scenes/Abstractions/BaseGameScene.h"
-#include <GameObject.h>
+#include <Engine/Entity/GameObject.h>
 #include <memory>
 
 

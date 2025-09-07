@@ -1,18 +1,18 @@
 #include "Components/AI/Abstractions/AIBehavior.h"
 #include "Components/AI/SimpleAI.h"
 #include "Components/Controllers/PlayerController.h"
-#include <Blueprints/Audio/AudioClipBlueprint.h>
-#include <Components/Collisions/CircleCollider2D.h>
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/Transform.h>
 #include <Constants/AssetPaths.h>
-#include <Coroutines/CoroutineScheduler.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <CustomEvents/LifeLostEvent.h>
 #include <Data/Collision/CollisionInfo.h>
-#include <EventSystem/EventDispatcher.h>
-#include <GameObject.h>
-#include <Tools/Helpers/EventHelpers.h>
-#include <Tools/Helpers/Guards.h>
+#include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
+#include <Engine/Components/Collisions/CircleCollider2D.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/Entity/GameObject.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)

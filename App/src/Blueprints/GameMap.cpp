@@ -1,10 +1,10 @@
 #include "Blueprints/GameMap.h"
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Components/Physics/RigidBody2D.h>
 #include <Data/Physics/BodyDefinition2D.h>
 #include <Data/Physics/BodyType2D.h>
-#include <Tools/JsonSerializer.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Utilities/Serialization/JsonSerializer.h>
 
 
 GameMap::GameMap(std::shared_ptr<TileMapModel> tileMapModel)

@@ -1,14 +1,14 @@
 #include "Components/UI/TextMeshScroller.h"
-#include <Components/Transform.h>
 #include <Components/UI/MenuManager.h>
-#include <Components/UI/TextMesh.h>
-#include <EventSystem/Events/SubSystems/Renderer/RenderTargetSizeChangedEvent.h>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
-#include <SubSystems/Renderer.h>
-#include <Tools/FrameTimer.h>
-#include <Tools/Helpers/Coroutines/CoroutineHelpers.h>
-#include <Tools/Helpers/Guards.h>
+#include <Core/Framerate/FrameTimer.h>
+#include <Core/SubSystems/Systems/Renderer.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/EngineEvents/Events/SubSystems/Renderer/RenderTargetSizeChangedEvent.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Coroutines/CoroutineHelpers.h>
 
 
 TextMeshScroller::TextMeshScroller(TextMesh* textMesh, float scrollSpeed)

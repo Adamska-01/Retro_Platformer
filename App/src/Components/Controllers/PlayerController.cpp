@@ -1,20 +1,20 @@
 #include "Components/Controllers/PlayerController.h"
 #include "Components/Map/CustomTileMapCollider2D.h"
-#include <Blueprints/Audio/AudioClipBlueprint.h>
-#include <Components/Collisions/BoxCollider2D.h>
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
 #include <Constants/AssetPaths.h>
-#include <Coroutines/CoroutineScheduler.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Core/SubSystems/Systems/Input/Input.h>
+#include <Core/SubSystems/Systems/TextureManager.h>
 #include <CustomEvents/LifeLostEvent.h>
 #include <Data/Collision/CollisionInfo.h>
-#include <GameObject.h>
-#include <SubSystems/Input/Input.h>
-#include <SubSystems/TextureManager.h>
-#include <Tools/Helpers/EventHelpers.h>
-#include <Tools/Helpers/Guards.h>
-#include <Management/SceneManager.h>
+#include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Collisions/BoxCollider2D.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)

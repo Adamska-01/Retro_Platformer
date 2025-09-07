@@ -1,13 +1,13 @@
 #pragma once
 #include "Constants/CommonColors.h"
 #include "Scenes/Abstractions/BaseGameScene.h"
-#include <Blueprints/Audio/AudioClipBlueprint.h>
-#include <Blueprints/UI/ButtonBlueprint.h>
-#include <Components/UI/TextMesh.h>
-#include <Coroutines/CoroutineScheduler.h>
-#include <Models/Blueprints/UI/ButtonBlueprintModel.h>
-#include <Models/Components/UI/ButtonComponentModel.h>
-#include <Models/Components/UI/TextMeshComponentModel.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Data/Blueprints/UI/ButtonBlueprintModel.h>
+#include <Data/Components/UI/ButtonComponentModel.h>
+#include <Data/Components/UI/TextMeshComponentModel.h>
+#include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
+#include <Engine/Blueprints/UI/ButtonBlueprint.h>
+#include <Engine/Components/UI/TextMesh.h>
 
 
 std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)

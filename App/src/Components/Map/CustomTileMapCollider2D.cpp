@@ -1,11 +1,11 @@
 #include "Components/Map/CustomTileMapCollider2D.h"
-#include "Math/Vector2.h"
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/Transform.h>
-#include <GameObject.h>
-#include <Tools/Helpers/Guards.h>
-#include <Tools/Helpers/Physics/PhysicsConversion.h>
-#include <Tools/Helpers/Physics/PhysicsShapeCreators.h>
+#include <Core/Math/Vector2.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Entity/GameObject.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Physics/PhysicsConversion.h>
+#include <Utilities/Helpers/Physics/PhysicsShapeCreators.h>
 
 
 CustomTileMapCollider2D::CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial)

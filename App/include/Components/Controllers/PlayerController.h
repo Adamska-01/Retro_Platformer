@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
-#include <Components/GameComponent.h>
-#include <Math/Vector2.h>
+#include <Core/Math/Vector2.h>
+#include <Engine/Components/GameComponent.h>
 #include <memory>
 #include <SDL.h>
 #include <string_view>

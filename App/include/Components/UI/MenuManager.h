@@ -1,7 +1,7 @@
 #pragma once
 #include "Components/UI/Abstractions/MenuBase.h"
-#include <Components/GameComponent.h>
 #include <Data/UI/MenuID.h>
+#include <Engine/Components/GameComponent.h>
 #include <unordered_map>
 
 

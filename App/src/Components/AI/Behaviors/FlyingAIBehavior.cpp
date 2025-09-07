@@ -1,9 +1,9 @@
 #include "Components/AI/Behaviors/FlyingAIBehavior.h"
 #include "Components/AI/SimpleAI.h"
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
-#include <Math/Vector2.h>
+#include <Core/Math/Vector2.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
 
 
 FlyingAIBehavior::FlyingAIBehavior()

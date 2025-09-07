@@ -13,21 +13,21 @@
 #include "Scenes/MainGameScene.h"
 #include <Blueprints/FollowCameraObject.h>
 #include <Blueprints/Player.h>
-#include <Blueprints/UI/ButtonBlueprint.h>
-#include <Components/Transform.h>
-#include <Components/UI/Button.h>
-#include <Components/UI/Canvas.h>
-#include <Components/UI/Image.h>
-#include <Components/UI/Layout/VerticalLayoutGroup.h>
-#include <Components/UI/TextMesh.h>
+#include <Core/CoreEvents/EventManager.h>
+#include <Core/SubSystems/Systems/Renderer.h>
+#include <Data/Components/UI/TextMeshComponentModel.h>
 #include <Data/UI/MenuID.h>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
-#include <Models/Components/UI/TextMeshComponentModel.h>
+#include <Engine/Blueprints/UI/ButtonBlueprint.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Components/UI/Button.h>
+#include <Engine/Components/UI/Canvas.h>
+#include <Engine/Components/UI/Image.h>
+#include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
+#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
 #include <Scenes/MainMenuScene.h>
-#include <SubSystems/Events/EventManager.h>
-#include <SubSystems/Renderer.h>
-#include <Tools/JsonSerializer.h>
+#include <Utilities/Serialization/JsonSerializer.h>
 
 
 std::weak_ptr<GameObject> MainGameScene::CreateText(const std::string& text)

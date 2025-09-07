@@ -1,7 +1,7 @@
 #pragma once
+#include <Core/Math/Vector2.h>
+#include <Engine/SceneSystem/Scene.h>
 #include <functional>
-#include <Management/Scene.h>
-#include <Math/Vector2.h>
 #include <memory>
 #include <string_view>
 

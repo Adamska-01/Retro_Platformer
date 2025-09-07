@@ -2,16 +2,16 @@
 #include "Components/Controllers/PlayerController.h"
 #include "Constants/AssetPaths.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include "EventSystem/EventDispatcher.h"
-#include <Blueprints/Audio/AudioClipBlueprint.h>
-#include <Components/Collisions/CircleCollider2D.h>
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/Rendering/Sprite.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
-#include <Coroutines/CoroutineScheduler.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <Data/Collision/CollisionInfo.h>
-#include <Tools/Helpers/EventHelpers.h>
+#include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Collisions/CircleCollider2D.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 Coin::Coin(Vector2F startPos, std::string_view spriteSource)

@@ -1,5 +1,5 @@
 #pragma once
-#include <Components/GameComponent.h>
+#include <Engine/Components/GameComponent.h>
 #include <memory>
 
 

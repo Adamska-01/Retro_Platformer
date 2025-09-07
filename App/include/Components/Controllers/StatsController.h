@@ -1,6 +1,6 @@
 #pragma once
-#include <Components/GameComponent.h>
-#include <EventSystem/DispatchableEvent.h>
+#include <Engine/Components/GameComponent.h>
+#include <Engine/EngineEvents/DispatchableEvent.h>
 #include <memory>
 
 

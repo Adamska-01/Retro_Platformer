@@ -2,10 +2,10 @@
 #include "CustomEvents/GameEndedEvent.h"
 #include "CustomEvents/LifeLostEvent.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include <Components/UI/TextMesh.h>
-#include <EventSystem/EventDispatcher.h>
-#include <Tools/Helpers/EventHelpers.h>
-#include <Tools/Helpers/Guards.h>
+#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 StatsController::StatsController()

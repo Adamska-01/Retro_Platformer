@@ -2,14 +2,14 @@
 #include "Components/AI/SimpleAI.h"
 #include <Components/AI/Behaviors/FlyingAIBehavior.h>
 #include <Components/AI/Behaviors/GroundAIBehavior.h>
-#include <Components/Collisions/BoxCollider2D.h>
-#include <Components/Collisions/CircleCollider2D.h>
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/Rendering/Sprite.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
 #include <Data/Collision/PhysicsMaterial.h>
 #include <Data/Physics/BodyDefinition2D.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Collisions/BoxCollider2D.h>
+#include <Engine/Components/Collisions/CircleCollider2D.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Transform.h>
 
 
 Enemy::Enemy(Vector2F startPos, const EnemyConfig& enemyConfig)

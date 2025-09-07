@@ -1,6 +1,6 @@
 #include "Components/UI/MenuManager.h"
 #include <algorithm>
-#include <SubSystems/Input/Input.h>
+#include <Core/SubSystems/Systems/Input/Input.h>
 
 
 MenuManager::MenuManager()

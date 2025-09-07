@@ -1,12 +1,12 @@
 #include "Components/AI/Abstractions/AIBehavior.h"
 #include "Components/AI/SimpleAI.h"
 #include "Components/Controllers/PlayerController.h"
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
-#include <Tools/Helpers/Guards.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
 
 
 void AIBehavior::Init(SimpleAI* ai)

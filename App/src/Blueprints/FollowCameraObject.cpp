@@ -1,6 +1,6 @@
-#include "Components/Rendering/Camera.h"
 #include <Blueprints/FollowCameraObject.h>
-#include <Components/Rendering/Camera/CameraFollow.h>
+#include <Engine/Components/Rendering/Camera.h>
+#include <Engine/Components/Rendering/Camera/CameraFollow.h>
 
 
 FollowCameraObject::FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, Vector2F offset, float followSpeed)

@@ -2,22 +2,22 @@
 #include "Components/UI/TextMeshScroller.h"
 #include "Constants/AssetPaths.h"
 #include "Scenes/MainMenuScene.h"
-#include <Blueprints/UI/ButtonBlueprint.h>
-#include <Components/Audio/AudioListener.h>
-#include <Components/Rendering/Camera.h>
-#include <Components/Transform.h>
-#include <Components/UI/Button.h>
-#include <Components/UI/Canvas.h>
-#include <Components/UI/Layout/VerticalLayoutGroup.h>
-#include <Components/UI/TextMesh.h>
 #include <Constants/ResourcePaths.h>
+#include <Core/CoreEvents/EventManager.h>
+#include <Core/SubSystems/Systems/Renderer.h>
+#include <Engine/Blueprints/UI/ButtonBlueprint.h>
+#include <Engine/Components/Audio/AudioListener.h>
+#include <Engine/Components/Rendering/Camera.h>
+#include <Engine/Components/Transform.h>
+#include <Engine/Components/UI/Button.h>
+#include <Engine/Components/UI/Canvas.h>
+#include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
+#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/Entity/GameObject.h>
+#include <Engine/SceneSystem/SceneManager.h>
 #include <functional>
-#include <GameObject.h>
-#include <Management/SceneManager.h>
 #include <Scenes/MainGameScene.h>
-#include <SubSystems/Events/EventManager.h>
-#include <SubSystems/Renderer.h>
-#include <Tools/IO/FileSystemUtils.h>
+#include <Utilities/IO/FileSystemUtils.h>
 
 
 void MainMenuScene::Enter()
