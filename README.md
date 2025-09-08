@@ -5,6 +5,7 @@
     <td><img src="https://adamska-01.github.io/SalvatoreG.github.io/Images/PersonalProjects/DeadFrame2D/2.png" alt="Screenshot 2" width="500"/></td>
   </tr>
 </table>
+
 A platform demo inspired by Super Mario built with the [DeadFrame2D](https://github.com/Adamska-01/DeadFrame2D) engine.
 
 ### 🕹️ Gameplay
