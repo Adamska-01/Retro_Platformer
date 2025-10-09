@@ -5,6 +5,10 @@
 #include <Engine/Entity/GameObject.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Engine;
+
+
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)
 {
 	this->tileMap = tileMap;

@@ -14,10 +14,15 @@
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 EndGameController::EndGameController()
 	: menuManager(nullptr)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
 }
 
 EndGameController::~EndGameController()
@@ -58,9 +63,9 @@ void EndGameController::Init()
 	menuManager = SceneManager::FindObjectOfType<MenuManager>();
 	statsController = SceneManager::FindObjectOfType<StatsController>();
 
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get MenuManager from the scene");
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get StatsManager from the scene");
-	Tools::Helpers::GuardAgainstNull(endGameTextMesh, "EndGameController::Init: The endGame TextMesh is required!");
+	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
+	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
+	Guard::AgainstNull(endGameTextMesh, NAME_OF(endGameTextMesh));
 }
 
 void EndGameController::Start()

@@ -14,6 +14,12 @@
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 Coin::Coin(Vector2F startPos, std::string_view spriteSource)
 	: score(100),
 	spriteSource(spriteSource)
@@ -76,5 +82,5 @@ void Coin::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
 }

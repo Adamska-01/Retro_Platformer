@@ -6,6 +6,10 @@
 #include <Utilities/Debugging/Guards.h>
 
 
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 MenuBase::MenuBase()
 {
 	allInteractables.clear();
@@ -45,7 +49,7 @@ void MenuBase::Init()
 	menuManager = SceneManager::FindObjectOfType<MenuManager>();
 	allInteractables = OwningObject.lock()->GetComponentsInChildren<IInteractableUI>(true);
 
-	Tools::Helpers::GuardAgainstNull(menuManager, "MenuManager not found in scene!");
+	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
 }
 
 void MenuBase::Start()

@@ -3,7 +3,10 @@
 #include <Engine/Components/Rendering/Camera/CameraFollow.h>
 
 
-FollowCameraObject::FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, Vector2F offset, float followSpeed)
+using namespace DeadFrame2D::Engine;
+
+
+FollowCameraObject::FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset, float followSpeed)
 	: target(target),
 	bounds(bounds),
 	offset(offset),

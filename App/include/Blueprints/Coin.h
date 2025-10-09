@@ -5,10 +5,14 @@
 
 
 class Map;
-struct CollisionInfo;
+
+namespace DeadFrame2D::Data
+{
+	struct CollisionInfo;
+}
 
 
-class Coin : public GameObject
+class Coin : public DeadFrame2D::Engine::GameObject
 {
 private:
 	unsigned int score;
@@ -16,11 +20,11 @@ private:
 	std::string_view spriteSource;
 
 
-	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
+	void OnContactEnterHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
-	Coin(Vector2F startPos, std::string_view spriteSource);
+	Coin(DeadFrame2D::Core::Vector2F startPos, std::string_view spriteSource);
 
 
 	virtual void ConstructGameObject() override;

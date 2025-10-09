@@ -5,33 +5,37 @@
 #include <Engine/EngineEvents/DispatchableEvent.h>
 
 
-class TextMesh;
+namespace DeadFrame2D::Engine
+{
+	class TextMesh;
+}
+
 class MenuManager;
 
 
-class TextMeshScroller : public GameComponent
+class TextMeshScroller : public DeadFrame2D::Engine::GameComponent
 {
 private:
-	TextMesh* textMesh;
+	DeadFrame2D::Engine::TextMesh* textMesh;
 
 	MenuManager* menuManager;
 
-	Vector2I resolutionTarget;
+	DeadFrame2D::Core::Vector2I resolutionTarget;
 
-	Task* activeTask;
+	DeadFrame2D::Core::Task* activeTask;
 
 	float scrollSpeed = 0.1f;
 
 
-	void RenderTargetSizeChangedEventHandlers(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void RenderTargetSizeChangedEventHandlers(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
 
 
 protected:
-	void OnGameObjectActiveStateChangedHandler(GameObject* obj, bool isActive) override;
+	void OnGameObjectActiveStateChangedHandler(DeadFrame2D::Engine::GameObject* obj, bool isActive) override;
 
 
 public:
-	TextMeshScroller(TextMesh* textMesh, float scrollSpeed = 0.05f);
+	TextMeshScroller(DeadFrame2D::Engine::TextMesh* textMesh, float scrollSpeed = 0.05f);
 
 	virtual ~TextMeshScroller() override;
 
@@ -45,5 +49,5 @@ public:
 	virtual void Draw() override;
 
 
-	Task ScrollText();
+	DeadFrame2D::Core::Task ScrollText();
 };

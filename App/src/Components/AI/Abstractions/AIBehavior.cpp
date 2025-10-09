@@ -9,19 +9,23 @@
 #include <Utilities/Debugging/Guards.h>
 
 
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 void AIBehavior::Init(SimpleAI* ai)
 {
 	auto go = ai->GetGameObject().lock();
 
-	Tools::Helpers::GuardAgainstNull(go, "Failed to get GameObject from SimpleAI");
+	Guard::AgainstNull(go, NAME_OF(go));
 
 	aiTransform = go->GetComponent<Transform>();
 	playerTransform = SceneManager::FindObjectOfType<PlayerController>()->GetGameObject().lock()->GetTransform();
 	aiSpriteAnimator = go->GetComponent<SpriteAnimator>();
 	aiRigidBody = go->GetComponent<RigidBody2D>();
 
-	Tools::Helpers::GuardAgainstNull(aiTransform, "Failed to get AI Transform from SimpleAI");
-	Tools::Helpers::GuardAgainstNull(playerTransform, "Failed to get player Transform from SimpleAI");
-	Tools::Helpers::GuardAgainstNull(aiSpriteAnimator, "Failed to get AI SpriteAnimator from SimpleAI");
-	Tools::Helpers::GuardAgainstNull(aiRigidBody, "Failed to get AI RigidBody2D from SimpleAI");
+	Guard::AgainstNull(aiTransform, NAME_OF(aiTransform));
+	Guard::AgainstNull(playerTransform, NAME_OF(playerTransform));
+	Guard::AgainstNull(aiSpriteAnimator, NAME_OF(aiSpriteAnimator));
+	Guard::AgainstNull(aiRigidBody, NAME_OF(aiRigidBody));
 }

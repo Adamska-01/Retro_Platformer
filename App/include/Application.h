@@ -1,8 +1,8 @@
 #pragma once
-#include <Engine/Engine.h>
+#include <Core/DeadFrameRuntime.h>
 
 
-class Application : public Engine
+class Application : public DeadFrame2D::Core::DeadFrameRuntime
 {
 public:
 	Application();

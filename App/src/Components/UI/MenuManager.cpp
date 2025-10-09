@@ -3,6 +3,10 @@
 #include <Core/SubSystems/Systems/Input/Input.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+
+
 MenuManager::MenuManager()
 	: allMenus(),
 	activeMenus()

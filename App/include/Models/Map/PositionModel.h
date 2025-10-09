@@ -11,9 +11,9 @@ struct PositionModel
 	int y = 0;
 
 
-	inline Vector2F ToVector2F(float positionScaler) const
+	inline DeadFrame2D::Core::Vector2F ToVector2F(float positionScaler) const
 	{
-		auto scaledPos = Vector2F(x, y) * positionScaler;
+		auto scaledPos = DeadFrame2D::Core::Vector2F(x, y) * positionScaler;
 
 		// Shift by half tile for rendering at the center
 		scaledPos.x += positionScaler / 2.0f;

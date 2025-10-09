@@ -6,7 +6,7 @@ class GroundAIBehavior : public AIBehavior
 {
 private:
 	bool movingLeft;
-	
+
 	float speed;
 
 

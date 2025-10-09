@@ -6,6 +6,9 @@
 #include <Engine/Components/Transform.h>
 
 
+using namespace DeadFrame2D::Core;
+
+
 FlyingAIBehavior::FlyingAIBehavior()
 	: minDistance(300),
 	speed(2.0f)

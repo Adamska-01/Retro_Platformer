@@ -4,13 +4,10 @@
 #include <memory>
 
 
-class ButtonBlueprint;
-
-
 class MainGameScene : public BaseGameScene
 {
 private:
-	std::weak_ptr<GameObject> CreateText(const std::string& text);
+	std::weak_ptr<DeadFrame2D::Engine::GameObject> CreateText(const std::string& text);
 
 	MenuBase* CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 

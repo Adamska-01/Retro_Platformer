@@ -1,6 +1,5 @@
 #pragma once
 #include "Data/Animation/SpriteAnimationProperties.h"
-#include <Data/Collision/PhysicsMaterial.h>
 #include <Data/Physics/BodyDefinition2D.h>
 #include <string_view>
 
@@ -15,7 +14,7 @@ struct EnemyConfig
 
 	float gravityScale = 1.0f;
 
-	SpriteAnimationProperties idleAnimProperty;
+	DeadFrame2D::Data::SpriteAnimationProperties idleAnimProperty;
 
-	BodyDefinition2D bodyDefinition;
+	DeadFrame2D::Data::BodyDefinition2D bodyDefinition;
 };

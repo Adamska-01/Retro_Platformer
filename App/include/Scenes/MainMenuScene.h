@@ -2,10 +2,6 @@
 #include "Scenes/Abstractions/BaseGameScene.h"
 
 
-
-class ButtonBlueprint;
-
-
 class MainMenuScene : public BaseGameScene
 {
 public:

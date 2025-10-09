@@ -3,14 +3,18 @@
 #include <vector>
 
 
-class IInteractableUI;
 class MenuManager;
 
+namespace DeadFrame2D::Engine
+{
+	class IInteractableUI;
+}
 
-class MenuBase : public GameComponent
+
+class MenuBase : public DeadFrame2D::Engine::GameComponent
 {
 private:
-	void Navigate(IInteractableUI* (*getNext)(IInteractableUI*));
+	void Navigate(DeadFrame2D::Engine::IInteractableUI* (*getNext)(DeadFrame2D::Engine::IInteractableUI*));
 
 
 protected:
@@ -18,9 +22,9 @@ protected:
 
 	MenuBase* previousMenu;
 
-	std::vector<IInteractableUI*> allInteractables;
+	std::vector<DeadFrame2D::Engine::IInteractableUI*> allInteractables;
 
-	IInteractableUI* selectedInteractable;
+	DeadFrame2D::Engine::IInteractableUI* selectedInteractable;
 
 
 public:

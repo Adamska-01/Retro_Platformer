@@ -4,7 +4,10 @@
 #include <Data/Physics/BodyDefinition2D.h>
 #include <Data/Physics/BodyType2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
-#include <Utilities/Serialization/JsonSerializer.h>
+
+
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
 
 
 GameMap::GameMap(std::shared_ptr<TileMapModel> tileMapModel)
@@ -29,7 +32,7 @@ void GameMap::ConstructGameObject()
 	};
 
 	tileObject.lock()->AddComponent<CustomTileMapCollider2D>(physicalMat);
-	
+
 	tileObject.lock()->AddComponent<RigidBody2D>(bodyDef);
 
 	AddChildGameObject(tileObject);

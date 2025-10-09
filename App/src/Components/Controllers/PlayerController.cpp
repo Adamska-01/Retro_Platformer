@@ -17,6 +17,12 @@
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)
 	: transform(nullptr),
 	rigidBody(nullptr),
@@ -109,9 +115,9 @@ void PlayerController::Init()
 	rigidBody = OwningObject.lock()->GetComponent<RigidBody2D>();
 	spriteAnimator = OwningObject.lock()->GetComponent<SpriteAnimator>();
 
-	Tools::Helpers::GuardAgainstNull(transform, "Failed to get Transform from OwningObject");
-	Tools::Helpers::GuardAgainstNull(rigidBody, "Failed to get RigidBody2D from OwningObject");
-	Tools::Helpers::GuardAgainstNull(spriteAnimator, "Failed to get SpriteAnimator from OwningObject");
+	Guard::AgainstNull(transform, NAME_OF(transform));
+	Guard::AgainstNull(rigidBody, NAME_OF(rigidBody));
+	Guard::AgainstNull(spriteAnimator, NAME_OF(spriteAnimator));
 }
 
 void PlayerController::Start()
@@ -154,8 +160,8 @@ void PlayerController::Start()
 	if (boxCollider == nullptr)
 		return;
 
-	boxCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
-	boxCollider->RegisterContactExitHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactEnterHandler(BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactExitHandler(BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
 }
 
 void PlayerController::Update(float deltaTime)

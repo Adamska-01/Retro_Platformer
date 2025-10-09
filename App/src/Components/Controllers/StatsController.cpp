@@ -8,6 +8,10 @@
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 StatsController::StatsController()
 	: score(0),
 	lifes(3),
@@ -16,8 +20,8 @@ StatsController::StatsController()
 {
 	auto identifier = reinterpret_cast<std::uintptr_t>(this);
 	
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
 }
 
 StatsController::~StatsController()
@@ -54,8 +58,8 @@ void StatsController::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> di
 
 void StatsController::Init()
 {
-	Tools::Helpers::GuardAgainstNull(scoreTextMesh, "scoreTextMesh is not assigned!");
-	Tools::Helpers::GuardAgainstNull(lifesTextMesh, "lifesTextMesh is not assigned!");
+	Guard::AgainstNull(scoreTextMesh, NAME_OF(scoreTextMesh));
+	Guard::AgainstNull(lifesTextMesh, NAME_OF(lifesTextMesh));
 }
 
 void StatsController::Start()

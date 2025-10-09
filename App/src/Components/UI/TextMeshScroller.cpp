@@ -1,6 +1,7 @@
 #include "Components/UI/TextMeshScroller.h"
 #include <Components/UI/MenuManager.h>
 #include <Core/Framerate/FrameTimer.h>
+#include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <Core/SubSystems/Systems/Renderer.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Components/UI/TextMesh.h>
@@ -11,13 +12,19 @@
 #include <Utilities/Helpers/Coroutines/CoroutineHelpers.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 TextMeshScroller::TextMeshScroller(TextMesh* textMesh, float scrollSpeed)
 	: textMesh(textMesh),
 	menuManager(nullptr),
 	activeTask(nullptr),
 	scrollSpeed(scrollSpeed)
 {
-	Tools::Helpers::GuardAgainstNull(textMesh, "TextMesh is nullptr in TextMeshScroller");
+	Guard::AgainstNull(textMesh, NAME_OF(textMesh));
 
 	resolutionTarget = Renderer::GetResolutionTarget();
 }
@@ -55,7 +62,7 @@ void TextMeshScroller::Init()
 {
 	menuManager = SceneManager::FindObjectOfType<MenuManager>();
 
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get menuManager from TextMeshScroller");
+	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
 }
 
 void TextMeshScroller::Start()
@@ -94,7 +101,7 @@ Task TextMeshScroller::ScrollText()
 
 		textMeshTransform->SetWorldPosition(newPos);
 
-		co_await Tools::Helpers::Coroutines::WaitFrame();
+		co_await WaitFrame();
 	}
 
 	menuManager->HideAll();

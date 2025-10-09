@@ -2,7 +2,7 @@
 #include "Engine/EngineEvents/DispatchableEvent.h"
 
 
-class GameEndedEvent : public DispatchableEvent
+class GameEndedEvent : public DeadFrame2D::Engine::DispatchableEvent
 {
 public:
 	bool isGameLost;

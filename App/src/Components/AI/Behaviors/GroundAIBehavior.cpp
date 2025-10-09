@@ -1,7 +1,8 @@
 #include "Components/AI/Behaviors/GroundAIBehavior.h"
-#include <Components/Physics/RigidBody2D.h>
-#include <Components/SpriteAnimator.h>
-#include <Components/Transform.h>
+#include <Engine/Components/Animation/SpriteAnimator.h>
+#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Engine/Components/Transform.h>
+#include <SDL.h>
 
 
 GroundAIBehavior::GroundAIBehavior()

@@ -2,7 +2,7 @@
 #include "Engine/EngineEvents/DispatchableEvent.h"
 
 
-class PointsScoredEvent : public DispatchableEvent
+class PointsScoredEvent : public DeadFrame2D::Engine::DispatchableEvent
 {
 public:
 	unsigned int pointsScored;

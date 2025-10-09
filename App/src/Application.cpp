@@ -1,6 +1,11 @@
 #include "Application.h"
+#include <Core/SubSystems/Systems/Window.h>
+#include <Engine/SceneSystem/SceneManager.h>
 #include <Scenes/MainMenuScene.h>
-#include <SubSystems/Window.h>
+
+
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Engine;
 
 
 Application::Application()

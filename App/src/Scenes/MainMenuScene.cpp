@@ -20,6 +20,13 @@
 #include <Utilities/IO/FileSystemUtils.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+using namespace Shared::Constants;
+
+
 void MainMenuScene::Enter()
 {
 	auto renderTargetSize = Renderer::GetResolutionTarget();
@@ -77,13 +84,13 @@ void MainMenuScene::Enter()
 	mainMenuObject.lock()->AddChildGameObject(mainMenuLayout);
 
 	// Credits Menu
-	auto creditsText = Tools::IO::FileSystemUtils::LoadTextFile(AssetPaths::Files::CREDITS);
+	auto creditsText = DeadFrame2D::Utilities::LoadTextFile(AssetPaths::Files::CREDITS);
 	
 	auto creditsMenuObject = GameObject::Instantiate<GameObject>();
 	creditsMenuObject.lock()->GetComponent<Transform>()->SetWorldScale(Vector2F(0.75f, 0.75f));
 	auto creditsMenuBase = creditsMenuObject.lock()->AddComponent<MenuBase>();
 	
-	auto creditTextMeshObj = CreateText(creditsText, Constants::ResourcePaths::Files::CONSOLAS_FONT);
+	auto creditTextMeshObj = CreateText(creditsText, Paths::Files::CONSOLAS_FONT);
 	auto creditTextMeshComponent = creditTextMeshObj.lock()->GetComponent<TextMesh>();
 	creditsMenuObject.lock()->AddComponent<TextMeshScroller>(creditTextMeshComponent);
 

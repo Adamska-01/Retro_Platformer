@@ -15,13 +15,19 @@
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
+
+
 SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)
 	: behavior(std::move(behavior)),
 	transform(nullptr),
 	startPos(Vector2F::Zero),
 	processingPlayer(true)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &SimpleAI::LifeLostEventHandler), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), BindFunction(this, &SimpleAI::LifeLostEventHandler), reinterpret_cast<std::uintptr_t>(this));
 }
 
 SimpleAI::~SimpleAI()
@@ -89,7 +95,7 @@ void SimpleAI::Init()
 {
 	transform = OwningObject.lock()->GetComponent<Transform>();
 
-	Tools::Helpers::GuardAgainstNull(transform, "Failed to get Transform from OwningObject");
+	Guard::AgainstNull(transform, NAME_OF(transform));
 
 	if (behavior == nullptr)
 		return;
@@ -106,7 +112,7 @@ void SimpleAI::Start()
 	if (circleCollider == nullptr)
 		return;
 
-	circleCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers), reinterpret_cast<uintptr_t>(this));
+	circleCollider->RegisterContactEnterHandler(BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers), reinterpret_cast<uintptr_t>(this));
 }
 
 void SimpleAI::Update(float deltaTime)

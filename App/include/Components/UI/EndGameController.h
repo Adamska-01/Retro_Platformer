@@ -4,22 +4,27 @@
 
 
 class MenuManager;
-class DispatchableEvent;
-class TextMesh;
 class StatsController;
 
+namespace DeadFrame2D::Engine
+{
+	class TextMesh;
+	class DispatchableEvent;
+}
 
-class EndGameController : public GameComponent
+
+
+class EndGameController : public DeadFrame2D::Engine::GameComponent
 {
 private:
 	MenuManager* menuManager;
 
-	TextMesh* endGameTextMesh;
+	DeadFrame2D::Engine::TextMesh* endGameTextMesh;
 
 	StatsController* statsController;
 
 
-	void OnGameEndedHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void OnGameEndedHandler(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
 
 
 public:
@@ -37,5 +42,5 @@ public:
 	virtual void Draw() override;
 
 
-	void SetEndGameTextMesh(TextMesh* endGameTextMesh);
+	void SetEndGameTextMesh(DeadFrame2D::Engine::TextMesh* endGameTextMesh);
 };

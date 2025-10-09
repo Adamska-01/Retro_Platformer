@@ -10,6 +10,12 @@
 #include <Engine/Components/UI/TextMesh.h>
 
 
+using namespace DeadFrame2D::Constants;
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+
+
 std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)
 {
 	ButtonBlueprintModel buttonConfiguration =

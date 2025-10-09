@@ -8,6 +8,12 @@
 #include <Utilities/Helpers/Physics/PhysicsShapeCreators.h>
 
 
+using namespace DeadFrame2D::Constants;
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Utilities;
+
+
 CustomTileMapCollider2D::CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial)
 {
 	fixtures.clear();
@@ -41,7 +47,7 @@ void CustomTileMapCollider2D::Init()
 
 	tileMapRenderer = OwningObject.lock()->GetComponent<CustomTileMapRenderer2D>();
 
-	Tools::Helpers::GuardAgainstNull(tileMapRenderer, "Failed to get CustomTileMapRenderer2D from OwningObject");
+	Guard::AgainstNull(tileMapRenderer, NAME_OF(tileMapRenderer));
 
 	const auto& tileMap = tileMapRenderer->GetTileMap();
 
@@ -82,13 +88,13 @@ void CustomTileMapCollider2D::RebuildFixture()
 			if (!isCollidable)
 				continue;
 
-			this->physicsMaterial.shape = PhysicsShapeCreators::CreateBoxShape(
+			this->physicsMaterial.shape = CreateBoxShape(
 				tileSize * 0.5f,
 				tileSize * 0.5f,
 				Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
 				angle);
 
-			auto def = PhysicsConversion::ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
+			auto def = ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
 
 			fixtures.push_back(rigidBody->CreateFixture(&def));
 

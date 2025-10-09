@@ -7,22 +7,29 @@
 #include <string_view>
 
 
-class Transform;
-class RigidBody2D;
-class SpriteAnimator;
-struct CollisionInfo;
+namespace DeadFrame2D::Engine
+{
+	class Transform;
+	class RigidBody2D;
+	class SpriteAnimator;
+}
+
+namespace DeadFrame2D::Data
+{
+	struct CollisionInfo;
+}
 
 
-class PlayerController : public GameComponent
+class PlayerController : public DeadFrame2D::Engine::GameComponent
 {
 private:
-	Transform* transform;
+	DeadFrame2D::Engine::Transform* transform;
 
-	RigidBody2D* rigidBody;
+	DeadFrame2D::Engine::RigidBody2D* rigidBody;
 
-	SpriteAnimator* spriteAnimator;
+	DeadFrame2D::Engine::SpriteAnimator* spriteAnimator;
 
-	Vector2F startPos;
+	DeadFrame2D::Core::Vector2F startPos;
 
 	SDL_RendererFlip flipState;
 
@@ -41,9 +48,9 @@ private:
 	float yThreshold;
 
 
-	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
+	void OnContactEnterHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
-	void OnContactExitHandler(const CollisionInfo& collisionInfo);
+	void OnContactExitHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
 	void Move();
 

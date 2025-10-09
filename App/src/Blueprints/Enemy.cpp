@@ -2,14 +2,15 @@
 #include "Components/AI/SimpleAI.h"
 #include <Components/AI/Behaviors/FlyingAIBehavior.h>
 #include <Components/AI/Behaviors/GroundAIBehavior.h>
-#include <Data/Collision/PhysicsMaterial.h>
-#include <Data/Physics/BodyDefinition2D.h>
 #include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/BoxCollider2D.h>
 #include <Engine/Components/Collisions/CircleCollider2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
 #include <Engine/Components/Rendering/Sprite.h>
 #include <Engine/Components/Transform.h>
+
+
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Engine;
 
 
 Enemy::Enemy(Vector2F startPos, const EnemyConfig& enemyConfig)

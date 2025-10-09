@@ -4,13 +4,16 @@
 #include <Models/Map/TileMapModel.h>
 
 
-class Transform;
+namespace DeadFrame2D::Engine
+{
+	class Transform;
+}
 
 
-class CustomTileMapRenderer2D : public TileMapRenderer<std::shared_ptr<TileMapModel>>
+class CustomTileMapRenderer2D : public DeadFrame2D::Engine::TileMapRenderer<std::shared_ptr<TileMapModel>>
 {
 private:
-	Transform* transform;
+	DeadFrame2D::Engine::Transform* transform;
 
 
 public:
@@ -26,5 +29,5 @@ public:
 	virtual void Draw() override;
 
 
-	Vector2I GetMapFullSize();
+	DeadFrame2D::Core::Vector2I GetMapFullSize();
 };

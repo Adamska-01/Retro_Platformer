@@ -13,7 +13,7 @@ private:
 		if (tileSetSource.empty())
 			return;
 
-		tileSetTexture = TextureManager::LoadTexture(tileSetSource);
+		tileSetTexture = DeadFrame2D::Core::TextureManager::LoadTexture(tileSetSource);
 	}
 
 

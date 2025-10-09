@@ -2,21 +2,25 @@
 
 
 class SimpleAI;
-class Transform;
-class SpriteAnimator;
-class RigidBody2D;
+
+namespace DeadFrame2D::Engine
+{
+	class Transform;
+	class SpriteAnimator;
+	class RigidBody2D;
+}
 
 
 class AIBehavior
 {
 protected:
-	Transform* aiTransform;
+	DeadFrame2D::Engine::Transform* aiTransform;
 
-	Transform* playerTransform;
+	DeadFrame2D::Engine::Transform* playerTransform;
 
-	SpriteAnimator* aiSpriteAnimator;
+	DeadFrame2D::Engine::SpriteAnimator* aiSpriteAnimator;
 
-	RigidBody2D* aiRigidBody;
+	DeadFrame2D::Engine::RigidBody2D* aiRigidBody;
 
 
 public:

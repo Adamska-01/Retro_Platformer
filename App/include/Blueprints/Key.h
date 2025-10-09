@@ -4,10 +4,13 @@
 #include <string_view>
 
 
-struct CollisionInfo;
+namespace DeadFrame2D::Data
+{
+	struct CollisionInfo;
+}
 
 
-class Key : public GameObject
+class Key : public DeadFrame2D::Engine::GameObject
 {
 private:
 	int score = 100;
@@ -15,11 +18,11 @@ private:
 	std::string_view spriteSource;
 
 	
-	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
+	void OnContactEnterHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
-	Key(Vector2F startPos, std::string_view spriteSource);
+	Key(DeadFrame2D::Core::Vector2F startPos, std::string_view spriteSource);
 
 
 	virtual void ConstructGameObject() override;

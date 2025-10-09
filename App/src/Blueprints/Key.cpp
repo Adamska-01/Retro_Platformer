@@ -1,5 +1,4 @@
 #include "Blueprints/Key.h"
-#include "Blueprints/Player.h"
 #include "Components/Controllers/PlayerController.h"
 #include "CustomEvents/GameEndedEvent.h"
 #include <CustomEvents/PointsScoredEvent.h>
@@ -12,6 +11,12 @@
 #include <Engine/Components/Rendering/Sprite.h>
 #include <Engine/Components/Transform.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
+
+
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
 
 
 Key::Key(Vector2F startPos, std::string_view spriteSource)
@@ -68,5 +73,5 @@ void Key::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
 }

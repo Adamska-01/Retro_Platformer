@@ -5,26 +5,34 @@
 
 
 class AIBehavior;
-class Transform;
-class DispatchableEvent;
-struct CollisionInfo;
+
+namespace DeadFrame2D::Engine
+{
+	class Transform;
+	class DispatchableEvent;
+}
+
+namespace DeadFrame2D::Data
+{
+	struct CollisionInfo;
+}
 
 
-class SimpleAI : public GameComponent
+class SimpleAI : public DeadFrame2D::Engine::GameComponent
 {
 private:
 	std::unique_ptr<AIBehavior> behavior;
 
-	Transform* transform;
+	DeadFrame2D::Engine::Transform* transform;
 
-	Vector2F startPos;
+	DeadFrame2D::Core::Vector2F startPos;
 
 	bool processingPlayer;
 
 
-	void LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void LifeLostEventHandler(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
 
-	void OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo);
+	void OnCircleContactEnterHandlers(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
@@ -44,5 +52,5 @@ public:
 
 	void Reset();
 
-	Vector2F GetStartPos() const;
+	DeadFrame2D::Core::Vector2F GetStartPos() const;
 };

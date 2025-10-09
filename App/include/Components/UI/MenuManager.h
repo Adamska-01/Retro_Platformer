@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 
-class MenuManager : public GameComponent
+class MenuManager : public DeadFrame2D::Engine::GameComponent
 {
 private:
 	std::unordered_map<MenuID, MenuBase*> allMenus;

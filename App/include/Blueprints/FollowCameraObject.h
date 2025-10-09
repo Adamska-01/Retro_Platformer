@@ -5,20 +5,20 @@
 #include <SDL.h>
 
 
-class FollowCameraObject : public GameObject
+class FollowCameraObject : public DeadFrame2D::Engine::GameObject
 {
 private:
-	std::weak_ptr<GameObject> target;
+	std::weak_ptr<DeadFrame2D::Engine::GameObject> target;
 
 	SDL_FRect bounds;
 
-	Vector2F offset;
+	DeadFrame2D::Core::Vector2F offset;
 
 	float followSpeed;
 
 
 public:
-	FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, Vector2F offset = Vector2F::Zero, float followSpeed = 10.0f);
+	FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset = DeadFrame2D::Core::Vector2F::Zero, float followSpeed = 10.0f);
 
 
 	virtual void ConstructGameObject() override;

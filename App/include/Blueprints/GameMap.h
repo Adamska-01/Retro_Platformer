@@ -3,7 +3,7 @@
 #include <Engine/Entity/GameObject.h>
 
 
-class GameMap : public GameObject
+class GameMap : public DeadFrame2D::Engine::GameObject
 {
 private:
 	std::shared_ptr<TileMapModel> tileMapModel;

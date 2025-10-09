@@ -10,6 +10,11 @@
 #include <Engine/Components/Transform.h>
 
 
+using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
+
+
 Player::Player(Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource)
 	: idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource)

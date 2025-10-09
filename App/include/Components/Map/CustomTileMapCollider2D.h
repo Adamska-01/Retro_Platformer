@@ -1,12 +1,10 @@
 #pragma once
 #include "Components/Map/CustomTileMapRenderer2D.h"
+#include <Data/Collision/PhysicsMaterial.h>
 #include <Engine/Components/Collisions/Tile/TileCollider2D.h>
 
 
-class b2Fixture;
-
-
-class CustomTileMapCollider2D : public TileCollider2D<CustomTileMapRenderer2D>
+class CustomTileMapCollider2D : public DeadFrame2D::Engine::TileCollider2D<CustomTileMapRenderer2D>
 {
 private:
 	void DeleteFixtures();
@@ -26,7 +24,7 @@ protected:
 
 
 public:
-	CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial = PhysicsMaterial());
+	CustomTileMapCollider2D(const DeadFrame2D::Data::PhysicsMaterial& physicsMaterial = DeadFrame2D::Data::PhysicsMaterial());
 
 	virtual ~CustomTileMapCollider2D() override;
 
