@@ -15,6 +15,8 @@ namespace DeadFrame2D::Data
 class Coin : public DeadFrame2D::Engine::GameObject
 {
 private:
+	DeadFrame2D::Core::Vector2F startPos;
+
 	unsigned int score;
 
 	std::string_view spriteSource;

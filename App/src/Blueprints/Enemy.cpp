@@ -14,17 +14,20 @@ using namespace DeadFrame2D::Engine;
 
 
 Enemy::Enemy(Vector2F startPos, const EnemyConfig& enemyConfig)
-	: enemyConfig(enemyConfig)
+	: enemyConfig(enemyConfig),
+	startPos(startPos)
+{
+
+}
+
+void Enemy::ConstructGameObject()
 {
 	auto scale = 0.65f;
 
 	transform->SetWorldPosition(startPos + Vector2F::Up * (enemyConfig.characterSize - enemyConfig.characterSize * scale));
 
 	transform->SetWorldScale(Vector2F(scale, scale));
-}
 
-void Enemy::ConstructGameObject()
-{
 	AddComponent<Sprite>(enemyConfig.spriteSource);
 	
 	auto spriteAnimator = AddComponent<SpriteAnimator>();

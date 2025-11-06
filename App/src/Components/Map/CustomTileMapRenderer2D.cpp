@@ -3,10 +3,12 @@
 #include <Core/SubSystems/Systems/TextureManager.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Entity/GameObject.h>
+#include <Utilities/Debugging/Guards.h>
 
 
 using namespace DeadFrame2D::Core;
 using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
 
 
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)
@@ -24,17 +26,7 @@ CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> t
 
 void CustomTileMapRenderer2D::Init()
 {
-	transform = OwningObject.lock()->GetComponent<Transform>();
-}
-
-void CustomTileMapRenderer2D::Start()
-{
-
-}
-
-void CustomTileMapRenderer2D::Update(float dt)
-{
-
+	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
 }
 
 void CustomTileMapRenderer2D::Draw()

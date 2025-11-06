@@ -16,11 +16,11 @@ using namespace DeadFrame2D::Engine;
 
 
 Player::Player(Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource)
-	: idleSpriteSource(idleSpriteSource),
+	: startPos(startPos),
+	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource)
 {
-	transform->SetWorldPosition(startPos);
-	transform->SetWorldScale(Vector2F::One * 2.0f);
+	
 }
 
 Player::~Player()
@@ -29,6 +29,9 @@ Player::~Player()
 
 void Player::ConstructGameObject()
 {
+	transform->SetWorldPosition(startPos);
+	transform->SetWorldScale(Vector2F::One * 2.0f);
+
 	AddComponent<Sprite>(idleSpriteSource);
 	AddComponent<SpriteAnimator>();
 

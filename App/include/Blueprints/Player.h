@@ -7,6 +7,8 @@
 class Player : public DeadFrame2D::Engine::GameObject
 {
 private:
+	DeadFrame2D::Core::Vector2F startPos;
+
 	std::string_view idleSpriteSource;
 
 	std::string_view runSpriteSource;

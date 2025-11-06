@@ -1,5 +1,6 @@
 #pragma once
 #include <Engine/Components/GameComponent.h>
+#include <Engine/Entity/ComponentHandle.h>
 #include <memory>
 
 
@@ -16,12 +17,15 @@ namespace DeadFrame2D::Engine
 
 class EndGameController : public DeadFrame2D::Engine::GameComponent
 {
+	TYPE_INFO(EndGameController, DeadFrame2D::Engine::GameComponent);
+
+
 private:
-	MenuManager* menuManager;
+	DeadFrame2D::Engine::ComponentHandle<MenuManager> menuManager;
 
-	DeadFrame2D::Engine::TextMesh* endGameTextMesh;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::TextMesh> endGameTextMesh;
 
-	StatsController* statsController;
+	DeadFrame2D::Engine::ComponentHandle<StatsController> statsController;
 
 
 	void OnGameEndedHandler(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
@@ -35,12 +39,6 @@ public:
 
 	virtual void Init() override;
 
-	virtual void Start() override;
 
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
-
-
-	void SetEndGameTextMesh(DeadFrame2D::Engine::TextMesh* endGameTextMesh);
+	void SetEndGameTextMesh(DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::TextMesh> endGameTextMesh);
 };

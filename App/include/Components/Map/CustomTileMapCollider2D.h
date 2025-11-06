@@ -6,6 +6,9 @@
 
 class CustomTileMapCollider2D : public DeadFrame2D::Engine::TileCollider2D<CustomTileMapRenderer2D>
 {
+	TYPE_INFO(CustomTileMapCollider2D, DeadFrame2D::Engine::TileCollider2D<CustomTileMapRenderer2D>);
+
+
 private:
 	void DeleteFixtures();
 

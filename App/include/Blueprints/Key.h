@@ -13,6 +13,8 @@ namespace DeadFrame2D::Data
 class Key : public DeadFrame2D::Engine::GameObject
 {
 private:
+	DeadFrame2D::Core::Vector2F startPos;
+
 	int score = 100;
 
 	std::string_view spriteSource;

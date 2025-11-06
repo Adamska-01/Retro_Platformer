@@ -5,21 +5,13 @@
 
 using namespace DeadFrame2D::Core;
 using namespace DeadFrame2D::Data;
+using namespace DeadFrame2D::Engine;
 
 
 MenuManager::MenuManager()
 	: allMenus(),
 	activeMenus()
 {
-}
-
-void MenuManager::Init()
-{
-}
-
-void MenuManager::Start()
-{
-
 }
 
 void MenuManager::Update(float deltaTime)
@@ -58,11 +50,6 @@ void MenuManager::Update(float deltaTime)
 	}
 }
 
-void MenuManager::Draw()
-{
-
-}
-
 void MenuManager::ShowMenu(MenuID menuID)
 {
 	auto it = allMenus.find(menuID);
@@ -70,13 +57,13 @@ void MenuManager::ShowMenu(MenuID menuID)
 	if (it == allMenus.end())
 		return;
 
-	auto menu = it->second;
+	auto& menu = it->second;
 
 	menu->Show();
 	activeMenus.push_back(menu);
 }
 
-void MenuManager::ShowMenu(MenuBase* menu)
+void MenuManager::ShowMenu(ComponentHandle<MenuBase> menu)
 {
 	if (menu == nullptr)
 		return;
@@ -110,7 +97,7 @@ void MenuManager::HideMenu(MenuID menuID)
 		activeMenus.end());
 }
 
-void MenuManager::HideMenu(MenuBase* menu)
+void MenuManager::HideMenu(ComponentHandle<MenuBase> menu)
 {
 	if (menu == nullptr)
 		return;
@@ -127,11 +114,11 @@ void MenuManager::HideMenu(MenuBase* menu)
 
 void MenuManager::HideAll()
 {
-	for (auto* menu : activeMenus)
+	for (auto& menu : activeMenus)
 	{
 		menu->Hide();
 	}
-	for (auto menu : allMenus)
+	for (auto& menu : allMenus)
 	{
 		menu.second->Hide();
 	}
@@ -139,19 +126,19 @@ void MenuManager::HideAll()
 	activeMenus.clear();
 }
 
-void MenuManager::RegisterMenu(MenuID menuID, MenuBase* menu)
+void MenuManager::RegisterMenu(MenuID menuID, ComponentHandle<MenuBase> menu)
 {
 	allMenus[menuID] = menu;
 }
 
-MenuBase* MenuManager::GetMenu(MenuID menuID)
+ComponentHandle<MenuBase> MenuManager::GetMenu(MenuID menuID)
 {
 	auto it = allMenus.find(menuID);
 
-	return it != allMenus.end() ? it->second : nullptr;
+	return it != allMenus.end() ? it->second : ComponentHandle<MenuBase>();
 }
 
-const std::vector<MenuBase*>& MenuManager::GetActiveMenus()
+const std::vector<ComponentHandle<MenuBase>>& MenuManager::GetActiveMenus()
 {
 	return activeMenus;
 }

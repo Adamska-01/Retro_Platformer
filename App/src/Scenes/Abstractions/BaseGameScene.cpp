@@ -7,6 +7,7 @@
 #include <Data/Components/UI/TextMeshComponentModel.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
+#include "Engine/Entity/ComponentHandle.h"
 #include <Engine/Components/UI/TextMesh.h>
 
 
@@ -16,7 +17,7 @@ using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
 
 
-std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)
+ObjectHandle<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)
 {
 	ButtonBlueprintModel buttonConfiguration =
 	{
@@ -40,11 +41,11 @@ std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& te
 	return GameObject::Instantiate<ButtonBlueprint>(buttonConfiguration);
 }
 
-std::weak_ptr<GameObject> BaseGameScene::CreateText(const std::string& text, const std::string_view& fontSource)
+ObjectHandle<GameObject> BaseGameScene::CreateText(const std::string& text, const std::string_view& fontSource)
 {
 	auto textMeshObject = GameObject::Instantiate<GameObject>();
 
-	textMeshObject.lock()->AddComponent<TextMesh>(TextMeshComponentModel
+	textMeshObject->AddComponent<TextMesh>(TextMeshComponentModel
 		{
 			.fontSource = fontSource,
 			.text = text,
@@ -68,6 +69,6 @@ std::function<void()> BaseGameScene::MakeAudioPlayAndDestroyCallback(const std::
 				isMusic,
 				loop);
 
-			CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(destroyDelaySeconds));
+			CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
 		};
 }

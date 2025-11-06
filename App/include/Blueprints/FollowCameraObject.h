@@ -8,7 +8,7 @@
 class FollowCameraObject : public DeadFrame2D::Engine::GameObject
 {
 private:
-	std::weak_ptr<DeadFrame2D::Engine::GameObject> target;
+	DeadFrame2D::Engine::ObjectHandle<DeadFrame2D::Engine::GameObject> target;
 
 	SDL_FRect bounds;
 
@@ -18,7 +18,7 @@ private:
 
 
 public:
-	FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset = DeadFrame2D::Core::Vector2F::Zero, float followSpeed = 10.0f);
+	FollowCameraObject(DeadFrame2D::Engine::ObjectHandle<DeadFrame2D::Engine::GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset = DeadFrame2D::Core::Vector2F::Zero, float followSpeed = 10.0f);
 
 
 	virtual void ConstructGameObject() override;

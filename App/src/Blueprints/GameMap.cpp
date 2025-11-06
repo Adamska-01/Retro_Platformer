@@ -24,16 +24,16 @@ void GameMap::ConstructGameObject()
 
 	auto tileObject = GameObject::Instantiate<GameObject>();
 
-	tileObject.lock()->AddComponent<CustomTileMapRenderer2D>(tileMapModel);
+	tileObject->AddComponent<CustomTileMapRenderer2D>(tileMapModel);
 
 	auto physicalMat = PhysicsMaterial
 	{
 		.friction = 0.0f
 	};
 
-	tileObject.lock()->AddComponent<CustomTileMapCollider2D>(physicalMat);
+	tileObject->AddComponent<CustomTileMapCollider2D>(physicalMat);
 
-	tileObject.lock()->AddComponent<RigidBody2D>(bodyDef);
+	tileObject->AddComponent<RigidBody2D>(bodyDef);
 
 	AddChildGameObject(tileObject);
 }

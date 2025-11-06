@@ -21,16 +21,16 @@ using namespace DeadFrame2D::Utilities;
 
 
 Coin::Coin(Vector2F startPos, std::string_view spriteSource)
-	: score(100),
+	: startPos(startPos),
+	score(100),
 	spriteSource(spriteSource)
 {
-	transform->SetWorldPosition(startPos);
-	transform->SetWorldScale(Vector2F::One * 2.0f);
+	
 }
 
 void Coin::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 {
-	const auto& other = collisionInfo.otherGameObject.lock();
+	const auto& other = collisionInfo.otherGameObject;
 	
 	if (other == nullptr)
 		return;
@@ -47,13 +47,16 @@ void Coin::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 		Vector2F::Zero,
 		0.5f);
 
-	CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
+	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
 
 	Destroy();
 }
 
 void Coin::ConstructGameObject()
 {
+	transform->SetWorldPosition(startPos);
+	transform->SetWorldScale(Vector2F::One * 2.0f);
+
 	AddComponent<Sprite>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
@@ -82,5 +85,5 @@ void Coin::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
 }

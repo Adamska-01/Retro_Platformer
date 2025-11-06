@@ -4,8 +4,6 @@
 #include <Engine/Components/Transform.h>
 #include <Engine/Entity/GameObject.h>
 #include <Utilities/Debugging/Guards.h>
-#include <Utilities/Helpers/Physics/PhysicsConversion.h>
-#include <Utilities/Helpers/Physics/PhysicsShapeCreators.h>
 
 
 using namespace DeadFrame2D::Constants;
@@ -45,9 +43,7 @@ void CustomTileMapCollider2D::Init()
 {
 	TileCollider2D::Init();
 
-	tileMapRenderer = OwningObject.lock()->GetComponent<CustomTileMapRenderer2D>();
-
-	Guard::AgainstNull(tileMapRenderer, NAME_OF(tileMapRenderer));
+	tileMapRenderer = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<CustomTileMapRenderer2D>(), NAME_OF(tileMapRenderer));
 
 	const auto& tileMap = tileMapRenderer->GetTileMap();
 
@@ -88,15 +84,47 @@ void CustomTileMapCollider2D::RebuildFixture()
 			if (!isCollidable)
 				continue;
 
-			this->physicsMaterial.shape = CreateBoxShape(
+			// TODO: The code below is not accessible anymore. Refactor TileCollider2D<T> so that the client doesn't have to interact with the Box2D backend
+			/*
+			this->physicsMaterial.shape = Physics::ToB2BoxShape(
 				tileSize * 0.5f,
 				tileSize * 0.5f,
 				Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
 				angle);
 
-			auto def = ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
+			auto def = Physics::ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
+			*/
 
-			fixtures.push_back(rigidBody->CreateFixture(&def));
+			auto shape = new b2PolygonShape();
+
+			const auto METER_PER_PIXEL = DeadFrame2D::Core::PhysicsEngine2D::GetPhysicsConfig().meterPerPixel;
+
+			shape->SetAsBox(
+				tileSize * 0.5f * METER_PER_PIXEL,
+				tileSize * 0.5f * METER_PER_PIXEL,
+				b2Vec2(
+					(column * tileSize + tileSize * 0.5f) * METER_PER_PIXEL,
+					(row * tileSize + tileSize * 0.5f) * METER_PER_PIXEL),
+				angle);
+
+			this->physicsMaterial.shape = shape;
+
+			b2FixtureDef b2FDef;
+
+			b2FDef.shape = physicsMaterial.shape;
+			b2FDef.friction = physicsMaterial.friction;
+			b2FDef.restitution = physicsMaterial.restitution;
+			b2FDef.restitutionThreshold = physicsMaterial.restitutionThreshold;
+			b2FDef.density = physicsMaterial.density;
+			b2FDef.isSensor = physicsMaterial.isSensor;
+			b2FDef.filter.categoryBits = physicsMaterial.filter.categoryBits;
+			b2FDef.filter.groupIndex = physicsMaterial.filter.groupIndex;
+			b2FDef.filter.maskBits = physicsMaterial.filter.maskBits;
+			b2FDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
+
+			assert(b2FDef.shape != nullptr && "Shape must not be null");
+
+			fixtures.push_back(rigidBody->CreateFixture(&b2FDef));
 
 			// Clean up before creating another shape
 			delete this->physicsMaterial.shape;

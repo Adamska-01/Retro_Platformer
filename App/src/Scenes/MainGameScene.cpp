@@ -36,11 +36,11 @@ using namespace DeadFrame2D::Engine;
 using namespace Shared::Tools;
 
 
-std::weak_ptr<GameObject> MainGameScene::CreateText(const std::string& text)
+ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)
 {
 	auto textMeshObject = GameObject::Instantiate<GameObject>();
 
-	textMeshObject.lock()->AddComponent<TextMesh>(TextMeshComponentModel
+	textMeshObject->AddComponent<TextMesh>(TextMeshComponentModel
 		{
 			.fontSource = AssetPaths::Files::GAMEPLAY_FONT,
 			.text = text,
@@ -53,16 +53,16 @@ std::weak_ptr<GameObject> MainGameScene::CreateText(const std::string& text)
 	return textMeshObject;
 }
 
-MenuBase* MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 	auto renderTargetSize = Renderer::GetResolutionTarget();
 
 	auto endScreenMenuObject = GameObject::Instantiate<GameObject>();
-	auto endScreenMenuBase = endScreenMenuObject.lock()->AddComponent<MenuBase>();
-	auto endGameController = endScreenMenuObject.lock()->AddComponent<EndGameController>();
+	auto endScreenMenuBase = endScreenMenuObject->AddComponent<MenuBase>();
+	auto endGameController = endScreenMenuObject->AddComponent<EndGameController>();
 
 	auto background = GameObject::Instantiate<GameObject>();
-	auto imageBackground = background.lock()->AddComponent<Image>();
+	auto imageBackground = background->AddComponent<Image>();
 	imageBackground->SetWidgetSize(Vector2F(renderTargetSize.x, renderTargetSize.y));
 	imageBackground->SetAnchor(UIAnchor::TOP_LEFT);
 	imageBackground->SetColor(r, g, b, a);
@@ -72,53 +72,53 @@ MenuBase* MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8
 	auto spButton = CreateButton("Back To Menu", AssetPaths::Files::GAMEPLAY_FONT, []() { SceneManager::LoadScene<MainMenuScene>(); }, enterCallback);
 	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, []() { EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT); }, enterCallback);
 
-	spButton.lock()->GetComponent<Button>()->SetNavigableUpElement(exitButton.lock()->GetComponent<Button>());
-	spButton.lock()->GetComponent<Button>()->SetNavigableDownElement(exitButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableUpElement(spButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableDownElement(spButton.lock()->GetComponent<Button>());
+	spButton->GetComponent<Button>()->SetNavigableUpElement(exitButton->GetComponent<Button>());
+	spButton->GetComponent<Button>()->SetNavigableDownElement(exitButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableUpElement(spButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableDownElement(spButton->GetComponent<Button>());
 
 	auto menuLayout = GameObject::Instantiate<GameObject>();
-	menuLayout.lock()->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
-	menuLayout.lock()->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
-	menuLayout.lock()->AddChildGameObject(title);
-	menuLayout.lock()->AddChildGameObject(spButton);
-	menuLayout.lock()->AddChildGameObject(exitButton);
+	menuLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
+	menuLayout->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
+	menuLayout->AddChildGameObject(title);
+	menuLayout->AddChildGameObject(spButton);
+	menuLayout->AddChildGameObject(exitButton);
 
-	endScreenMenuObject.lock()->AddChildGameObject(background);
-	endScreenMenuObject.lock()->AddChildGameObject(menuLayout);
+	endScreenMenuObject->AddChildGameObject(background);
+	endScreenMenuObject->AddChildGameObject(menuLayout);
 
-	endGameController->SetEndGameTextMesh(title.lock()->GetComponent<TextMesh>());
+	endGameController->SetEndGameTextMesh(title->GetComponent<TextMesh>());
 
 	endScreenMenuBase->Hide();
 
 	return endScreenMenuBase;
 }
 
-MenuBase* MainGameScene::CreateHUD()
+ComponentHandle<MenuBase> MainGameScene::CreateHUD()
 {
 	auto renderTargetSize = Renderer::GetResolutionTarget();
 
 	auto hudMenuObject = GameObject::Instantiate<GameObject>();
-	auto hudMenuBase = hudMenuObject.lock()->AddComponent<MenuBase>();
+	auto hudMenuBase = hudMenuObject->AddComponent<MenuBase>();
 
 	auto scoreLayout = GameObject::Instantiate<GameObject>();
-	scoreLayout.lock()->GetTransform()->SetWorldPosition(Vector2F(20, 40));
-	auto statsComponent = scoreLayout.lock()->AddComponent<StatsController>();
-	scoreLayout.lock()->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
+	scoreLayout->GetTransform()->SetWorldPosition(Vector2F(20, 40));
+	auto statsComponent = scoreLayout->AddComponent<StatsController>();
+	scoreLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
 
 	auto scoreTextObj = CreateText("Score: xx");
-	scoreTextObj.lock()->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
+	scoreTextObj->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
 
 	auto lifesTextObj = CreateText("Lifes: xx");
-	lifesTextObj.lock()->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
+	lifesTextObj->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
 
-	scoreLayout.lock()->AddChildGameObject(scoreTextObj);
-	scoreLayout.lock()->AddChildGameObject(lifesTextObj);
+	scoreLayout->AddChildGameObject(scoreTextObj);
+	scoreLayout->AddChildGameObject(lifesTextObj);
 
-	statsComponent->SetScoreTextMesh(scoreTextObj.lock()->GetComponent<TextMesh>());
-	statsComponent->SetLifesTextMesh(lifesTextObj.lock()->GetComponent<TextMesh>());
+	statsComponent->SetScoreTextMesh(scoreTextObj->GetComponent<TextMesh>());
+	statsComponent->SetLifesTextMesh(lifesTextObj->GetComponent<TextMesh>());
 
-	hudMenuObject.lock()->AddChildGameObject(scoreLayout);
+	hudMenuObject->AddChildGameObject(scoreLayout);
 
 	return hudMenuBase;
 }
@@ -129,21 +129,19 @@ void MainGameScene::Enter()
 
 	// UI
 	auto canvasObject = GameObject::Instantiate<GameObject>();
-	canvasObject.lock()->AddComponent<Canvas>();
+	canvasObject->AddComponent<Canvas>();
 
 
 	auto hud = CreateHUD();
 	auto endGameMenuBase = CreateEndScreen("GameOver!", 0, 0, 0, 120);
 
-	canvasObject.lock()->AddChildGameObject(hud->GetGameObject());
-	canvasObject.lock()->AddChildGameObject(endGameMenuBase->GetGameObject());
+	canvasObject->AddChildGameObject(hud->GetGameObject());
+	canvasObject->AddChildGameObject(endGameMenuBase->GetGameObject());
 
 	auto menuManagerObject = GameObject::Instantiate<GameObject>();
-	auto menuManagerComponent = menuManagerObject.lock()->AddComponent<MenuManager>();
-
-	menuManagerComponent->RegisterMenu(MenuID::HUD, hud);
-	menuManagerComponent->RegisterMenu(MenuID::END_GAME_MENU, endGameMenuBase);
-
+	auto menuManagerComponent = menuManagerObject->AddComponent<MenuManager>();
+	menuManagerComponent->RegisterMenu(MenuID::HUD, hud->GetHandleAs<MenuBase>());
+	menuManagerComponent->RegisterMenu(MenuID::END_GAME_MENU, endGameMenuBase->GetHandleAs<MenuBase>());
 	menuManagerComponent->HideAll();
 	menuManagerComponent->ShowMenu(MenuID::HUD);
 
@@ -207,9 +205,8 @@ void MainGameScene::Enter()
 		AssetPaths::Files::PLAYER_IDLE_SPRITE, 
 		AssetPaths::Files::PLAYER_RUN_SPRITE);
 
-	
-	auto mapFullSize = gameMap.lock()->GetComponentInChildren<CustomTileMapRenderer2D>()->GetMapFullSize();
-	auto gameMapPosition = gameMap.lock()->GetTransform()->GetWorldPosition();
+	auto mapFullSize = gameMap->GetComponentInChildren<CustomTileMapRenderer2D>()->GetMapFullSize();
+	auto gameMapPosition = gameMap->GetTransform()->GetWorldPosition();
 	auto mapBounds = SDL_FRect
 	{
 		gameMapPosition.x,

@@ -9,6 +9,8 @@ class Enemy : public DeadFrame2D::Engine::GameObject
 private:
 	EnemyConfig enemyConfig;
 
+	DeadFrame2D::Core::Vector2F startPos;
+
 
 public:
 	Enemy(DeadFrame2D::Core::Vector2F startPos, const EnemyConfig& enemyConfig);

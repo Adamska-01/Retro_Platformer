@@ -11,6 +11,6 @@ int main(int argc, char** argv)
 	auto App = std::make_unique<Application>();
 
 	App->Run();
-	
+
 	return 0;
 }

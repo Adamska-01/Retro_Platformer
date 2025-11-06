@@ -10,16 +10,7 @@ using namespace DeadFrame2D::Engine;
 using namespace DeadFrame2D::Utilities;
 
 
-MenuBase::MenuBase()
-{
-	allInteractables.clear();
-
-	menuManager = nullptr;
-	previousMenu = nullptr;
-	selectedInteractable = nullptr;
-}
-
-void MenuBase::Navigate(IInteractableUI* (*getNext)(IInteractableUI*))
+void MenuBase::Navigate(std::function<ComponentHandle<IInteractableUI>(ComponentHandle<IInteractableUI>)> getNext)
 {
 	if (selectedInteractable == nullptr)
 	{
@@ -44,40 +35,35 @@ void MenuBase::Navigate(IInteractableUI* (*getNext)(IInteractableUI*))
 	selectedInteractable = next;
 }
 
+MenuBase::MenuBase()
+{
+	allInteractables.clear();
+
+	menuManager = nullptr;
+	previousMenu = nullptr;
+	selectedInteractable = nullptr;
+}
+
 void MenuBase::Init()
 {
-	menuManager = SceneManager::FindObjectOfType<MenuManager>();
-	allInteractables = OwningObject.lock()->GetComponentsInChildren<IInteractableUI>(true);
-
-	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
-}
-
-void MenuBase::Start()
-{
-
-}
-
-void MenuBase::Update(float deltaTime)
-{
-}
-
-void MenuBase::Draw()
-{
+	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
+	
+	allInteractables = GetGameObject()->GetComponentsInChildren<IInteractableUI>(true);
 }
 
 void MenuBase::Show()
 {
-	OwningObject.lock()->SetActive(true);
+	GetGameObject()->SetActive(true);
 }
 
 void MenuBase::Hide()
 {
-	OwningObject.lock()->SetActive(false);
+	GetGameObject()->SetActive(false);
 }
 
 void MenuBase::NavigateLeft()
 {
-	Navigate([](IInteractableUI* current)
+	Navigate([](ComponentHandle<IInteractableUI> current)
 		{
 			return current->GetLeftInteractable();
 		});
@@ -85,7 +71,7 @@ void MenuBase::NavigateLeft()
 
 void MenuBase::NavigateRight()
 {
-	Navigate([](IInteractableUI* current)
+	Navigate([](ComponentHandle<IInteractableUI> current)
 		{
 			return current->GetRightInteractable();
 		});
@@ -93,7 +79,7 @@ void MenuBase::NavigateRight()
 
 void MenuBase::NavigateUp()
 {
-	Navigate([](IInteractableUI* current)
+	Navigate([](ComponentHandle<IInteractableUI> current)
 		{
 			return current->GetUpInteractable();
 		});
@@ -101,7 +87,7 @@ void MenuBase::NavigateUp()
 
 void MenuBase::NavigateDown()
 {
-	Navigate([](IInteractableUI* current)
+	Navigate([](ComponentHandle<IInteractableUI> current)
 		{
 			return current->GetDownInteractable();
 		});
@@ -129,11 +115,11 @@ void MenuBase::GoBack()
 	if (previousMenu == nullptr)
 		return;
 
-	menuManager->HideMenu(this);
+	menuManager->HideMenu(GetHandleAs<MenuBase>());
 	menuManager->ShowMenu(previousMenu);
 }
 
-void MenuBase::SetPreviousMenu(MenuBase* previousMenu)
+void MenuBase::SetPreviousMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> previousMenu)
 {
 	this->previousMenu = previousMenu;
 }

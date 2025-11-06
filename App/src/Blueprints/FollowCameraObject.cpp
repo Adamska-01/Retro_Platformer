@@ -6,7 +6,7 @@
 using namespace DeadFrame2D::Engine;
 
 
-FollowCameraObject::FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset, float followSpeed)
+FollowCameraObject::FollowCameraObject(ObjectHandle<GameObject> target, SDL_FRect bounds, DeadFrame2D::Core::Vector2F offset, float followSpeed)
 	: target(target),
 	bounds(bounds),
 	offset(offset),

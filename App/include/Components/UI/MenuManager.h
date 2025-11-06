@@ -2,15 +2,19 @@
 #include "Components/UI/Abstractions/MenuBase.h"
 #include <Data/UI/MenuID.h>
 #include <Engine/Components/GameComponent.h>
+#include <Engine/Entity/ComponentHandle.h>
 #include <unordered_map>
 
 
 class MenuManager : public DeadFrame2D::Engine::GameComponent
 {
-private:
-	std::unordered_map<MenuID, MenuBase*> allMenus;
+	TYPE_INFO(MenuManager, DeadFrame2D::Engine::GameComponent);
 
-	std::vector<MenuBase*> activeMenus;
+
+private:
+	std::unordered_map<MenuID, DeadFrame2D::Engine::ComponentHandle<MenuBase>> allMenus;
+
+	std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>> activeMenus;
 
 
 public:
@@ -19,28 +23,22 @@ public:
 	~MenuManager() = default;
 
 
-	virtual void Init() override;
-
-	virtual void Start() override;
-
 	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
 
 
 	void ShowMenu(MenuID menuID);
 
-	void ShowMenu(MenuBase* menu);
+	void ShowMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideMenu(MenuID menuID);
 
-	void HideMenu(MenuBase* menu);
+	void HideMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideAll();
 
-	void RegisterMenu(MenuID menuID, MenuBase* menu);
+	void RegisterMenu(MenuID menuID, DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
 
-	MenuBase* GetMenu(MenuID menuID);
+	DeadFrame2D::Engine::ComponentHandle<MenuBase> GetMenu(MenuID menuID);
 
-	const std::vector<MenuBase*>& GetActiveMenus();
+	const std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>>& GetActiveMenus();
 };

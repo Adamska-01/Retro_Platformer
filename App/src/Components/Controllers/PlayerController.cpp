@@ -24,10 +24,7 @@ using namespace DeadFrame2D::Utilities;
 
 
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)
-	: transform(nullptr),
-	rigidBody(nullptr),
-	spriteAnimator(nullptr),
-	startPos(Vector2F::Zero),
+	: startPos(Vector2F::Zero),
 	flipState(SDL_RendererFlip::SDL_FLIP_NONE),
 	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource),
@@ -45,10 +42,10 @@ PlayerController::PlayerController(std::string_view idleSpriteSource, std::strin
 
 void PlayerController::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 {
-	if (collisionInfo.otherGameObject.expired())
+	if (!collisionInfo.otherGameObject)
 		return;
 
-	auto tileComponent = collisionInfo.otherGameObject.lock()->GetComponent<CustomTileMapCollider2D>();
+	auto tileComponent = collisionInfo.otherGameObject->GetComponent<CustomTileMapCollider2D>();
 
 	if (tileComponent == nullptr)
 		return;
@@ -58,10 +55,10 @@ void PlayerController::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 
 void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
 {
-	if (collisionInfo.otherGameObject.expired())
+	if (!collisionInfo.otherGameObject)
 		return;
 
-	auto tileComponent = collisionInfo.otherGameObject.lock()->GetComponent<CustomTileMapCollider2D>();
+	auto tileComponent = collisionInfo.otherGameObject->GetComponent<CustomTileMapCollider2D>();
 
 	if (tileComponent == nullptr)
 		return;
@@ -94,7 +91,7 @@ void PlayerController::Jump()
 		// Jump Sound
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
+		CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
 	}
 }
 
@@ -111,13 +108,9 @@ void PlayerController::AnimationState()
 
 void PlayerController::Init()
 {
-	transform = OwningObject.lock()->GetComponent<Transform>();
-	rigidBody = OwningObject.lock()->GetComponent<RigidBody2D>();
-	spriteAnimator = OwningObject.lock()->GetComponent<SpriteAnimator>();
-
-	Guard::AgainstNull(transform, NAME_OF(transform));
-	Guard::AgainstNull(rigidBody, NAME_OF(rigidBody));
-	Guard::AgainstNull(spriteAnimator, NAME_OF(spriteAnimator));
+	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
+	rigidBody = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<RigidBody2D>(), NAME_OF(rigidBody));
+	spriteAnimator = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<SpriteAnimator>(), NAME_OF(spriteAnimator));
 }
 
 void PlayerController::Start()
@@ -147,21 +140,21 @@ void PlayerController::Start()
 
 	startPos = transform->GetWorldPosition();
 
-	auto boxCollider = OwningObject.lock()->GetComponent<BoxCollider2D>();
+	auto boxCollider = GetGameObject()->GetComponent<BoxCollider2D>();
 
 	auto tileRenderer = SceneManager::FindObjectOfType<CustomTileMapRenderer2D>();
 	
 	auto mapFullSize = tileRenderer->GetMapFullSize();
 
-	auto tileRendererPos = tileRenderer->GetGameObject().lock()->GetTransform()->GetWorldPosition();
+	auto tileRendererPos = tileRenderer->GetGameObject()->GetTransform()->GetWorldPosition();
 
 	yThreshold = tileRendererPos.y + mapFullSize.y + 100.0f; // Add some gap
 
 	if (boxCollider == nullptr)
 		return;
 
-	boxCollider->RegisterContactEnterHandler(BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
-	boxCollider->RegisterContactExitHandler(BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactExitHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
 }
 
 void PlayerController::Update(float deltaTime)
@@ -174,11 +167,6 @@ void PlayerController::Update(float deltaTime)
 	{
 		LoseLife();
 	}
-}
-
-void PlayerController::Draw()
-{
-
 }
 
 void PlayerController::LoseLife()

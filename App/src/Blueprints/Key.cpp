@@ -20,14 +20,14 @@ using namespace DeadFrame2D::Utilities;
 
 
 Key::Key(Vector2F startPos, std::string_view spriteSource)
-	: spriteSource(spriteSource)
+	: startPos(startPos),
+	spriteSource(spriteSource)
 {
-	transform->SetWorldPosition(startPos);
 }
 
 void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 {
-	const auto& other = collisionInfo.otherGameObject.lock();
+	const auto& other = collisionInfo.otherGameObject;
 
 	if (other == nullptr)
 		return;
@@ -45,6 +45,8 @@ void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 
 void Key::ConstructGameObject()
 {
+	transform->SetWorldPosition(startPos);
+	
 	AddComponent<Sprite>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
@@ -73,5 +75,5 @@ void Key::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
 }

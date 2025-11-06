@@ -18,9 +18,8 @@ using namespace DeadFrame2D::Engine;
 using namespace DeadFrame2D::Utilities;
 
 
-TextMeshScroller::TextMeshScroller(TextMesh* textMesh, float scrollSpeed)
+TextMeshScroller::TextMeshScroller(ComponentHandle<TextMesh> textMesh, float scrollSpeed)
 	: textMesh(textMesh),
-	menuManager(nullptr),
 	activeTask(nullptr),
 	scrollSpeed(scrollSpeed)
 {
@@ -43,7 +42,7 @@ void TextMeshScroller::RenderTargetSizeChangedEventHandlers(std::shared_ptr<Disp
 	resolutionTarget = renderTargetSizeChangeEvent->renderTargetSize;
 }
 
-void TextMeshScroller::OnGameObjectActiveStateChangedHandler(GameObject* obj, bool isActive)
+void TextMeshScroller::OnGameObjectActiveStateChangedHandler(const ObjectHandle<GameObject>& obj, bool isActive)
 {
 	if (activeTask != nullptr && !activeTask->IsDone() && !activeTask->IsCancelled())
 	{
@@ -60,24 +59,7 @@ void TextMeshScroller::OnGameObjectActiveStateChangedHandler(GameObject* obj, bo
 
 void TextMeshScroller::Init()
 {
-	menuManager = SceneManager::FindObjectOfType<MenuManager>();
-
-	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
-}
-
-void TextMeshScroller::Start()
-{
-
-}
-
-void TextMeshScroller::Update(float deltaTime)
-{
-
-}
-
-void TextMeshScroller::Draw()
-{
-
+	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
 }
 
 Task TextMeshScroller::ScrollText()
@@ -87,7 +69,7 @@ Task TextMeshScroller::ScrollText()
 
 	auto startPos = Vector2F(resolutionTarget.x * 0.5f, resolutionTarget.y);
 	auto endPos = Vector2F(resolutionTarget.x * 0.5f, -textMesh->GetWidgetSize().y) ;
-	auto textMeshTransform = textMesh->GetGameObject().lock()->GetTransform();
+	auto textMeshTransform = textMesh->GetGameObject()->GetTransform();
 
 	textMeshTransform->SetWorldPosition(startPos);
 	textMesh->SetAnchor(UIAnchor::TOP_CENTER);

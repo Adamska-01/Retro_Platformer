@@ -34,26 +34,26 @@ void MainMenuScene::Enter()
 
 	// Camera
 	auto cameraObject = GameObject::Instantiate<GameObject>();
-	cameraObject.lock()->AddComponent<Camera>();
+	cameraObject->AddComponent<Camera>();
 
 
 	// UI
 	auto canvasObject = GameObject::Instantiate<GameObject>();
-	canvasObject.lock()->AddComponent<Canvas>();
+	canvasObject->AddComponent<Canvas>();
 
 	auto layoutPosition = Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.65f);
 
 	// Create MenuManager and push the initial menu onto the stack
 	auto menuManagerObject = GameObject::Instantiate<GameObject>();
-	auto menuManagerComponent = menuManagerObject.lock()->AddComponent<MenuManager>();
+	auto menuManagerComponent = menuManagerObject->AddComponent<MenuManager>();
 
 	// Main Menu
 	auto mainMenuObject = GameObject::Instantiate<GameObject>();
-	auto mainMenuBase = mainMenuObject.lock()->AddComponent<MenuBase>();
+	auto mainMenuBase = mainMenuObject->AddComponent<MenuBase>();
 
 
 	auto title = CreateText("Retro Platformer", AssetPaths::Files::GAMEPLAY_FONT);
-	title.lock()->GetTransform()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.2f));
+	title->GetTransform()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.2f));
 
 	auto selectCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
 	auto enterCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::SELECT_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
@@ -66,40 +66,40 @@ void MainMenuScene::Enter()
 		}, enterCallback);
 	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, [selectCallback]() { selectCallback(); EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT); }, enterCallback);
 
-	spButton.lock()->GetComponent<Button>()->SetNavigableUpElement(exitButton.lock()->GetComponent<Button>());
-	spButton.lock()->GetComponent<Button>()->SetNavigableDownElement(creditsButton.lock()->GetComponent<Button>());
-	creditsButton.lock()->GetComponent<Button>()->SetNavigableUpElement(spButton.lock()->GetComponent<Button>());
-	creditsButton.lock()->GetComponent<Button>()->SetNavigableDownElement(exitButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableUpElement(creditsButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableDownElement(spButton.lock()->GetComponent<Button>());
+	spButton->GetComponent<Button>()->SetNavigableUpElement(exitButton->GetComponent<Button>());
+	spButton->GetComponent<Button>()->SetNavigableDownElement(creditsButton->GetComponent<Button>());
+	creditsButton->GetComponent<Button>()->SetNavigableUpElement(spButton->GetComponent<Button>());
+	creditsButton->GetComponent<Button>()->SetNavigableDownElement(exitButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableUpElement(creditsButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableDownElement(spButton->GetComponent<Button>());
 
 	auto mainMenuLayout = GameObject::Instantiate<GameObject>();
 
-	mainMenuLayout.lock()->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
-	mainMenuLayout.lock()->GetComponent<Transform>()->SetWorldPosition(layoutPosition);
-	mainMenuLayout.lock()->AddChildGameObject(spButton);
-	mainMenuLayout.lock()->AddChildGameObject(creditsButton);
-	mainMenuLayout.lock()->AddChildGameObject(exitButton);
-	mainMenuObject.lock()->AddChildGameObject(title);
-	mainMenuObject.lock()->AddChildGameObject(mainMenuLayout);
+	mainMenuLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
+	mainMenuLayout->GetComponent<Transform>()->SetWorldPosition(layoutPosition);
+	mainMenuLayout->AddChildGameObject(spButton);
+	mainMenuLayout->AddChildGameObject(creditsButton);
+	mainMenuLayout->AddChildGameObject(exitButton);
+	mainMenuObject->AddChildGameObject(title);
+	mainMenuObject->AddChildGameObject(mainMenuLayout);
 
 	// Credits Menu
 	auto creditsText = DeadFrame2D::Utilities::LoadTextFile(AssetPaths::Files::CREDITS);
 	
 	auto creditsMenuObject = GameObject::Instantiate<GameObject>();
-	creditsMenuObject.lock()->GetComponent<Transform>()->SetWorldScale(Vector2F(0.75f, 0.75f));
-	auto creditsMenuBase = creditsMenuObject.lock()->AddComponent<MenuBase>();
+	creditsMenuObject->GetComponent<Transform>()->SetWorldScale(Vector2F(0.75f, 0.75f));
+	auto creditsMenuBase = creditsMenuObject->AddComponent<MenuBase>();
 	
 	auto creditTextMeshObj = CreateText(creditsText, Paths::Files::CONSOLAS_FONT);
-	auto creditTextMeshComponent = creditTextMeshObj.lock()->GetComponent<TextMesh>();
-	creditsMenuObject.lock()->AddComponent<TextMeshScroller>(creditTextMeshComponent);
+	auto creditTextMeshComponent = creditTextMeshObj->GetComponent<TextMesh>();
+	creditsMenuObject->AddComponent<TextMeshScroller>(creditTextMeshComponent);
 
-	creditTextMeshObj.lock()->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
+	creditTextMeshObj->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
 
-	creditsMenuObject.lock()->AddChildGameObject(creditTextMeshObj);
+	creditsMenuObject->AddChildGameObject(creditTextMeshObj);
 	
-	canvasObject.lock()->AddChildGameObject(mainMenuObject);
-	canvasObject.lock()->AddChildGameObject(creditsMenuObject);
+	canvasObject->AddChildGameObject(mainMenuObject);
+	canvasObject->AddChildGameObject(creditsMenuObject);
 
 	creditsMenuBase->SetPreviousMenu(mainMenuBase);
 
@@ -110,5 +110,5 @@ void MainMenuScene::Enter()
 	menuManagerComponent->ShowMenu(MenuID::MAIN_MENU);
 
 	auto soundListenerObj = GameObject::Instantiate<GameObject>();
-	soundListenerObj.lock()->AddComponent<AudioListener>();
+	soundListenerObj->AddComponent<AudioListener>();
 }

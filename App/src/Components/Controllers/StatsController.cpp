@@ -14,14 +14,12 @@ using namespace DeadFrame2D::Utilities;
 
 StatsController::StatsController()
 	: score(0),
-	lifes(3),
-	scoreTextMesh(nullptr),
-	lifesTextMesh(nullptr)
+	lifes(3)
 {
 	auto identifier = reinterpret_cast<std::uintptr_t>(this);
 	
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
 }
 
 StatsController::~StatsController()
@@ -68,22 +66,12 @@ void StatsController::Start()
 	lifesTextMesh->SetText("Lifes: " + std::to_string(lifes));
 }
 
-void StatsController::Update(float deltaTime)
-{
-
-}
-
-void StatsController::Draw()
-{
-
-}
-
-void StatsController::SetScoreTextMesh(TextMesh* scoreTextMesh)
+void StatsController::SetScoreTextMesh(ComponentHandle<TextMesh> scoreTextMesh)
 {
 	this->scoreTextMesh = scoreTextMesh;
 }
 
-void StatsController::SetLifesTextMesh(TextMesh* lifesTextMesh)
+void StatsController::SetLifesTextMesh(ComponentHandle<TextMesh> lifesTextMesh)
 {
 	this->lifesTextMesh = lifesTextMesh;
 }

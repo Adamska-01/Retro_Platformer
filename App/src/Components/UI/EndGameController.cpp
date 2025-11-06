@@ -20,9 +20,8 @@ using namespace DeadFrame2D::Utilities;
 
 
 EndGameController::EndGameController()
-	: menuManager(nullptr)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
 }
 
 EndGameController::~EndGameController()
@@ -55,35 +54,18 @@ void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> di
 		0.7f,
 		true);
 
-	CoroutineScheduler::StartCoroutine(endGameSoundObj.lock()->Destroy(10.0f));
+	CoroutineScheduler::StartCoroutine(endGameSoundObj->Destroy(10.0f));
 }
 
 void EndGameController::Init()
 {
-	menuManager = SceneManager::FindObjectOfType<MenuManager>();
-	statsController = SceneManager::FindObjectOfType<StatsController>();
+	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
+	statsController = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<StatsController>(), NAME_OF(statsController));
 
-	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
-	Guard::AgainstNull(menuManager, NAME_OF(menuManager));
 	Guard::AgainstNull(endGameTextMesh, NAME_OF(endGameTextMesh));
 }
 
-void EndGameController::Start()
-{
-
-}
-
-void EndGameController::Update(float deltaTime)
-{
-
-}
-
-void EndGameController::Draw()
-{
-
-}
-
-void EndGameController::SetEndGameTextMesh(TextMesh* endGameTextMesh)
+void EndGameController::SetEndGameTextMesh(ComponentHandle<TextMesh> endGameTextMesh)
 {
 	this->endGameTextMesh = endGameTextMesh;
 }

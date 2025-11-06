@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine/Entity/ComponentHandle.h>
 
 
 class SimpleAI;
@@ -14,13 +15,13 @@ namespace DeadFrame2D::Engine
 class AIBehavior
 {
 protected:
-	DeadFrame2D::Engine::Transform* aiTransform;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::Transform> aiTransform;
 
-	DeadFrame2D::Engine::Transform* playerTransform;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::Transform> playerTransform;
 
-	DeadFrame2D::Engine::SpriteAnimator* aiSpriteAnimator;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::SpriteAnimator> aiSpriteAnimator;
 
-	DeadFrame2D::Engine::RigidBody2D* aiRigidBody;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::RigidBody2D> aiRigidBody;
 
 
 public:

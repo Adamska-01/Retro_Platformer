@@ -1,5 +1,7 @@
 #pragma once
 #include <Engine/Components/GameComponent.h>
+#include <Engine/Entity/ComponentHandle.h>
+#include <functional>
 #include <vector>
 
 
@@ -13,18 +15,21 @@ namespace DeadFrame2D::Engine
 
 class MenuBase : public DeadFrame2D::Engine::GameComponent
 {
+	TYPE_INFO(MenuBase, DeadFrame2D::Engine::GameComponent);
+
+
 private:
-	void Navigate(DeadFrame2D::Engine::IInteractableUI* (*getNext)(DeadFrame2D::Engine::IInteractableUI*));
+	void Navigate(std::function<DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::IInteractableUI>(DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::IInteractableUI>)> getNext);
 
 
 protected:
-	MenuManager* menuManager;
+	DeadFrame2D::Engine::ComponentHandle<MenuManager> menuManager;
 
-	MenuBase* previousMenu;
+	DeadFrame2D::Engine::ComponentHandle<MenuBase> previousMenu;
 
-	std::vector<DeadFrame2D::Engine::IInteractableUI*> allInteractables;
+	std::vector<DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::IInteractableUI>> allInteractables;
 
-	DeadFrame2D::Engine::IInteractableUI* selectedInteractable;
+	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::IInteractableUI> selectedInteractable;
 
 
 public:
@@ -34,12 +39,6 @@ public:
 
 
 	virtual void Init() override;
-
-	virtual void Start() override;
-
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
 
 
 	virtual void Show();
@@ -61,5 +60,5 @@ public:
 	virtual void GoBack();
 
 
-	void SetPreviousMenu(MenuBase* previousMenu);
+	void SetPreviousMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> previousMenu);
 };
