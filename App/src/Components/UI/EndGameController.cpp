@@ -21,12 +21,12 @@ using namespace DeadFrame2D::Utilities;
 
 EndGameController::EndGameController()
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), this, &EndGameController::OnGameEndedHandler);
 }
 
 EndGameController::~EndGameController()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(GameEndedEvent)), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(GameEndedEvent)), this);
 }
 
 void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)

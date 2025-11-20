@@ -13,6 +13,7 @@
 #include "Scenes/MainGameScene.h"
 #include <Blueprints/FollowCameraObject.h>
 #include <Blueprints/Player.h>
+#include <Components/UI/MenuFunctions.h>
 #include <Core/CoreEvents/EventManager.h>
 #include <Core/SubSystems/Systems/Renderer.h>
 #include <Data/Components/UI/TextMeshComponentModel.h>
@@ -67,10 +68,11 @@ ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, 
 	imageBackground->SetAnchor(UIAnchor::TOP_LEFT);
 	imageBackground->SetColor(r, g, b, a);
 
-	auto enterCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+	auto menuFunctions = GameObject::Instantiate<GameObject>()->AddComponent<MenuFunctions>();
+
 	auto title = CreateText(menuTitle);
-	auto spButton = CreateButton("Back To Menu", AssetPaths::Files::GAMEPLAY_FONT, []() { SceneManager::LoadScene<MainMenuScene>(); }, enterCallback);
-	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, []() { EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT); }, enterCallback);
+	auto spButton = CreateButton("Back To Menu", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->LoadMenu(), menuFunctions->SelectUI());
+	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->ExitGame(), menuFunctions->SelectUI());
 
 	spButton->GetComponent<Button>()->SetNavigableUpElement(exitButton->GetComponent<Button>());
 	spButton->GetComponent<Button>()->SetNavigableDownElement(exitButton->GetComponent<Button>());

@@ -1,13 +1,13 @@
 #pragma once
 #include "Constants/CommonColors.h"
+#include "Engine/Entity/ComponentHandle.h"
 #include "Scenes/Abstractions/BaseGameScene.h"
 #include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <Data/Blueprints/UI/ButtonBlueprintModel.h>
-#include <Data/Components/UI/ButtonComponentModel.h>
+#include <Data/Components/UI/Button/ButtonComponentModel.h>
 #include <Data/Components/UI/TextMeshComponentModel.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include "Engine/Entity/ComponentHandle.h"
 #include <Engine/Components/UI/TextMesh.h>
 
 
@@ -17,7 +17,7 @@ using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
 
 
-ObjectHandle<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)
+ObjectHandle<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::optional<ButtonCallback>& onPressedHandler, const std::optional<ButtonCallback>& onEnterHandler)
 {
 	ButtonBlueprintModel buttonConfiguration =
 	{
@@ -56,19 +56,4 @@ ObjectHandle<GameObject> BaseGameScene::CreateText(const std::string& text, cons
 		});
 
 	return textMeshObject;
-}
-
-std::function<void()> BaseGameScene::MakeAudioPlayAndDestroyCallback(const std::string_view& audioPath, const Vector2F& position, float volume, bool isMusic, bool loop, float destroyDelaySeconds)
-{
-	return [=]()
-		{
-			auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
-				audioPath,
-				position,
-				volume,
-				isMusic,
-				loop);
-
-			CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
-		};
 }

@@ -26,12 +26,12 @@ SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)
 	startPos(Vector2F::Zero),
 	processingPlayer(true)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &SimpleAI::LifeLostEventHandler), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), this, &SimpleAI::LifeLostEventHandler);
 }
 
 SimpleAI::~SimpleAI()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), reinterpret_cast<std::uintptr_t>(this));
+	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), this);
 }
 
 void SimpleAI::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -109,7 +109,7 @@ void SimpleAI::Start()
 	if (circleCollider == nullptr)
 		return;
 
-	circleCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers), reinterpret_cast<uintptr_t>(this));
+	circleCollider->RegisterContactEnterHandler(GetHandle(), EventHelpers::BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers));
 }
 
 void SimpleAI::Update(float deltaTime)

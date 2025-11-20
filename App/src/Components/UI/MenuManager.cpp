@@ -114,10 +114,6 @@ void MenuManager::HideMenu(ComponentHandle<MenuBase> menu)
 
 void MenuManager::HideAll()
 {
-	for (auto& menu : activeMenus)
-	{
-		menu->Hide();
-	}
 	for (auto& menu : allMenus)
 	{
 		menu.second->Hide();

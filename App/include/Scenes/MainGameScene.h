@@ -1,7 +1,9 @@
 #pragma once
 #include "Scenes/Abstractions/BaseGameScene.h"
 #include <Engine/Entity/GameObject.h>
-#include <memory>
+
+
+class MenuBase;
 
 
 class MainGameScene : public BaseGameScene

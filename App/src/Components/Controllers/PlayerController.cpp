@@ -11,6 +11,7 @@
 #include <Engine/Components/Collisions/BoxCollider2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
 #include <Engine/Components/Transform.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
 #include <Engine/Entity/GameObject.h>
 #include <Engine/SceneSystem/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
@@ -153,8 +154,8 @@ void PlayerController::Start()
 	if (boxCollider == nullptr)
 		return;
 
-	boxCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
-	boxCollider->RegisterContactExitHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactEnterHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler));
+	boxCollider->RegisterContactExitHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler));
 }
 
 void PlayerController::Update(float deltaTime)

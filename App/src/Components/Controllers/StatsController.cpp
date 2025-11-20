@@ -16,18 +16,14 @@ StatsController::StatsController()
 	: score(0),
 	lifes(3)
 {
-	auto identifier = reinterpret_cast<std::uintptr_t>(this);
-	
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), this, &StatsController::PointsScoredEventHandler);
+	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), this, &StatsController::LifeLostEventHandler);
 }
 
 StatsController::~StatsController()
 {
-	auto identifier = reinterpret_cast<std::uintptr_t>(this);
-
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(PointsScoredEvent)), identifier);
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), identifier);
+	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(PointsScoredEvent)), this);
+	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), this);
 }
 
 void StatsController::PointsScoredEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)

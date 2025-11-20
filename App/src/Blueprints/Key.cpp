@@ -10,6 +10,7 @@
 #include <Engine/Components/Physics/RigidBody2D.h>
 #include <Engine/Components/Rendering/Sprite.h>
 #include <Engine/Components/Transform.h>
+#include <Engine/EngineEvents/EventDispatcher.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
@@ -75,5 +76,5 @@ void Key::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(GetObjectHandle(), EventHelpers::BindFunction(this, &Key::OnContactEnterHandler));
 }

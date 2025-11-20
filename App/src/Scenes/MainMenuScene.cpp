@@ -2,6 +2,7 @@
 #include "Components/UI/TextMeshScroller.h"
 #include "Constants/AssetPaths.h"
 #include "Scenes/MainMenuScene.h"
+#include <Components/UI/MenuFunctions.h>
 #include <Constants/ResourcePaths.h>
 #include <Core/CoreEvents/EventManager.h>
 #include <Core/SubSystems/Systems/Renderer.h>
@@ -55,16 +56,11 @@ void MainMenuScene::Enter()
 	auto title = CreateText("Retro Platformer", AssetPaths::Files::GAMEPLAY_FONT);
 	title->GetTransform()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.2f));
 
-	auto selectCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
-	auto enterCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::SELECT_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+	auto menuFunctions = GameObject::Instantiate<GameObject>()->AddComponent<MenuFunctions>();
 
-	auto spButton = CreateButton("Play Game", AssetPaths::Files::GAMEPLAY_FONT, [selectCallback]() { selectCallback(); SceneManager::LoadScene<MainGameScene>(); }, enterCallback);
-	auto creditsButton = CreateButton("Credits", AssetPaths::Files::GAMEPLAY_FONT, [selectCallback, menuManagerComponent]() {
-		selectCallback(); 
-		menuManagerComponent->HideAll(); 
-		menuManagerComponent->ShowMenu(MenuID::CREDITS_MENU); 
-		}, enterCallback);
-	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, [selectCallback]() { selectCallback(); EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT); }, enterCallback);
+	auto spButton = CreateButton("Play Game", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->LoadGame(), menuFunctions->SelectUI());
+	auto creditsButton = CreateButton("Credits", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->ShowCredits(menuManagerComponent), menuFunctions->SelectUI());
+	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->ExitGame(), menuFunctions->SelectUI());
 
 	spButton->GetComponent<Button>()->SetNavigableUpElement(exitButton->GetComponent<Button>());
 	spButton->GetComponent<Button>()->SetNavigableDownElement(creditsButton->GetComponent<Button>());
@@ -85,11 +81,11 @@ void MainMenuScene::Enter()
 
 	// Credits Menu
 	auto creditsText = DeadFrame2D::Utilities::LoadTextFile(AssetPaths::Files::CREDITS);
-	
+
 	auto creditsMenuObject = GameObject::Instantiate<GameObject>();
 	creditsMenuObject->GetComponent<Transform>()->SetWorldScale(Vector2F(0.75f, 0.75f));
 	auto creditsMenuBase = creditsMenuObject->AddComponent<MenuBase>();
-	
+
 	auto creditTextMeshObj = CreateText(creditsText, Paths::Files::CONSOLAS_FONT);
 	auto creditTextMeshComponent = creditTextMeshObj->GetComponent<TextMesh>();
 	creditsMenuObject->AddComponent<TextMeshScroller>(creditTextMeshComponent);
@@ -97,7 +93,7 @@ void MainMenuScene::Enter()
 	creditTextMeshObj->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
 
 	creditsMenuObject->AddChildGameObject(creditTextMeshObj);
-	
+
 	canvasObject->AddChildGameObject(mainMenuObject);
 	canvasObject->AddChildGameObject(creditsMenuObject);
 

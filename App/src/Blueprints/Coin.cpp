@@ -85,5 +85,5 @@ void Coin::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(GetObjectHandle(), EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler));
 }
