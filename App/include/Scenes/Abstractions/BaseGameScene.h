@@ -1,10 +1,9 @@
 #pragma once
 #include "Data/Components/UI/Button/ButtonCallback.h"
-#include <Core/Math/Vector2.h>
 #include <Engine/Entity/Handles/GameObject/ObjectHandle.h>
 #include <Engine/SceneSystem/Scene.h>
-#include <functional>
 #include <optional>
+#include <string>
 #include <string_view>
 
 
