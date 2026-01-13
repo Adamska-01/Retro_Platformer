@@ -1,12 +1,13 @@
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Core/SubSystems/Systems/Renderer.h>
-#include <Core/SubSystems/Systems/TextureManager.h>
+#include <Core/SubSystems/Systems/Rendering/Renderer.h>
+#include <Core/SubSystems/Systems/Rendering/RenderSystem.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Entity/GameObject.h>
 #include <Utilities/Debugging/Guards.h>
 
 
 using namespace DeadFrame2D::Core;
+using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
 using namespace DeadFrame2D::Utilities;
 
@@ -32,15 +33,33 @@ void CustomTileMapRenderer2D::Init()
 void CustomTileMapRenderer2D::Draw()
 {
 	const auto& tileLayout = tileMap->layout;
+	const auto tileSize = tileMap->textureTileSize;
+	const auto tileRenderSize = tileMap->tileRenderSize;
 
-	SDL_Rect srcRect{ 0, 0, tileMap->textureTileSize, tileMap->textureTileSize };
-	SDL_Rect destRect{ 0, 0, tileMap->tileRenderSize, tileMap->tileRenderSize };
+	auto srcRect = SDL_Rect
+	{ 
+		0, 
+		0, 
+		tileSize,
+		tileSize
+	};
+
+	auto destRect = SDL_FRect
+	{ 
+		0.0f, 
+		0.0f, 
+		static_cast<float>(tileRenderSize),
+		static_cast<float>(tileRenderSize)
+	};
 
 	auto startPos = transform->GetWorldPosition();
 	auto rotation = transform->GetWorldRotation();
 
 	auto mapWidth = tileLayout.size();
 	auto mapHeight = tileLayout[0].size();
+
+	auto batchData = SpriteBatchRenderData();
+	batchData.spriteBatch.reserve(mapWidth * mapHeight);
 
 	// TODO: optimize and draw only what's visible in the camera
 	for (auto row = 0; row < mapWidth; row++)
@@ -55,9 +74,21 @@ void CustomTileMapRenderer2D::Draw()
 			destRect.x = startPos.x + column * destRect.w;
 			destRect.y = startPos.y + row * destRect.h;
 
-			TextureManager::DrawTextureWorldSpace(tileMap->tileSet.tileSetTexture, &srcRect, &destRect, rotation);
+			auto renderData = SpriteRenderData
+			{
+				.texture = tileMap->tileSet.tileSetTexture.get(),
+				.srcRect = srcRect,
+				.destRect = destRect,
+				.rotation = rotation
+			};
+
+			batchData.spriteBatch.push_back(renderData);
 		}
 	}
+
+	renderTask.renderData = std::move(batchData);
+
+	RenderSystem::Submit(renderTask);
 }
 
 Vector2I CustomTileMapRenderer2D::GetMapFullSize()

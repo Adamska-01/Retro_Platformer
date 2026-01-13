@@ -1,11 +1,15 @@
 #include "Components/UI/MenuManager.h"
 #include <algorithm>
-#include <Core/SubSystems/Systems/Input/Input.h>
+#include <Core/SubSystems/Systems/Input/Actions/RuntimeInputAction.h>
+#include <Engine/Components/Input/PlayerInput.h>
+#include <Engine/SceneSystem/SceneManager.h>
+#include <Utilities/Debugging/Guards.h>
+#include <Utilities/Helpers/Events/EventHelpers.h>
 
 
 using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
+using namespace DeadFrame2D::Utilities;
 
 
 MenuManager::MenuManager()
@@ -14,40 +18,64 @@ MenuManager::MenuManager()
 {
 }
 
-void MenuManager::Update(float deltaTime)
+void MenuManager::MoveInputHandler(const RuntimeInputAction& inputAction)
 {
-	for (auto currentMenu : activeMenus)
+	if (!inputAction.IsStarted())
+		return;
+
+	auto dir = inputAction.ReadValue<Vector2F>();
+
+	for (const auto& currentMenu : activeMenus)
 	{
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Up")
-			|| Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Up2"))
+		if (dir.y > 0.0f)
 		{
 			currentMenu->NavigateUp();
 		}
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Down")
-			|| Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Down2"))
+		if (dir.y < 0.0f)
 		{
 			currentMenu->NavigateDown();
 		}
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Left")
-			|| Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Left2"))
+		if (dir.x < 0.0f)
 		{
 			currentMenu->NavigateLeft();
 		}
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Right")
-			|| Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Right2"))
+		if (dir.x > 0.0f)
 		{
 			currentMenu->NavigateRight();
 		}
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Jump")
-			|| Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Confirm"))
-		{
-			currentMenu->Confirm();
-		}
-		if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Back"))
-		{
-			currentMenu->GoBack();
-		}
 	}
+}
+
+void MenuManager::ConfirmInputHandler(const RuntimeInputAction& inputAction)
+{
+	if (!inputAction.IsCancelled())
+		return;
+
+	for (const auto& currentMenu : activeMenus)
+	{
+		currentMenu->Confirm();
+	}
+}
+
+void MenuManager::BackInputHandler(const RuntimeInputAction& inputAction)
+{
+	if (!inputAction.IsCancelled())
+		return;
+
+	for (const auto& currentMenu : activeMenus)
+	{
+		currentMenu->GoBack();
+	}
+}
+
+void MenuManager::Start()
+{
+	// Input Registration
+	auto playerInput = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<PlayerInput>(), NAME_OF(playerInput));
+
+	playerInput->RegisterAction("Default", "Move", GetHandle(), EventHelpers::BindFunction(this, &MenuManager::MoveInputHandler));
+	playerInput->RegisterAction("Default", "Confirm", GetHandle(), EventHelpers::BindFunction(this, &MenuManager::ConfirmInputHandler));
+	playerInput->RegisterAction("Default", "Back", GetHandle(), EventHelpers::BindFunction(this, &MenuManager::BackInputHandler));
 }
 
 void MenuManager::ShowMenu(MenuID menuID)

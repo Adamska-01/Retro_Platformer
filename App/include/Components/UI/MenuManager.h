@@ -6,6 +6,12 @@
 #include <unordered_map>
 
 
+namespace DeadFrame2D::Core
+{
+	class RuntimeInputAction;
+}
+
+
 class MenuManager : public DeadFrame2D::Engine::GameComponent
 {
 	TYPE_INFO(MenuManager, DeadFrame2D::Engine::GameComponent);
@@ -17,13 +23,20 @@ private:
 	std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>> activeMenus;
 
 
+	void MoveInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+
+	void ConfirmInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	
+	void BackInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+
+
 public:
 	MenuManager();
 
 	~MenuManager() = default;
 
 
-	virtual void Update(float deltaTime) override;
+	void Start() override;
 
 
 	void ShowMenu(MenuID menuID);

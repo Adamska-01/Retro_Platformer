@@ -8,6 +8,11 @@
 #include <string_view>
 
 
+namespace DeadFrame2D::Core
+{
+	class RuntimeInputAction;
+}
+
 namespace DeadFrame2D::Engine
 {
 	class Transform;
@@ -56,11 +61,10 @@ private:
 
 	void OnContactExitHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
-	void Move();
 
-	void Jump();
+	void MoveInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
 
-	void AnimationState();
+	void JumpInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
 
 
 public:
@@ -69,11 +73,11 @@ public:
 	virtual ~PlayerController() override = default;
 
 
-	virtual void Init() override;
+	void Init() override;
 
-	virtual void Start() override;
+	void Start() override;
 
-	virtual void Update(float deltaTime) override;
+	void Update(float deltaTime) override;
 
 
 	void LoseLife();

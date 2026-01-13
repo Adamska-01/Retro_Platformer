@@ -6,7 +6,7 @@
 #include <Engine/Components/Collisions/BoxCollider2D.h>
 #include <Engine/Components/Collisions/CircleCollider2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Rendering/SpriteRenderer.h>
 #include <Engine/Components/Transform.h>
 
 
@@ -32,17 +32,9 @@ void Player::ConstructGameObject()
 	transform->SetWorldPosition(startPos);
 	transform->SetWorldScale(Vector2F::One * 2.0f);
 
-	AddComponent<Sprite>(idleSpriteSource);
+	AddComponent<SpriteRenderer>(idleSpriteSource);
+
 	AddComponent<SpriteAnimator>();
-
-	auto physicalMat = PhysicsMaterial
-	{
-		.friction = 0.0f
-	};
-	AddComponent<CircleCollider2D>(26.0f, Vector2F::Zero, physicalMat);
-
-	physicalMat.isSensor = true;
-	auto groundCollider = AddComponent<BoxCollider2D>(Vector2F(16.0f, 5.0f), Vector2F(0.0f, 32.0f), 0.0f, physicalMat);
 
 	auto bodyDef = BodyDefinition2D
 	{
@@ -55,4 +47,22 @@ void Player::ConstructGameObject()
 	AddComponent<PlayerController>(idleSpriteSource, runSpriteSource);
 
 	AddComponent<AudioListener>();
+
+	auto physicalMat = PhysicsMaterial
+	{
+		.friction = 0.0f
+	};
+	AddComponent<CircleCollider2D>(26.0f, Vector2F::Zero, physicalMat);
+
+
+	// Ground Collider
+	physicalMat.isSensor = true;
+
+	auto groundObject = GameObject::Instantiate<GameObject>();
+
+	AddChildGameObject(groundObject);
+
+	groundObject->GetTransform()->SetLocalPosition(Vector2F::Zero);
+
+	groundObject->AddComponent<BoxCollider2D>(Vector2F(16.0f, 5.0f), Vector2F(0.0f, 32.0f), 0.0f, physicalMat);
 }

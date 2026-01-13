@@ -15,10 +15,12 @@
 #include <Blueprints/Player.h>
 #include <Components/UI/MenuFunctions.h>
 #include <Core/CoreEvents/EventManager.h>
-#include <Core/SubSystems/Systems/Renderer.h>
+#include <Core/SubSystems/Systems/Rendering/Renderer.h>
 #include <Data/Components/UI/TextMeshComponentModel.h>
 #include <Data/UI/MenuID.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
+#include <Engine/Components/Input/PlayerInput.h>
+#include <Engine/Components/Rendering/Camera.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Components/UI/Button.h>
 #include <Engine/Components/UI/Canvas.h>
@@ -218,4 +220,9 @@ void MainGameScene::Enter()
 	};
 
 	GameObject::Instantiate<FollowCameraObject>(playerObj, mapBounds);
+	
+	// Input
+	auto playerInputObject = GameObject::Instantiate<GameObject>();
+	auto playerInputComponent = playerInputObject->AddComponent<PlayerInput>("Player1");
+	playerInputComponent->EnableActionMap("Default");
 }

@@ -2,7 +2,7 @@
 #include <Components/UI/MenuManager.h>
 #include <Core/Framerate/FrameTimer.h>
 #include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Core/SubSystems/Systems/Renderer.h>
+#include <Core/SubSystems/Systems/Rendering/Renderer.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Components/UI/TextMesh.h>
 #include <Engine/EngineEvents/Events/SubSystems/Renderer/RenderTargetSizeChangedEvent.h>

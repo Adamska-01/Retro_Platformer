@@ -4,10 +4,10 @@
 #include "Scenes/MainMenuScene.h"
 #include <Components/UI/MenuFunctions.h>
 #include <Constants/ResourcePaths.h>
-#include <Core/CoreEvents/EventManager.h>
-#include <Core/SubSystems/Systems/Renderer.h>
+#include <Core/SubSystems/Systems/Rendering/Renderer.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
 #include <Engine/Components/Audio/AudioListener.h>
+#include <Engine/Components/Input/PlayerInput.h>
 #include <Engine/Components/Rendering/Camera.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/Components/UI/Button.h>
@@ -15,9 +15,6 @@
 #include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
 #include <Engine/Components/UI/TextMesh.h>
 #include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
-#include <functional>
-#include <Scenes/MainGameScene.h>
 #include <Utilities/IO/FileSystemUtils.h>
 
 
@@ -107,4 +104,9 @@ void MainMenuScene::Enter()
 
 	auto soundListenerObj = GameObject::Instantiate<GameObject>();
 	soundListenerObj->AddComponent<AudioListener>();
+
+	// Input
+	auto playerInputObject = GameObject::Instantiate<GameObject>();
+	auto playerInputComponent = playerInputObject->AddComponent<PlayerInput>("Player1");
+	playerInputComponent->EnableActionMap("Default");
 }

@@ -2,13 +2,14 @@
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Constants/AssetPaths.h>
 #include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Core/SubSystems/Systems/Input/Input.h>
+#include <Core/SubSystems/Systems/Input/Actions/RuntimeInputAction.h>
 #include <Core/SubSystems/Systems/TextureManager.h>
 #include <CustomEvents/LifeLostEvent.h>
 #include <Data/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/Components/Animation/SpriteAnimator.h>
 #include <Engine/Components/Collisions/BoxCollider2D.h>
+#include <Engine/Components/Input/PlayerInput.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/EngineEvents/EventDispatcher.h>
@@ -52,6 +53,8 @@ void PlayerController::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 		return;
 
 	++footContacts;
+
+	rigidBody->SetVelocityX(0.0f);
 }
 
 void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
@@ -67,44 +70,28 @@ void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
 	--footContacts;
 }
 
-void PlayerController::Move()
+void PlayerController::MoveInputHandler(const RuntimeInputAction& inputAction)
 {
-	auto xDir = 0.0f;
+	auto dir = inputAction.ReadValue<Vector2F>();
 
-	if (Input::IsButtonHeld(PlayerInputSlot::PLAYER_1, "Left"))
-	{
-		xDir += -1.0f;
-	}
-	if (Input::IsButtonHeld(PlayerInputSlot::PLAYER_1, "Right"))
-	{
-		xDir += 1.0f;
-	}
+	rigidBody->SetVelocityX(dir.x * speed);
 
-	rigidBody->SetVelocityX(xDir * speed);
+	// Animation State
+	spriteAnimator->PlayAnimation(dir.x != 0.0f ? "Run" : "Idle");
+	spriteAnimator->SetFlipState(dir.x < 0.0f ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
-void PlayerController::Jump()
+void PlayerController::JumpInputHandler(const RuntimeInputAction& inputAction)
 {
-	if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Jump") && footContacts > 0)
-	{
-		rigidBody->AddImpulse(Vector2F::Up * jumpImpulse);
+	if (!inputAction.IsStarted() || footContacts <= 0)
+		return;
 
-		// Jump Sound
-		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
+	rigidBody->AddImpulse(Vector2F::Up * jumpImpulse);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
-	}
-}
+	// Jump Sound
+	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
 
-void PlayerController::AnimationState()
-{
-	auto xVel = rigidBody->GetVelocity().x;
-
-	auto animationName = xVel != 0.0f ? "Run" : "Idle";
-	auto flipState = xVel < 0.0f ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-	spriteAnimator->PlayAnimation(animationName);
-	spriteAnimator->SetFlipState(flipState);
+	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
 }
 
 void PlayerController::Init()
@@ -141,9 +128,7 @@ void PlayerController::Start()
 
 	startPos = transform->GetWorldPosition();
 
-	auto boxCollider = GetGameObject()->GetComponent<BoxCollider2D>();
-
-	auto tileRenderer = SceneManager::FindObjectOfType<CustomTileMapRenderer2D>();
+	auto tileRenderer = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<CustomTileMapRenderer2D>(), NAME_OF(tileRenderer));
 	
 	auto mapFullSize = tileRenderer->GetMapFullSize();
 
@@ -151,19 +136,20 @@ void PlayerController::Start()
 
 	yThreshold = tileRendererPos.y + mapFullSize.y + 100.0f; // Add some gap
 
-	if (boxCollider == nullptr)
-		return;
+	auto boxCollider = Guard::AgainstNullAssignment(GetGameObject()->GetComponentInChildren<BoxCollider2D>(), NAME_OF(boxCollider));
 
 	boxCollider->RegisterContactEnterHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler));
 	boxCollider->RegisterContactExitHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler));
+
+	// Input Registration
+	auto playerInput = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<PlayerInput>(), NAME_OF(playerInput));
+
+	playerInput->RegisterAction("Default", "Move", GetHandle(), EventHelpers::BindFunction(this, &PlayerController::MoveInputHandler));
+	playerInput->RegisterAction("Default", "Jump", GetHandle(), EventHelpers::BindFunction(this, &PlayerController::JumpInputHandler));
 }
 
 void PlayerController::Update(float deltaTime)
 {
-	Move();
-	Jump();
-	AnimationState();
-
 	if (transform->GetWorldPosition().y > yThreshold)
 	{
 		LoseLife();
@@ -173,6 +159,6 @@ void PlayerController::Update(float deltaTime)
 void PlayerController::LoseLife()
 {
 	EventDispatcher::SendEvent(std::make_shared<LifeLostEvent>());
-
+	
 	transform->SetWorldPosition(startPos);
 }

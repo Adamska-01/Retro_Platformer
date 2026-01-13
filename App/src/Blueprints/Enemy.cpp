@@ -5,7 +5,7 @@
 #include <Engine/Components/Animation/SpriteAnimator.h>
 #include <Engine/Components/Collisions/CircleCollider2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Rendering/SpriteRenderer.h>
 #include <Engine/Components/Transform.h>
 
 
@@ -28,7 +28,7 @@ void Enemy::ConstructGameObject()
 
 	transform->SetWorldScale(Vector2F(scale, scale));
 
-	AddComponent<Sprite>(enemyConfig.spriteSource);
+	AddComponent<SpriteRenderer>(enemyConfig.spriteSource);
 	
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 	spriteAnimator->AddAnimation(enemyConfig.idleAnimProperty);

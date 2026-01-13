@@ -8,7 +8,7 @@
 #include <Engine/Components/Animation/SpriteAnimator.h>
 #include <Engine/Components/Collisions/CircleCollider2D.h>
 #include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
+#include <Engine/Components/Rendering/SpriteRenderer.h>
 #include <Engine/Components/Transform.h>
 #include <Engine/EngineEvents/EventDispatcher.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
@@ -48,7 +48,7 @@ void Key::ConstructGameObject()
 {
 	transform->SetWorldPosition(startPos);
 	
-	AddComponent<Sprite>(spriteSource);
+	AddComponent<SpriteRenderer>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
 	auto keyFlipAnimation = SpriteAnimationProperties
