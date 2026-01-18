@@ -70,11 +70,11 @@ void MainMenuScene::Enter()
 
 	mainMenuLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
 	mainMenuLayout->GetComponent<Transform>()->SetWorldPosition(layoutPosition);
-	mainMenuLayout->AddChildGameObject(spButton);
-	mainMenuLayout->AddChildGameObject(creditsButton);
-	mainMenuLayout->AddChildGameObject(exitButton);
-	mainMenuObject->AddChildGameObject(title);
-	mainMenuObject->AddChildGameObject(mainMenuLayout);
+	spButton->SetParent(mainMenuLayout);
+	creditsButton->SetParent(mainMenuLayout);
+	exitButton->SetParent(mainMenuLayout);
+	title->SetParent(mainMenuObject);
+	mainMenuLayout->SetParent(mainMenuObject);
 
 	// Credits Menu
 	auto creditsText = DeadFrame2D::Utilities::LoadTextFile(AssetPaths::Files::CREDITS);
@@ -89,10 +89,10 @@ void MainMenuScene::Enter()
 
 	creditTextMeshObj->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
 
-	creditsMenuObject->AddChildGameObject(creditTextMeshObj);
+	creditTextMeshObj->SetParent(creditsMenuObject);
 
-	canvasObject->AddChildGameObject(mainMenuObject);
-	canvasObject->AddChildGameObject(creditsMenuObject);
+	mainMenuObject->SetParent(canvasObject);
+	creditsMenuObject->SetParent(canvasObject);
 
 	creditsMenuBase->SetPreviousMenu(mainMenuBase);
 

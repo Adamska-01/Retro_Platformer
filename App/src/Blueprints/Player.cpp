@@ -60,7 +60,7 @@ void Player::ConstructGameObject()
 
 	auto groundObject = GameObject::Instantiate<GameObject>();
 
-	AddChildGameObject(groundObject);
+	groundObject->SetParent(thisGameObject);
 
 	groundObject->GetTransform()->SetLocalPosition(Vector2F::Zero);
 

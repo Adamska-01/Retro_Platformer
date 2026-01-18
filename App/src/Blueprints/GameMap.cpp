@@ -35,5 +35,5 @@ void GameMap::ConstructGameObject()
 
 	tileObject->AddComponent<RigidBody2D>(bodyDef);
 
-	AddChildGameObject(tileObject);
+	tileObject->SetParent(thisGameObject);
 }

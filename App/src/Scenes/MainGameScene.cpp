@@ -84,12 +84,12 @@ ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, 
 	auto menuLayout = GameObject::Instantiate<GameObject>();
 	menuLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
 	menuLayout->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
-	menuLayout->AddChildGameObject(title);
-	menuLayout->AddChildGameObject(spButton);
-	menuLayout->AddChildGameObject(exitButton);
+	title->SetParent(menuLayout);
+	spButton->SetParent(menuLayout);
+	exitButton->SetParent(menuLayout);
 
-	endScreenMenuObject->AddChildGameObject(background);
-	endScreenMenuObject->AddChildGameObject(menuLayout);
+	background->SetParent(endScreenMenuObject);
+	menuLayout->SetParent(endScreenMenuObject);
 
 	endGameController->SetEndGameTextMesh(title->GetComponent<TextMesh>());
 
@@ -116,13 +116,13 @@ ComponentHandle<MenuBase> MainGameScene::CreateHUD()
 	auto lifesTextObj = CreateText("Lifes: xx");
 	lifesTextObj->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
 
-	scoreLayout->AddChildGameObject(scoreTextObj);
-	scoreLayout->AddChildGameObject(lifesTextObj);
+	scoreTextObj->SetParent(scoreLayout);
+	lifesTextObj->SetParent(scoreLayout);
 
 	statsComponent->SetScoreTextMesh(scoreTextObj->GetComponent<TextMesh>());
 	statsComponent->SetLifesTextMesh(lifesTextObj->GetComponent<TextMesh>());
 
-	hudMenuObject->AddChildGameObject(scoreLayout);
+	scoreLayout->SetParent(hudMenuObject);
 
 	return hudMenuBase;
 }
@@ -139,8 +139,8 @@ void MainGameScene::Enter()
 	auto hud = CreateHUD();
 	auto endGameMenuBase = CreateEndScreen("GameOver!", 0, 0, 0, 120);
 
-	canvasObject->AddChildGameObject(hud->GetGameObject());
-	canvasObject->AddChildGameObject(endGameMenuBase->GetGameObject());
+	hud->GetGameObject()->SetParent(canvasObject);
+	endGameMenuBase->GetGameObject()->SetParent(canvasObject);
 
 	auto menuManagerObject = GameObject::Instantiate<GameObject>();
 	auto menuManagerComponent = menuManagerObject->AddComponent<MenuManager>();
