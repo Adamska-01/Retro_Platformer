@@ -1,12 +1,12 @@
 #include "Application.h"
 #include <memory>
-#include <Tools/FileSystem/PathMountResolver.h>
+#include <Utilities/IO/FileSystem/PathMountResolver.h>
 
 
 int main(int argc, char** argv)
 {
 	// Do NOT remove this, unless you've found a better solution
-	Shared::Tools::PathMountResolver::SetMountPrefix("Core");
+	DeadFrame2D::Utilities::PathMountResolver::SetMountPrefix("Core");
 
 	auto App = std::make_unique<Application>();
 

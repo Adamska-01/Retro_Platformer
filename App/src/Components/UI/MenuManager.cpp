@@ -1,5 +1,6 @@
 #include "Components/UI/MenuManager.h"
 #include <algorithm>
+#include <Core/SubSystems/Systems/Input/Actions/InputActionView.h>
 #include <Core/SubSystems/Systems/Input/Actions/RuntimeInputAction.h>
 #include <Engine/Components/Input/PlayerInput.h>
 #include <Engine/SceneSystem/SceneManager.h>
@@ -18,7 +19,7 @@ MenuManager::MenuManager()
 {
 }
 
-void MenuManager::MoveInputHandler(const RuntimeInputAction& inputAction)
+void MenuManager::MoveInputHandler(const InputActionView& inputAction)
 {
 	if (!inputAction.IsStarted())
 		return;
@@ -46,7 +47,7 @@ void MenuManager::MoveInputHandler(const RuntimeInputAction& inputAction)
 	}
 }
 
-void MenuManager::ConfirmInputHandler(const RuntimeInputAction& inputAction)
+void MenuManager::ConfirmInputHandler(const InputActionView& inputAction)
 {
 	if (!inputAction.IsCancelled())
 		return;
@@ -57,7 +58,7 @@ void MenuManager::ConfirmInputHandler(const RuntimeInputAction& inputAction)
 	}
 }
 
-void MenuManager::BackInputHandler(const RuntimeInputAction& inputAction)
+void MenuManager::BackInputHandler(const InputActionView& inputAction)
 {
 	if (!inputAction.IsCancelled())
 		return;

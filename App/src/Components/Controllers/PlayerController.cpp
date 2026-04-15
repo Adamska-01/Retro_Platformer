@@ -2,7 +2,7 @@
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Constants/AssetPaths.h>
 #include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Core/SubSystems/Systems/Input/Actions/RuntimeInputAction.h>
+#include <Core/SubSystems/Systems/Input/Actions/InputActionView.h>
 #include <Core/SubSystems/Systems/TextureManager.h>
 #include <CustomEvents/LifeLostEvent.h>
 #include <Data/Collision/CollisionInfo.h>
@@ -70,7 +70,7 @@ void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
 	--footContacts;
 }
 
-void PlayerController::MoveInputHandler(const RuntimeInputAction& inputAction)
+void PlayerController::MoveInputHandler(const InputActionView& inputAction)
 {
 	auto dir = inputAction.ReadValue<Vector2F>();
 
@@ -81,7 +81,7 @@ void PlayerController::MoveInputHandler(const RuntimeInputAction& inputAction)
 	spriteAnimator->SetFlipState(dir.x < 0.0f ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
-void PlayerController::JumpInputHandler(const RuntimeInputAction& inputAction)
+void PlayerController::JumpInputHandler(const InputActionView& inputAction)
 {
 	if (!inputAction.IsStarted() || footContacts <= 0)
 		return;

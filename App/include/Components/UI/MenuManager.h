@@ -8,7 +8,7 @@
 
 namespace DeadFrame2D::Core
 {
-	class RuntimeInputAction;
+	class InputActionView;
 }
 
 
@@ -23,11 +23,11 @@ private:
 	std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>> activeMenus;
 
 
-	void MoveInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	void MoveInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
 
-	void ConfirmInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	void ConfirmInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
 	
-	void BackInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	void BackInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
 
 
 public:

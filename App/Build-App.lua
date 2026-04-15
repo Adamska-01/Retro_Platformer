@@ -8,8 +8,8 @@ project "App"
 	targetdir ("./Binaries/" .. OutputDir)
 	objdir ("./Binaries/Intermediates/" .. OutputDir)
 	debugdir "../" -- Set working directory to the root of the solution 
-	
-	defines { "DF2D_DYNAMIC", "SHARED_DYNAMIC" }
+
+	defines { "DF2D_DYNAMIC" }
 
 	dependson { "DeadFrame2D" }
 
@@ -21,7 +21,6 @@ project "App"
 	includedirs {
 		-- Include Core
 		"include",
-		"../Core/Shared/include",
 		"../Core/DeadFrame2D/include",
 		"../Core/Vendor/nlohmann-3.11.3", 
 		"../Core/Vendor/Box2D/Module/include",
@@ -33,10 +32,10 @@ project "App"
 		"../Core/Vendor/SDL/SDL2_mixer-2.8.0/include"
 	}
 
-	links { "DeadFrame2D", "Shared" }
+	links { "DeadFrame2D" }
 
 
-	-- Copy Assets and Shared files in the target dir
+	-- Copy Assets and Config files in the target dir
 	function configure_postbuild(osName, resolvedArch)
 		local copy_assets = {}
 		local commands = {}
@@ -48,17 +47,15 @@ project "App"
 			SDL2_mixer = "2.8.0"
 		}
 		local engineDir = "../Core/DeadFrame2D/Binaries/" .. osName .. "-" .. "%{cfg.architecture}" .. "/%{cfg.buildcfg}/"
-		local sharedDir = "../Core/Shared/Binaries/" .. osName .. "-" .. "%{cfg.architecture}" .. "/%{cfg.buildcfg}/"
 		local sdlDir = "../Core/Vendor/SDL/"
 
-		table.insert(copy_assets, make_dir("%{cfg.targetdir}/Core/Shared/Resources"))
+		table.insert(copy_assets, make_dir("%{cfg.targetdir}/Core/Resources"))
 		table.insert(copy_assets, make_dir("%{cfg.targetdir}/App/Assets"))
-		table.insert(copy_assets, copy_dir("../Core/Shared/Resources/*", "%{cfg.targetdir}/Core/Shared/Resources/"))
+		table.insert(copy_assets, copy_dir("../Core/Resources/*", "%{cfg.targetdir}/Core/Resources/"))
 		table.insert(copy_assets, copy_dir("Assets/*", "%{cfg.targetdir}/App/Assets/"))
 
 		table.insert(commands, make_dir("%{cfg.targetdir}"))
 		table.insert(commands, copy_file(engineDir .. (osName == "windows" and "DeadFrame2D.dll" or "libDeadFrame2D.so"), "%{cfg.targetdir}"))
-		table.insert(commands, copy_file(sharedDir .. (osName == "windows" and "Shared.dll" or "libShared.so"), "%{cfg.targetdir}"))
 
 		for lib, version in pairs(libs) do
 			local ext = osName == "windows" and "dll" or "so.0"

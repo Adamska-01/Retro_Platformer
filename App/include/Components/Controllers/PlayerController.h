@@ -10,7 +10,7 @@
 
 namespace DeadFrame2D::Core
 {
-	class RuntimeInputAction;
+	class InputActionView;
 }
 
 namespace DeadFrame2D::Engine
@@ -62,9 +62,9 @@ private:
 	void OnContactExitHandler(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
 
 
-	void MoveInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	void MoveInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
 
-	void JumpInputHandler(const DeadFrame2D::Core::RuntimeInputAction& inputAction);
+	void JumpInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
 
 
 public:

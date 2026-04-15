@@ -30,13 +30,13 @@
 #include <Engine/Entity/GameObject.h>
 #include <Engine/SceneSystem/SceneManager.h>
 #include <Scenes/MainMenuScene.h>
-#include <Tools/Serialization/JsonSerializer.h>
+#include <Utilities/IO/Serialization/JsonSerializer.h>
 
 
 using namespace DeadFrame2D::Core;
 using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
-using namespace Shared::Tools;
+using namespace DeadFrame2D::Utilities;
 
 
 ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)
@@ -151,7 +151,7 @@ void MainGameScene::Enter()
 
 
 	// GameObjects
-	auto tileMapModel = std::make_shared<TileMapModel>(DeserializeFromFile<TileMapModel>(AssetPaths::Files::MAP_LV_1));
+	auto tileMapModel = std::make_shared<TileMapModel>(JsonSerializer::DeserializeFromFile<TileMapModel>(AssetPaths::Files::MAP_LV_1));
 	auto tileRenderSize = tileMapModel->tileRenderSize;
 
 	auto gameMap = GameObject::Instantiate<GameMap>(tileMapModel);

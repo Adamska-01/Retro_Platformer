@@ -3,7 +3,7 @@
 #include "Constants/AssetPaths.h"
 #include "Scenes/MainMenuScene.h"
 #include <Components/UI/MenuFunctions.h>
-#include <Constants/ResourcePaths.h>
+#include <Constants/Paths/ResourcePaths.h>
 #include <Core/SubSystems/Systems/Rendering/Renderer.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
 #include <Engine/Components/Audio/AudioListener.h>
@@ -15,14 +15,14 @@
 #include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
 #include <Engine/Components/UI/TextMesh.h>
 #include <Engine/Entity/GameObject.h>
-#include <Utilities/IO/FileSystemUtils.h>
+#include <Utilities/IO/IO_Helpers.h>
 
 
+using namespace DeadFrame2D::Constants;
 using namespace DeadFrame2D::Core;
 using namespace DeadFrame2D::Data;
 using namespace DeadFrame2D::Engine;
 using namespace DeadFrame2D::Utilities;
-using namespace Shared::Constants;
 
 
 void MainMenuScene::Enter()
@@ -77,7 +77,7 @@ void MainMenuScene::Enter()
 	mainMenuLayout->SetParent(mainMenuObject);
 
 	// Credits Menu
-	auto creditsText = DeadFrame2D::Utilities::LoadTextFile(AssetPaths::Files::CREDITS);
+	auto creditsText = IO_Helpers::LoadTextFile(AssetPaths::Files::CREDITS);
 
 	auto creditsMenuObject = GameObject::Instantiate<GameObject>();
 	creditsMenuObject->GetComponent<Transform>()->SetWorldScale(Vector2F(0.75f, 0.75f));
