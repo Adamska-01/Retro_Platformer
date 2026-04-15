@@ -7,9 +7,6 @@ set "HOOK_PATH=../.git/hooks/post-checkout"
 
 pushd ..
 
-:: Update submodules
-git submodule update --init --recursive
-
 :: Run Premake
 echo Generating project files...
 %PREMAKE_PATH% --file=Build.lua vs2022
