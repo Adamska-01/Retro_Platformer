@@ -8,7 +8,7 @@ set "HOOK_PATH=../.git/hooks/post-checkout"
 pushd ..
 
 :: Update submodules
-git submodule update --init --recursive
+::git submodule update --init --recursive
 
 :: Run Premake
 echo Generating project files...
