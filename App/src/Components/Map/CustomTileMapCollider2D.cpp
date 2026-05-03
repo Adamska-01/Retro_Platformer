@@ -1,15 +1,15 @@
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Utilities/Debugging/Guards.h>
 
 
-using namespace DeadFrame2D::Constants;
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Constants;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Utilities;
 
 
 CustomTileMapCollider2D::CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial)
@@ -97,7 +97,7 @@ void CustomTileMapCollider2D::RebuildFixture()
 
 			auto shape = new b2PolygonShape();
 
-			const auto METER_PER_PIXEL = DeadFrame2D::Core::PhysicsEngine2D::GetPhysicsConfig().meterPerPixel;
+			const auto METER_PER_PIXEL = PhysicsEngine2D::GetPhysicsConfig().meterPerPixel;
 
 			shape->SetAsBox(
 				tileSize * 0.5f * METER_PER_PIXEL,

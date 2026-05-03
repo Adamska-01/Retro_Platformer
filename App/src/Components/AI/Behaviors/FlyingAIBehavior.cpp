@@ -1,12 +1,12 @@
 #include "Components/AI/Behaviors/FlyingAIBehavior.h"
 #include "Components/AI/SimpleAI.h"
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
 
 
-using namespace DeadFrame2D::Core;
+using namespace DF2D::Core;
 
 
 FlyingAIBehavior::FlyingAIBehavior()

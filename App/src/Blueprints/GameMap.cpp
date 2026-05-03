@@ -1,13 +1,13 @@
 #include "Blueprints/GameMap.h"
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Data/Physics/BodyDefinition2D.h>
-#include <Data/Physics/BodyType2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
+#include <Data/Components/Physics/BodyDefinition2D.h>
+#include <Data/Components/Physics/BodyType2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
 
 
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
 
 
 GameMap::GameMap(std::shared_ptr<TileMapModel> tileMapModel)

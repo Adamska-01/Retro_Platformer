@@ -2,21 +2,21 @@
 #include "Components/UI/EndGameController.h"
 #include "Components/UI/MenuManager.h"
 #include "Constants/AssetPaths.h"
-#include <Core/Framerate/FrameTimer.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Core/Services/Time/FrameTimer.h>
 #include <CustomEvents/GameEndedEvent.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 EndGameController::EndGameController()

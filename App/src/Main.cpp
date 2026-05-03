@@ -6,7 +6,7 @@
 int main(int argc, char** argv)
 {
 	// Do NOT remove this, unless you've found a better solution
-	DeadFrame2D::Utilities::PathMountResolver::SetMountPrefix("Core");
+	DF2D::Utilities::PathMountResolver::SetMountPrefix("Core");
 
 	auto App = std::make_unique<Application>();
 

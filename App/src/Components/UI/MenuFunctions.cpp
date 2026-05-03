@@ -3,16 +3,16 @@
 #include "Scenes/MainGameScene.h"
 #include "Scenes/MainMenuScene.h"
 #include <Constants/AssetPaths.h>
-#include <Core/CoreEvents/EventManager.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Core/Services/Events/EventManager.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
 
 
 void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audioPath, const Vector2F& position, float volume, bool isMusic, bool loop, float destroyDelaySeconds)
@@ -27,7 +27,7 @@ void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audi
 	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
 }
 
-DeadFrame2D::Data::ButtonCallback MenuFunctions::LoadMenu()
+ButtonCallback MenuFunctions::LoadMenu()
 {
 	return ButtonCallback
 	{
@@ -55,7 +55,7 @@ ButtonCallback MenuFunctions::LoadGame()
 	};
 }
 
-DeadFrame2D::Data::ButtonCallback MenuFunctions::ShowCredits(const ComponentHandle<MenuManager>& menuManager)
+ButtonCallback MenuFunctions::ShowCredits(const ComponentHandle<MenuManager>& menuManager)
 {
 	return ButtonCallback
 	{

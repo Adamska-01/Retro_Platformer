@@ -1,9 +1,9 @@
 #pragma once
 #include "Models/Map/TileMapModel.h"
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 
 
-class GameMap : public DeadFrame2D::Engine::GameObject
+class GameMap : public DF2D::Engine::GameObject
 {
 private:
 	std::shared_ptr<TileMapModel> tileMapModel;

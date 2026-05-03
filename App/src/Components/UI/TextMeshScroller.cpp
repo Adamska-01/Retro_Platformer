@@ -1,21 +1,21 @@
 #include "Components/UI/TextMeshScroller.h"
 #include <Components/UI/MenuManager.h>
-#include <Core/Framerate/FrameTimer.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Core/SubSystems/Systems/Rendering/Renderer.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/Events/SubSystems/Renderer/RenderTargetSizeChangedEvent.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Services/Time/FrameTimer.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
+#include <Engine/Events/Context/Renderer/RenderTargetSizeChangedEvent.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Coroutines/CoroutineHelpers.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 TextMeshScroller::TextMeshScroller(ComponentHandle<TextMesh> textMesh, float scrollSpeed)

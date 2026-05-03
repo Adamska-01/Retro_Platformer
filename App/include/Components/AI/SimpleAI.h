@@ -1,42 +1,42 @@
 #pragma once
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/GameComponent.h>
-#include <Engine/Entity/ComponentHandle.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <memory>
 
 
 class AIBehavior;
 
-namespace DeadFrame2D::Engine
+namespace DF2D::Engine
 {
 	class Transform;
 	class DispatchableEvent;
 }
 
-namespace DeadFrame2D::Data
+namespace DF2D::Data
 {
 	struct CollisionInfo;
 }
 
 
-class SimpleAI : public DeadFrame2D::Engine::GameComponent
+class SimpleAI : public DF2D::Engine::GameComponent
 {
-	TYPE_INFO(SimpleAI, DeadFrame2D::Engine::GameComponent);
+	TYPE_INFO(SimpleAI, DF2D::Engine::GameComponent);
 
 
 private:
 	std::unique_ptr<AIBehavior> behavior;
 
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::Transform> transform;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> transform;
 
-	DeadFrame2D::Core::Vector2F startPos;
+	DF2D::Core::Vector2F startPos;
 
 	bool processingPlayer;
 
 
-	void LifeLostEventHandler(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
+	void LifeLostEventHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
-	void OnCircleContactEnterHandlers(const DeadFrame2D::Data::CollisionInfo& collisionInfo);
+	void OnCircleContactEnterHandlers(const DF2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
@@ -54,5 +54,5 @@ public:
 
 	void Reset();
 
-	DeadFrame2D::Core::Vector2F GetStartPos() const;
+	DF2D::Core::Vector2F GetStartPos() const;
 };

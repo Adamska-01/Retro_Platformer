@@ -2,23 +2,23 @@
 #include "Components/AI/SimpleAI.h"
 #include "Components/Controllers/PlayerController.h"
 #include <Constants/AssetPaths.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
 #include <CustomEvents/LifeLostEvent.h>
-#include <Data/Collision/CollisionInfo.h>
+#include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)

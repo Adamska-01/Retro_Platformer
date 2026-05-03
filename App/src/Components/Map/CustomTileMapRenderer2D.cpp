@@ -1,15 +1,15 @@
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Core/SubSystems/Systems/Rendering/Renderer.h>
-#include <Core/SubSystems/Systems/Rendering/RenderSystem.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Context/Systems/Rendering/RenderSystem.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Utilities/Debugging/Guards.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)

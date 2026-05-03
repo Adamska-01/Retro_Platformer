@@ -2,14 +2,14 @@
 #include "CustomEvents/GameEndedEvent.h"
 #include "CustomEvents/LifeLostEvent.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 StatsController::StatsController()

@@ -1,20 +1,20 @@
 #pragma once
 #include "Constants/CommonColors.h"
-#include "Engine/Entity/ComponentHandle.h"
 #include "Scenes/Abstractions/BaseGameScene.h"
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Data/Blueprints/UI/ButtonBlueprintModel.h>
-#include <Data/Components/UI/Button/ButtonComponentModel.h>
-#include <Data/Components/UI/TextMeshComponentModel.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Data/Blueprints/UI/Button/ButtonBlueprintModel.h>
+#include <Data/Blueprints/UI/Button/ButtonComponentModel.h>
+#include <Data/Blueprints/UI/Text/TextMeshComponentModel.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 
 
-using namespace DeadFrame2D::Constants;
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
+using namespace DF2D::Constants;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
 
 
 ObjectHandle<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::optional<ButtonCallback>& onPressedHandler, const std::optional<ButtonCallback>& onEnterHandler)

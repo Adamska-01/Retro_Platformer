@@ -1,16 +1,16 @@
 #include "Components/AI/Abstractions/AIBehavior.h"
 #include "Components/AI/SimpleAI.h"
 #include "Components/Controllers/PlayerController.h"
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 
 
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 void AIBehavior::Init(SimpleAI* ai)

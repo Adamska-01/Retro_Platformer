@@ -2,22 +2,22 @@
 #include "Components/Controllers/PlayerController.h"
 #include "Constants/AssetPaths.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Data/Collision/CollisionInfo.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/SpriteRenderer.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 Coin::Coin(Vector2F startPos, std::string_view spriteSource)

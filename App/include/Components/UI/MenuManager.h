@@ -1,33 +1,33 @@
 #pragma once
 #include "Components/UI/Abstractions/MenuBase.h"
 #include <Data/UI/MenuID.h>
-#include <Engine/Components/GameComponent.h>
-#include <Engine/Entity/ComponentHandle.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <unordered_map>
 
 
-namespace DeadFrame2D::Core
+namespace DF2D::Core
 {
 	class InputActionView;
 }
 
 
-class MenuManager : public DeadFrame2D::Engine::GameComponent
+class MenuManager : public DF2D::Engine::GameComponent
 {
-	TYPE_INFO(MenuManager, DeadFrame2D::Engine::GameComponent);
+	TYPE_INFO(MenuManager, DF2D::Engine::GameComponent);
 
 
 private:
-	std::unordered_map<MenuID, DeadFrame2D::Engine::ComponentHandle<MenuBase>> allMenus;
+	std::unordered_map<MenuID, DF2D::Engine::ComponentHandle<MenuBase>> allMenus;
 
-	std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>> activeMenus;
+	std::vector<DF2D::Engine::ComponentHandle<MenuBase>> activeMenus;
 
 
-	void MoveInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
+	void MoveInputHandler(const DF2D::Core::InputActionView& inputAction);
 
-	void ConfirmInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
-	
-	void BackInputHandler(const DeadFrame2D::Core::InputActionView& inputAction);
+	void ConfirmInputHandler(const DF2D::Core::InputActionView& inputAction);
+
+	void BackInputHandler(const DF2D::Core::InputActionView& inputAction);
 
 
 public:
@@ -41,17 +41,17 @@ public:
 
 	void ShowMenu(MenuID menuID);
 
-	void ShowMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
+	void ShowMenu(DF2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideMenu(MenuID menuID);
 
-	void HideMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
+	void HideMenu(DF2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideAll();
 
-	void RegisterMenu(MenuID menuID, DeadFrame2D::Engine::ComponentHandle<MenuBase> menu);
+	void RegisterMenu(MenuID menuID, DF2D::Engine::ComponentHandle<MenuBase> menu);
 
-	DeadFrame2D::Engine::ComponentHandle<MenuBase> GetMenu(MenuID menuID);
+	DF2D::Engine::ComponentHandle<MenuBase> GetMenu(MenuID menuID);
 
-	const std::vector<DeadFrame2D::Engine::ComponentHandle<MenuBase>>& GetActiveMenus();
+	const std::vector<DF2D::Engine::ComponentHandle<MenuBase>>& GetActiveMenus();
 };

@@ -1,18 +1,18 @@
 #include "Blueprints/Player.h"
 #include "Components/Controllers/PlayerController.h"
-#include <Data/Physics/BodyDefinition2D.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Audio/AudioListener.h>
-#include <Engine/Components/Collisions/BoxCollider2D.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/SpriteRenderer.h>
-#include <Engine/Components/Transform.h>
+#include <Data/Components/Physics/BodyDefinition2D.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Audio/AudioListener.h>
+#include <Engine/ECS/Component/Collisions/BoxCollider2D.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
+#include <Engine/ECS/Component/Transform.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
 
 
 Player::Player(Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource)

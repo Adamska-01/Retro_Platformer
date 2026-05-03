@@ -1,16 +1,16 @@
 #include "Components/UI/MenuManager.h"
 #include <algorithm>
-#include <Core/SubSystems/Systems/Input/Actions/InputActionView.h>
-#include <Core/SubSystems/Systems/Input/Actions/RuntimeInputAction.h>
-#include <Engine/Components/Input/PlayerInput.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Core/Context/Systems/Input/Actions/InputActionView.h>
+#include <Core/Context/Systems/Input/Actions/RuntimeInputAction.h>
+#include <Engine/ECS/Component/Input/PlayerInput.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 MenuManager::MenuManager()

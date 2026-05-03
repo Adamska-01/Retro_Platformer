@@ -14,29 +14,29 @@
 #include <Blueprints/FollowCameraObject.h>
 #include <Blueprints/Player.h>
 #include <Components/UI/MenuFunctions.h>
-#include <Core/CoreEvents/EventManager.h>
-#include <Core/SubSystems/Systems/Rendering/Renderer.h>
-#include <Data/Components/UI/TextMeshComponentModel.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Services/Events/EventManager.h>
+#include <Data/Blueprints/UI/Text/TextMeshComponentModel.h>
 #include <Data/UI/MenuID.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include <Engine/Components/Input/PlayerInput.h>
-#include <Engine/Components/Rendering/Camera.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Components/UI/Button.h>
-#include <Engine/Components/UI/Canvas.h>
-#include <Engine/Components/UI/Image.h>
-#include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/Input/PlayerInput.h>
+#include <Engine/ECS/Component/Rendering/Camera/Camera.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Component/UI/Button.h>
+#include <Engine/ECS/Component/UI/Canvas.h>
+#include <Engine/ECS/Component/UI/Image.h>
+#include <Engine/ECS/Component/UI/Layout/VerticalLayoutGroup.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Scenes/MainMenuScene.h>
 #include <Utilities/IO/Serialization/JsonSerializer.h>
 
 
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)

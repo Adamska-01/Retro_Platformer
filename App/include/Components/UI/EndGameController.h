@@ -1,13 +1,13 @@
 #pragma once
-#include <Engine/Components/GameComponent.h>
-#include <Engine/Entity/ComponentHandle.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <memory>
 
 
 class MenuManager;
 class StatsController;
 
-namespace DeadFrame2D::Engine
+namespace DF2D::Engine
 {
 	class TextMesh;
 	class DispatchableEvent;
@@ -15,20 +15,20 @@ namespace DeadFrame2D::Engine
 
 
 
-class EndGameController : public DeadFrame2D::Engine::GameComponent
+class EndGameController : public DF2D::Engine::GameComponent
 {
-	TYPE_INFO(EndGameController, DeadFrame2D::Engine::GameComponent);
+	TYPE_INFO(EndGameController, DF2D::Engine::GameComponent);
 
 
 private:
-	DeadFrame2D::Engine::ComponentHandle<MenuManager> menuManager;
+	DF2D::Engine::ComponentHandle<MenuManager> menuManager;
 
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::TextMesh> endGameTextMesh;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> endGameTextMesh;
 
-	DeadFrame2D::Engine::ComponentHandle<StatsController> statsController;
+	DF2D::Engine::ComponentHandle<StatsController> statsController;
 
 
-	void OnGameEndedHandler(std::shared_ptr<DeadFrame2D::Engine::DispatchableEvent> dispatchableEvent);
+	void OnGameEndedHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
 
 public:
@@ -40,5 +40,5 @@ public:
 	virtual void Init() override;
 
 
-	void SetEndGameTextMesh(DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::TextMesh> endGameTextMesh);
+	void SetEndGameTextMesh(DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> endGameTextMesh);
 };

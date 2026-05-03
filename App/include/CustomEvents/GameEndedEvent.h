@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/EngineEvents/DispatchableEvent.h"
+#include <Engine/ECS/System/Events/DispatchableEvent.h>
 
 
-class GameEndedEvent : public DeadFrame2D::Engine::DispatchableEvent
+class GameEndedEvent : public DF2D::Engine::DispatchableEvent
 {
 public:
 	bool isGameLost;

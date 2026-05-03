@@ -1,13 +1,13 @@
 #pragma once
 #include <Core/Math/Vector2.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <string_view>
 
 
-class Player : public DeadFrame2D::Engine::GameObject
+class Player : public DF2D::Engine::GameObject
 {
 private:
-	DeadFrame2D::Core::Vector2F startPos;
+	DF2D::Core::Vector2F startPos;
 
 	std::string_view idleSpriteSource;
 
@@ -15,7 +15,7 @@ private:
 
 
 public:
-	Player(DeadFrame2D::Core::Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource);
+	Player(DF2D::Core::Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource);
 
 	~Player();
 

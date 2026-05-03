@@ -1,10 +1,10 @@
 #pragma once
-#include <Engine/Entity/ComponentHandle.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 
 
 class SimpleAI;
 
-namespace DeadFrame2D::Engine
+namespace DF2D::Engine
 {
 	class Transform;
 	class SpriteAnimator;
@@ -15,13 +15,13 @@ namespace DeadFrame2D::Engine
 class AIBehavior
 {
 protected:
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::Transform> aiTransform;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> aiTransform;
 
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::Transform> playerTransform;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> playerTransform;
 
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::SpriteAnimator> aiSpriteAnimator;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::SpriteAnimator> aiSpriteAnimator;
 
-	DeadFrame2D::Engine::ComponentHandle<DeadFrame2D::Engine::RigidBody2D> aiRigidBody;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::RigidBody2D> aiRigidBody;
 
 
 public:

@@ -1,12 +1,12 @@
 #pragma once
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Data/Collision/PhysicsMaterial.h>
-#include <Engine/Components/Collisions/Tile/TileCollider2D.h>
+#include <Data/Components/Collision/PhysicsMaterial.h>
+#include <Engine/ECS/Component/Collisions/Tile/TileCollider2D.h>
 
 
-class CustomTileMapCollider2D : public DeadFrame2D::Engine::TileCollider2D<CustomTileMapRenderer2D>
+class CustomTileMapCollider2D : public DF2D::Engine::TileCollider2D<CustomTileMapRenderer2D>
 {
-	TYPE_INFO(CustomTileMapCollider2D, DeadFrame2D::Engine::TileCollider2D<CustomTileMapRenderer2D>);
+	TYPE_INFO(CustomTileMapCollider2D, DF2D::Engine::TileCollider2D<CustomTileMapRenderer2D>);
 
 
 private:
@@ -27,7 +27,7 @@ protected:
 
 
 public:
-	CustomTileMapCollider2D(const DeadFrame2D::Data::PhysicsMaterial& physicsMaterial = DeadFrame2D::Data::PhysicsMaterial());
+	CustomTileMapCollider2D(const DF2D::Data::PhysicsMaterial& physicsMaterial = DF2D::Data::PhysicsMaterial());
 
 	virtual ~CustomTileMapCollider2D() override;
 

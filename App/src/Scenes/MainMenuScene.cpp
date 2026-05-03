@@ -4,25 +4,25 @@
 #include "Scenes/MainMenuScene.h"
 #include <Components/UI/MenuFunctions.h>
 #include <Constants/Paths/ResourcePaths.h>
-#include <Core/SubSystems/Systems/Rendering/Renderer.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include <Engine/Components/Audio/AudioListener.h>
-#include <Engine/Components/Input/PlayerInput.h>
-#include <Engine/Components/Rendering/Camera.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Components/UI/Button.h>
-#include <Engine/Components/UI/Canvas.h>
-#include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Component/Audio/AudioListener.h>
+#include <Engine/ECS/Component/Input/PlayerInput.h>
+#include <Engine/ECS/Component/Rendering/Camera/Camera.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Component/UI/Button.h>
+#include <Engine/ECS/Component/UI/Canvas.h>
+#include <Engine/ECS/Component/UI/Layout/VerticalLayoutGroup.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Utilities/IO/IO_Helpers.h>
 
 
-using namespace DeadFrame2D::Constants;
-using namespace DeadFrame2D::Core;
-using namespace DeadFrame2D::Data;
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Constants;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 void MainMenuScene::Enter()

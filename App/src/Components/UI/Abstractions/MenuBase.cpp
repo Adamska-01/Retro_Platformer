@@ -1,13 +1,13 @@
 #include "Components/UI/Abstractions/MenuBase.h"
 #include "Components/UI/MenuManager.h"
-#include <Engine/Components/UI/Abstractions/IInteractableUI.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Entity/Component/Core/UI/Abstractions/IInteractableUI.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 
 
-using namespace DeadFrame2D::Engine;
-using namespace DeadFrame2D::Utilities;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 void MenuBase::Navigate(std::function<ComponentHandle<IInteractableUI>(ComponentHandle<IInteractableUI>)> getNext)
@@ -119,7 +119,7 @@ void MenuBase::GoBack()
 	menuManager->ShowMenu(previousMenu);
 }
 
-void MenuBase::SetPreviousMenu(DeadFrame2D::Engine::ComponentHandle<MenuBase> previousMenu)
+void MenuBase::SetPreviousMenu(ComponentHandle<MenuBase> previousMenu)
 {
 	this->previousMenu = previousMenu;
 }

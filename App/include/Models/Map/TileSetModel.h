@@ -1,5 +1,5 @@
 #pragma once
-#include <Core/SubSystems/Systems/TextureManager.h>
+#include <Core/Context/Systems/Graphics/TextureManager.h>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -13,7 +13,7 @@ private:
 		if (tileSetSource.empty())
 			return;
 
-		tileSetTexture = DeadFrame2D::Core::TextureManager::LoadTexture(tileSetSource);
+		tileSetTexture = DF2D::Core::TextureManager::LoadTexture(tileSetSource);
 	}
 
 
