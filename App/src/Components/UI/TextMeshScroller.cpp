@@ -24,8 +24,6 @@ TextMeshScroller::TextMeshScroller(ComponentHandle<TextMesh> textMesh, float scr
 	scrollSpeed(scrollSpeed)
 {
 	Guard::AgainstNull(textMesh, NAME_OF(textMesh));
-
-	resolutionTarget = Renderer::GetResolutionTarget();
 }
 
 TextMeshScroller::~TextMeshScroller()
@@ -53,13 +51,20 @@ void TextMeshScroller::OnGameObjectActiveStateChangedHandler(const ObjectHandle<
 
 	if (isActive)
 	{
-		activeTask = &CoroutineScheduler::StartCoroutine(ScrollText());
+		activeTask = &GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(ScrollText());
 	}
 }
 
 void TextMeshScroller::Init()
 {
 	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
+
+	auto renderer = GetGameObject()->CoreContext().renderer;
+
+	if (renderer != nullptr)
+	{
+		resolutionTarget = renderer->GetResolutionTarget();
+	}
 }
 
 Task TextMeshScroller::ScrollText()
@@ -83,7 +88,7 @@ Task TextMeshScroller::ScrollText()
 
 		textMeshTransform->SetWorldPosition(newPos);
 
-		co_await WaitFrame();
+		co_await CoroutineHelpers::WaitFrame();
 	}
 
 	menuManager->HideAll();

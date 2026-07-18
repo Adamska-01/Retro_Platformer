@@ -7,7 +7,7 @@ using namespace DF2D::Core;
 using namespace DF2D::Engine;
 
 
-FollowCameraObject::FollowCameraObject(ObjectHandle<GameObject> target, SDL_FRect bounds, Vector2F offset, float followSpeed)
+FollowCameraObject::FollowCameraObject(ObjectHandle<GameObject> target, RectF bounds, Vector2F offset, float followSpeed)
 	: target(target),
 	bounds(bounds),
 	offset(offset),

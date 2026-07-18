@@ -5,6 +5,11 @@
 #include <Models/Map/TileMapModel.h>
 
 
+namespace DF2D::Core
+{
+	class TextureManager;
+}
+
 namespace DF2D::Engine
 {
 	class Transform;
@@ -17,7 +22,11 @@ class CustomTileMapRenderer2D : public DF2D::Engine::TileMapRenderer<std::shared
 
 
 private:
+	bool extendMapToRenderTarget = false;
+
 	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> transform;
+
+	DF2D::Core::TextureManager* textureManager = nullptr;
 
 
 public:

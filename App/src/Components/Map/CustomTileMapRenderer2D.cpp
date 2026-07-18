@@ -1,4 +1,5 @@
 #include "Components/Map/CustomTileMapRenderer2D.h"
+#include <Core/Context/Systems/Graphics/TextureManager.h>
 #include <Core/Context/Systems/Rendering/Renderer.h>
 #include <Core/Context/Systems/Rendering/RenderSystem.h>
 #include <Engine/ECS/Component/Transform.h>
@@ -15,19 +16,28 @@ using namespace DF2D::Utilities;
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)
 {
 	this->tileMap = tileMap;
-
-	if (!extendMapToRenderTarget)
-		return;
-
-	auto width = static_cast<int>(tileMap->layout[0].size());
-	auto height = static_cast<int>(tileMap->layout.size());
-
-	Renderer::SetResolutionTarget({ width * tileMap->tileRenderSize, height * tileMap->tileRenderSize });
+	this->extendMapToRenderTarget = extendMapToRenderTarget;
 }
 
 void CustomTileMapRenderer2D::Init()
 {
 	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
+	textureManager = GetGameObject()->CoreContext().textureManager;
+
+	if (extendMapToRenderTarget)
+	{
+		auto renderer = GetGameObject()->CoreContext().renderer;
+
+		if (renderer != nullptr)
+		{
+			auto width = static_cast<int>(tileMap->layout[0].size());
+			auto height = static_cast<int>(tileMap->layout.size());
+
+			renderer->SetResolutionTarget({ width * tileMap->tileRenderSize, height * tileMap->tileRenderSize });
+		}
+	}
+
+	tileMap->tileSet.LoadTexture(textureManager);
 }
 
 void CustomTileMapRenderer2D::Draw()
@@ -36,18 +46,18 @@ void CustomTileMapRenderer2D::Draw()
 	const auto tileSize = tileMap->textureTileSize;
 	const auto tileRenderSize = tileMap->tileRenderSize;
 
-	auto srcRect = SDL_Rect
-	{ 
-		0, 
-		0, 
+	auto srcRect = RectI
+	{
+		0,
+		0,
 		tileSize,
 		tileSize
 	};
 
-	auto destRect = SDL_FRect
-	{ 
-		0.0f, 
-		0.0f, 
+	auto destRect = RectF
+	{
+		0.0f,
+		0.0f,
 		static_cast<float>(tileRenderSize),
 		static_cast<float>(tileRenderSize)
 	};
@@ -61,7 +71,6 @@ void CustomTileMapRenderer2D::Draw()
 	auto batchData = SpriteBatchRenderData();
 	batchData.spriteBatch.reserve(mapWidth * mapHeight);
 
-	// TODO: optimize and draw only what's visible in the camera
 	for (auto row = 0; row < mapWidth; row++)
 	{
 		for (auto column = 0; column < mapHeight; column++)
@@ -76,7 +85,7 @@ void CustomTileMapRenderer2D::Draw()
 
 			auto renderData = SpriteRenderData
 			{
-				.texture = tileMap->tileSet.tileSetTexture.get(),
+				.texture = tileMap->tileSet.tileSetTexture,
 				.srcRect = srcRect,
 				.destRect = destRect,
 				.rotation = rotation

@@ -24,7 +24,7 @@ void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audi
 		isMusic,
 		loop);
 
-	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
+	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
 }
 
 ButtonCallback MenuFunctions::LoadMenu()
@@ -80,7 +80,7 @@ ButtonCallback MenuFunctions::ExitGame()
 		{
 			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
 
-			EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT);
+			GetGameObject()->ServiceContext().eventManager->RequestQuit();
 		}
 	};
 }

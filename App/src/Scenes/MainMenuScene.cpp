@@ -27,7 +27,7 @@ using namespace DF2D::Utilities;
 
 void MainMenuScene::Enter()
 {
-	auto renderTargetSize = Renderer::GetResolutionTarget();
+	auto renderTargetSize = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 
 	// Camera

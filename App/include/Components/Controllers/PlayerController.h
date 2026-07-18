@@ -1,16 +1,17 @@
 #pragma once
 #include <array>
 #include <Core/Math/Vector2.h>
+#include <Data/Systems/Graphics/TextureID.h>
+#include <Data/Systems/Rendering/RenderFlip.h>
 #include <Engine/ECS/Entity/Component/Core/GameComponent.h>
 #include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
-#include <memory>
-#include <SDL.h>
 #include <string_view>
 
 
 namespace DF2D::Core
 {
 	class InputActionView;
+	class TextureManager;
 }
 
 namespace DF2D::Engine
@@ -38,11 +39,13 @@ private:
 
 	DF2D::Engine::ComponentHandle<DF2D::Engine::SpriteAnimator> spriteAnimator;
 
+	DF2D::Core::TextureManager* textureManager = nullptr;
+
 	DF2D::Core::Vector2F startPos;
 
-	SDL_RendererFlip flipState;
+	DF2D::Data::RenderFlip flipState;
 
-	std::array<std::shared_ptr<SDL_Texture>, 2> spriteCache;
+	std::array<DF2D::Data::TextureID, 2> spriteCache{};
 
 	std::string_view idleSpriteSource;
 

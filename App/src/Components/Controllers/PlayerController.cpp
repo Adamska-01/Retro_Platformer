@@ -27,7 +27,7 @@ using namespace DF2D::Utilities;
 
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)
 	: startPos(Vector2F::Zero),
-	flipState(SDL_RendererFlip::SDL_FLIP_NONE),
+	flipState(RenderFlip::NONE),
 	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource),
 	footContacts(0),
@@ -35,11 +35,6 @@ PlayerController::PlayerController(std::string_view idleSpriteSource, std::strin
 	jumpImpulse(50.0f),
 	yThreshold(0.0f)
 {
-	spriteCache =
-	{
-		TextureManager::LoadTexture(idleSpriteSource),
-		TextureManager::LoadTexture(runSpriteSource),
-	};
 }
 
 void PlayerController::OnContactEnterHandler(const CollisionInfo& collisionInfo)
@@ -78,7 +73,7 @@ void PlayerController::MoveInputHandler(const InputActionView& inputAction)
 
 	// Animation State
 	spriteAnimator->PlayAnimation(dir.x != 0.0f ? "Run" : "Idle");
-	spriteAnimator->SetFlipState(dir.x < 0.0f ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	spriteAnimator->SetFlipState(dir.x < 0.0f ? RenderFlip::HORIZONTAL : RenderFlip::NONE);
 }
 
 void PlayerController::JumpInputHandler(const InputActionView& inputAction)
@@ -91,7 +86,7 @@ void PlayerController::JumpInputHandler(const InputActionView& inputAction)
 	// Jump Sound
 	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
 
-	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
+	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
 }
 
 void PlayerController::Init()
@@ -103,6 +98,14 @@ void PlayerController::Init()
 
 void PlayerController::Start()
 {
+	textureManager = GetGameObject()->CoreContext().textureManager;
+
+	spriteCache =
+	{
+		textureManager->LoadTexture(idleSpriteSource),
+		textureManager->LoadTexture(runSpriteSource),
+	};
+
 	auto idleAnim = SpriteAnimationProperties
 	{
 		.name = "Idle",

@@ -47,7 +47,7 @@ ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)
 		{
 			.fontSource = AssetPaths::Files::GAMEPLAY_FONT,
 			.text = text,
-			.textColor = SDL_Color(255, 132, 31),
+			.textColor = Color(255, 132, 31),
 			.fontSize = 100,
 			.textObjectInitialScale = Vector2F(0.25f, 0.25f),
 			.isCentered = true
@@ -58,7 +58,7 @@ ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)
 
 ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-	auto renderTargetSize = Renderer::GetResolutionTarget();
+	auto renderTargetSize = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	auto endScreenMenuObject = GameObject::Instantiate<GameObject>();
 	auto endScreenMenuBase = endScreenMenuObject->AddComponent<MenuBase>();
@@ -100,7 +100,7 @@ ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, 
 
 ComponentHandle<MenuBase> MainGameScene::CreateHUD()
 {
-	auto renderTargetSize = Renderer::GetResolutionTarget();
+	auto renderTargetSize = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	auto hudMenuObject = GameObject::Instantiate<GameObject>();
 	auto hudMenuBase = hudMenuObject->AddComponent<MenuBase>();
@@ -129,7 +129,7 @@ ComponentHandle<MenuBase> MainGameScene::CreateHUD()
 
 void MainGameScene::Enter()
 {
-	auto resolutionTarget = Renderer::GetResolutionTarget();
+	auto resolutionTarget = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	// UI
 	auto canvasObject = GameObject::Instantiate<GameObject>();
@@ -211,7 +211,7 @@ void MainGameScene::Enter()
 
 	auto mapFullSize = gameMap->GetComponentInChildren<CustomTileMapRenderer2D>()->GetMapFullSize();
 	auto gameMapPosition = gameMap->GetTransform()->GetWorldPosition();
-	auto mapBounds = SDL_FRect
+	auto mapBounds = RectF
 	{
 		gameMapPosition.x,
 		gameMapPosition.y,

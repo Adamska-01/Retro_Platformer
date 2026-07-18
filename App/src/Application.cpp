@@ -10,7 +10,8 @@ using namespace DF2D::Engine;
 
 Application::Application()
 {
-	Window::SetWindowTitle("Retro Platformer");
+	auto coreCtx = SceneManager::GetCoreContext();
+	coreCtx.window->SetWindowTitle("Retro Platformer");
 
 	SceneManager::LoadScene<MainMenuScene>();
 }

@@ -49,7 +49,7 @@ ObjectHandle<GameObject> BaseGameScene::CreateText(const std::string& text, cons
 		{
 			.fontSource = fontSource,
 			.text = text,
-			.textColor = SDL_Color(255, 132, 31),
+			.textColor = Color(255, 132, 31),
 			.fontSize = 100,
 			.textObjectInitialScale = Vector2F(0.25f, 0.25f),
 			.isCentered = false

@@ -54,7 +54,7 @@ void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> di
 		0.7f,
 		true);
 
-	CoroutineScheduler::StartCoroutine(endGameSoundObj->Destroy(10.0f));
+	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(endGameSoundObj->Destroy(10.0f));
 }
 
 void EndGameController::Init()

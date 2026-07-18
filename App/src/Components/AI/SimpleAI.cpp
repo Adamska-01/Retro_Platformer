@@ -73,7 +73,7 @@ void SimpleAI::OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo)
 		// Jump Sound
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::ENEMY_KILLED);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
+		GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
 	}
 	// Kill Player
 	else
@@ -86,7 +86,7 @@ void SimpleAI::OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo)
 			Vector2F::Zero, 
 			0.5f);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
+		GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
 	}
 }
 

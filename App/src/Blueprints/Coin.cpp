@@ -47,7 +47,7 @@ void Coin::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 		Vector2F::Zero,
 		0.5f);
 
-	CoroutineScheduler::StartCoroutine(soundSourceObj->Destroy(1.0f));
+	CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
 
 	Destroy();
 }
