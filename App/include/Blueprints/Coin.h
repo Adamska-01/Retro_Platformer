@@ -1,27 +1,30 @@
 #pragma once
 #include <Core/Math/Vector2.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <string_view>
 
 
 class Map;
-struct CollisionInfo;
+
+namespace DF2D::Data
+{
+	struct CollisionInfo;
+}
 
 
-class Coin : public GameObject
+class Coin : public DF2D::Engine::GameObject
 {
 private:
+	DF2D::Core::Vector2F startPos;
+
 	unsigned int score;
 
 	std::string_view spriteSource;
 
 
-	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
+	void OnContactEnterHandler(const DF2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
-	Coin(Vector2F startPos, std::string_view spriteSource);
-
-
-	virtual void ConstructGameObject() override;
+	Coin(DF2D::Core::Vector2F startPos, std::string_view spriteSource);
 };

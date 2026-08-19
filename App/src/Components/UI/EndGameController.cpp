@@ -2,27 +2,29 @@
 #include "Components/UI/EndGameController.h"
 #include "Components/UI/MenuManager.h"
 #include "Constants/AssetPaths.h"
-#include <Core/Framerate/FrameTimer.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Core/Services/Time/Abstractions/ITimeProvider.h>
 #include <CustomEvents/GameEndedEvent.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Core;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 EndGameController::EndGameController()
-	: menuManager(nullptr)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler), reinterpret_cast<std::uintptr_t>(this));
 }
 
 EndGameController::~EndGameController()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(GameEndedEvent)), reinterpret_cast<std::uintptr_t>(this));
 }
 
 void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -32,7 +34,7 @@ void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> di
 	if (gameEndedEvent == nullptr)
 		return;
 
-	FrameTimer::SetTimeScale(0.0f);
+	GetGameObject()->ServiceContext().frameTimer->SetTimeScale(0.0f);
 
 	auto endGameSound = gameEndedEvent->isGameLost ? AssetPaths::Files::GAME_OVER : AssetPaths::Files::VICTORY;
 	auto title = gameEndedEvent->isGameLost
@@ -50,35 +52,22 @@ void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> di
 		0.7f,
 		true);
 
-	CoroutineScheduler::StartCoroutine(endGameSoundObj.lock()->Destroy(10.0f));
+	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(endGameSoundObj->Destroy(10.0f));
 }
 
 void EndGameController::Init()
 {
-	menuManager = SceneManager::FindObjectOfType<MenuManager>();
-	statsController = SceneManager::FindObjectOfType<StatsController>();
+	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
+	statsController = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<StatsController>(), NAME_OF(statsController));
 
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get MenuManager from the scene");
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get StatsManager from the scene");
-	Tools::Helpers::GuardAgainstNull(endGameTextMesh, "EndGameController::Init: The endGame TextMesh is required!");
+	Guard::AgainstNull(endGameTextMesh, NAME_OF(endGameTextMesh));
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<GameEndedEvent>(GetHandle(), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler));
 }
 
-void EndGameController::Start()
-{
-
-}
-
-void EndGameController::Update(float deltaTime)
-{
-
-}
-
-void EndGameController::Draw()
-{
-
-}
-
-void EndGameController::SetEndGameTextMesh(TextMesh* endGameTextMesh)
+void EndGameController::SetEndGameTextMesh(ComponentHandle<TextMesh> endGameTextMesh)
 {
 	this->endGameTextMesh = endGameTextMesh;
 }

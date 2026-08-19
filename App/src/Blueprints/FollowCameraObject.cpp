@@ -1,17 +1,17 @@
 #include <Blueprints/FollowCameraObject.h>
-#include <Engine/Components/Rendering/Camera.h>
-#include <Engine/Components/Rendering/Camera/CameraFollow.h>
+#include <Engine/ECS/Component/Rendering/Camera/Camera.h>
+#include <Engine/ECS/Component/Rendering/Camera/CameraFollow.h>
 
 
-FollowCameraObject::FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, Vector2F offset, float followSpeed)
+using namespace DF2D::Core;
+using namespace DF2D::Engine;
+
+
+FollowCameraObject::FollowCameraObject(ObjectHandle<GameObject> target, RectF bounds, Vector2F offset, float followSpeed)
 	: target(target),
 	bounds(bounds),
 	offset(offset),
 	followSpeed(followSpeed)
-{
-}
-
-void FollowCameraObject::ConstructGameObject()
 {
 	auto cameraComonent = AddComponent<Camera>();
 

@@ -1,13 +1,15 @@
 #pragma once
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Engine/Components/Collisions/Tile/TileCollider2D.h>
+#include <Data/Components/Collision/PhysicsMaterial.h>
+#include <Data/Systems/Physics/FixtureID.h>
+#include <Engine/ECS/Component/Collisions/Tile/TileCollider2D.h>
 
 
-class b2Fixture;
-
-
-class CustomTileMapCollider2D : public TileCollider2D<CustomTileMapRenderer2D>
+class CustomTileMapCollider2D : public DF2D::Engine::TileCollider2D<CustomTileMapRenderer2D>
 {
+	TYPE_INFO(CustomTileMapCollider2D, DF2D::Engine::TileCollider2D<CustomTileMapRenderer2D>);
+
+
 private:
 	void DeleteFixtures();
 
@@ -17,7 +19,7 @@ protected:
 
 	std::vector<char> collidableTiles;
 
-	std::vector<b2Fixture*> fixtures;
+	std::vector<DF2D::Data::FixtureID> fixtures;
 
 	int tileSize;
 
@@ -26,7 +28,7 @@ protected:
 
 
 public:
-	CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial = PhysicsMaterial());
+	CustomTileMapCollider2D(const DF2D::Data::PhysicsMaterial& physicsMaterial = DF2D::Data::PhysicsMaterial());
 
 	virtual ~CustomTileMapCollider2D() override;
 

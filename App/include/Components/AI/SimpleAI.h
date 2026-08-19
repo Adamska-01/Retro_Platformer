@@ -1,30 +1,42 @@
 #pragma once
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <memory>
 
 
 class AIBehavior;
-class Transform;
-class DispatchableEvent;
-struct CollisionInfo;
 
-
-class SimpleAI : public GameComponent
+namespace DF2D::Engine
 {
+	class Transform;
+	class DispatchableEvent;
+}
+
+namespace DF2D::Data
+{
+	struct CollisionInfo;
+}
+
+
+class SimpleAI : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(SimpleAI, DF2D::Engine::GameComponent);
+
+
 private:
 	std::unique_ptr<AIBehavior> behavior;
 
-	Transform* transform;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> transform;
 
-	Vector2F startPos;
+	DF2D::Core::Vector2F startPos;
 
 	bool processingPlayer;
 
 
-	void LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void LifeLostEventHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
-	void OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo);
+	void OnCircleContactEnterHandlers(const DF2D::Data::CollisionInfo& collisionInfo);
 
 
 public:
@@ -39,10 +51,8 @@ public:
 
 	virtual void Update(float deltaTime) override;
 
-	virtual void Draw() override;
-
 
 	void Reset();
 
-	Vector2F GetStartPos() const;
+	DF2D::Core::Vector2F GetStartPos() const;
 };

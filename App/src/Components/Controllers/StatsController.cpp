@@ -2,30 +2,25 @@
 #include "CustomEvents/GameEndedEvent.h"
 #include "CustomEvents/LifeLostEvent.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 StatsController::StatsController()
 	: score(0),
-	lifes(3),
-	scoreTextMesh(nullptr),
-	lifesTextMesh(nullptr)
+	lifes(3)
 {
-	auto identifier = reinterpret_cast<std::uintptr_t>(this);
-	
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler), identifier);
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler), identifier);
 }
 
 StatsController::~StatsController()
 {
-	auto identifier = reinterpret_cast<std::uintptr_t>(this);
-
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(PointsScoredEvent)), identifier);
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), identifier);
 }
 
 void StatsController::PointsScoredEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -48,14 +43,19 @@ void StatsController::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> di
 
 	if (lifes <= 0)
 	{
-		EventDispatcher::SendEvent(std::make_shared<GameEndedEvent>(true));
+		eventDispatcher->SendEvent(std::make_shared<GameEndedEvent>(true));
 	}
 }
 
 void StatsController::Init()
 {
-	Tools::Helpers::GuardAgainstNull(scoreTextMesh, "scoreTextMesh is not assigned!");
-	Tools::Helpers::GuardAgainstNull(lifesTextMesh, "lifesTextMesh is not assigned!");
+	Guard::AgainstNull(scoreTextMesh, NAME_OF(scoreTextMesh));
+	Guard::AgainstNull(lifesTextMesh, NAME_OF(lifesTextMesh));
+
+	eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<PointsScoredEvent>(GetHandle(), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler));
+	eventDispatcher->RegisterEventHandler<LifeLostEvent>(GetHandle(), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler));
 }
 
 void StatsController::Start()
@@ -64,22 +64,12 @@ void StatsController::Start()
 	lifesTextMesh->SetText("Lifes: " + std::to_string(lifes));
 }
 
-void StatsController::Update(float deltaTime)
-{
-
-}
-
-void StatsController::Draw()
-{
-
-}
-
-void StatsController::SetScoreTextMesh(TextMesh* scoreTextMesh)
+void StatsController::SetScoreTextMesh(ComponentHandle<TextMesh> scoreTextMesh)
 {
 	this->scoreTextMesh = scoreTextMesh;
 }
 
-void StatsController::SetLifesTextMesh(TextMesh* lifesTextMesh)
+void StatsController::SetLifesTextMesh(ComponentHandle<TextMesh> lifesTextMesh)
 {
 	this->lifesTextMesh = lifesTextMesh;
 }

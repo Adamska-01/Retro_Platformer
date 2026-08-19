@@ -1,16 +1,33 @@
 #pragma once
 #include "Components/UI/Abstractions/MenuBase.h"
 #include <Data/UI/MenuID.h>
-#include <Engine/Components/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <unordered_map>
 
 
-class MenuManager : public GameComponent
+namespace DF2D::Core
 {
-private:
-	std::unordered_map<MenuID, MenuBase*> allMenus;
+	class InputActionView;
+}
 
-	std::vector<MenuBase*> activeMenus;
+
+class MenuManager : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(MenuManager, DF2D::Engine::GameComponent);
+
+
+private:
+	std::unordered_map<MenuID, DF2D::Engine::ComponentHandle<MenuBase>> allMenus;
+
+	std::vector<DF2D::Engine::ComponentHandle<MenuBase>> activeMenus;
+
+
+	void MoveInputHandler(const DF2D::Core::InputActionView& inputAction);
+
+	void ConfirmInputHandler(const DF2D::Core::InputActionView& inputAction);
+
+	void BackInputHandler(const DF2D::Core::InputActionView& inputAction);
 
 
 public:
@@ -19,28 +36,22 @@ public:
 	~MenuManager() = default;
 
 
-	virtual void Init() override;
-
-	virtual void Start() override;
-
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
+	void Start() override;
 
 
 	void ShowMenu(MenuID menuID);
 
-	void ShowMenu(MenuBase* menu);
+	void ShowMenu(DF2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideMenu(MenuID menuID);
 
-	void HideMenu(MenuBase* menu);
+	void HideMenu(DF2D::Engine::ComponentHandle<MenuBase> menu);
 
 	void HideAll();
 
-	void RegisterMenu(MenuID menuID, MenuBase* menu);
+	void RegisterMenu(MenuID menuID, DF2D::Engine::ComponentHandle<MenuBase> menu);
 
-	MenuBase* GetMenu(MenuID menuID);
+	DF2D::Engine::ComponentHandle<MenuBase> GetMenu(MenuID menuID);
 
-	const std::vector<MenuBase*>& GetActiveMenus();
+	const std::vector<DF2D::Engine::ComponentHandle<MenuBase>>& GetActiveMenus();
 };

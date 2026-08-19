@@ -1,25 +1,22 @@
 #pragma once
+#include <Core/Math/Rect.h>
 #include <Core/Math/Vector2.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <memory>
-#include <SDL.h>
 
 
-class FollowCameraObject : public GameObject
+class FollowCameraObject : public DF2D::Engine::GameObject
 {
 private:
-	std::weak_ptr<GameObject> target;
+	DF2D::Engine::ObjectHandle<DF2D::Engine::GameObject> target;
 
-	SDL_FRect bounds;
+	DF2D::Core::RectF bounds;
 
-	Vector2F offset;
+	DF2D::Core::Vector2F offset;
 
 	float followSpeed;
 
 
 public:
-	FollowCameraObject(std::weak_ptr<GameObject> target, SDL_FRect bounds, Vector2F offset = Vector2F::Zero, float followSpeed = 10.0f);
-
-
-	virtual void ConstructGameObject() override;
+	FollowCameraObject(DF2D::Engine::ObjectHandle<DF2D::Engine::GameObject> target, DF2D::Core::RectF bounds, DF2D::Core::Vector2F offset = DF2D::Core::Vector2F::Zero, float followSpeed = 10.0f);
 };

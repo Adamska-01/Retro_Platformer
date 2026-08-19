@@ -1,25 +1,29 @@
 #include "Components/UI/TextMeshScroller.h"
+#include "Engine/Events/Context/Renderer/RenderTargetSizeChangedEvent.h"
 #include <Components/UI/MenuManager.h>
-#include <Core/Framerate/FrameTimer.h>
-#include <Core/SubSystems/Systems/Renderer.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/EngineEvents/Events/SubSystems/Renderer/RenderTargetSizeChangedEvent.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Services/Time/Abstractions/ITimeProvider.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Coroutines/CoroutineHelpers.h>
 
 
-TextMeshScroller::TextMeshScroller(TextMesh* textMesh, float scrollSpeed)
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
+TextMeshScroller::TextMeshScroller(ComponentHandle<TextMesh> textMesh, float scrollSpeed)
 	: textMesh(textMesh),
-	menuManager(nullptr),
 	activeTask(nullptr),
 	scrollSpeed(scrollSpeed)
 {
-	Tools::Helpers::GuardAgainstNull(textMesh, "TextMesh is nullptr in TextMeshScroller");
-
-	resolutionTarget = Renderer::GetResolutionTarget();
+	Guard::AgainstNull(textMesh, NAME_OF(textMesh));
 }
 
 TextMeshScroller::~TextMeshScroller()
@@ -36,7 +40,7 @@ void TextMeshScroller::RenderTargetSizeChangedEventHandlers(std::shared_ptr<Disp
 	resolutionTarget = renderTargetSizeChangeEvent->renderTargetSize;
 }
 
-void TextMeshScroller::OnGameObjectActiveStateChangedHandler(GameObject* obj, bool isActive)
+void TextMeshScroller::OnGameObjectActiveStateChangedHandler(const ObjectHandle<GameObject>& obj, bool isActive)
 {
 	if (activeTask != nullptr && !activeTask->IsDone() && !activeTask->IsCancelled())
 	{
@@ -47,30 +51,20 @@ void TextMeshScroller::OnGameObjectActiveStateChangedHandler(GameObject* obj, bo
 
 	if (isActive)
 	{
-		activeTask = &CoroutineScheduler::StartCoroutine(ScrollText());
+		activeTask = &GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(ScrollText());
 	}
 }
 
 void TextMeshScroller::Init()
 {
-	menuManager = SceneManager::FindObjectOfType<MenuManager>();
+	menuManager = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<MenuManager>(), NAME_OF(menuManager));
 
-	Tools::Helpers::GuardAgainstNull(menuManager, "Failed to get menuManager from TextMeshScroller");
-}
+	auto renderer = GetGameObject()->CoreContext().renderer;
 
-void TextMeshScroller::Start()
-{
-
-}
-
-void TextMeshScroller::Update(float deltaTime)
-{
-
-}
-
-void TextMeshScroller::Draw()
-{
-
+	if (renderer != nullptr)
+	{
+		resolutionTarget = renderer->GetResolutionTarget();
+	}
 }
 
 Task TextMeshScroller::ScrollText()
@@ -80,7 +74,7 @@ Task TextMeshScroller::ScrollText()
 
 	auto startPos = Vector2F(resolutionTarget.x * 0.5f, resolutionTarget.y);
 	auto endPos = Vector2F(resolutionTarget.x * 0.5f, -textMesh->GetWidgetSize().y) ;
-	auto textMeshTransform = textMesh->GetGameObject().lock()->GetTransform();
+	auto textMeshTransform = textMesh->GetGameObject()->GetTransform();
 
 	textMeshTransform->SetWorldPosition(startPos);
 	textMesh->SetAnchor(UIAnchor::TOP_CENTER);
@@ -88,13 +82,13 @@ Task TextMeshScroller::ScrollText()
 	auto t = 0.0f;
 	while (t < 1.0f)
 	{
-		t += FrameTimer::DeltaTime() * scrollSpeed;
+		t += GetGameObject()->ServiceContext().frameTimer->DeltaTime() * scrollSpeed;
 
 		auto newPos = Vector2F::Lerp(startPos, endPos, t);
 
 		textMeshTransform->SetWorldPosition(newPos);
 
-		co_await Tools::Helpers::Coroutines::WaitFrame();
+		co_await CoroutineHelpers::WaitFrame();
 	}
 
 	menuManager->HideAll();

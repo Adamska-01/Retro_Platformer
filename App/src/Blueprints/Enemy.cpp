@@ -2,29 +2,28 @@
 #include "Components/AI/SimpleAI.h"
 #include <Components/AI/Behaviors/FlyingAIBehavior.h>
 #include <Components/AI/Behaviors/GroundAIBehavior.h>
-#include <Data/Collision/PhysicsMaterial.h>
-#include <Data/Physics/BodyDefinition2D.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/BoxCollider2D.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
-#include <Engine/Components/Transform.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
+#include <Engine/ECS/Component/Transform.h>
+
+
+using namespace DF2D::Core;
+using namespace DF2D::Engine;
 
 
 Enemy::Enemy(Vector2F startPos, const EnemyConfig& enemyConfig)
-	: enemyConfig(enemyConfig)
+	: enemyConfig(enemyConfig),
+	startPos(startPos)
 {
 	auto scale = 0.65f;
 
 	transform->SetWorldPosition(startPos + Vector2F::Up * (enemyConfig.characterSize - enemyConfig.characterSize * scale));
 
 	transform->SetWorldScale(Vector2F(scale, scale));
-}
 
-void Enemy::ConstructGameObject()
-{
-	AddComponent<Sprite>(enemyConfig.spriteSource);
+	AddComponent<SpriteRenderer>(enemyConfig.spriteSource);
 	
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 	spriteAnimator->AddAnimation(enemyConfig.idleAnimProperty);

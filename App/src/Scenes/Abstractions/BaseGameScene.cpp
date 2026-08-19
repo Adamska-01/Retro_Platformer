@@ -1,16 +1,23 @@
 #pragma once
 #include "Constants/CommonColors.h"
 #include "Scenes/Abstractions/BaseGameScene.h"
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Data/Blueprints/UI/ButtonBlueprintModel.h>
-#include <Data/Components/UI/ButtonComponentModel.h>
-#include <Data/Components/UI/TextMeshComponentModel.h>
+#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
+#include <Data/Blueprints/UI/Button/ButtonBlueprintModel.h>
+#include <Data/Blueprints/UI/Button/ButtonComponentModel.h>
+#include <Data/Blueprints/UI/Text/TextMeshComponentModel.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include <Engine/Components/UI/TextMesh.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 
 
-std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::function<void()>& onPressedHandler, const std::function<void()>& onEnterHandler)
+using namespace DF2D::Constants;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+
+
+ObjectHandle<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& text, const std::string_view& fontSource, const std::optional<ButtonCallback>& onPressedHandler, const std::optional<ButtonCallback>& onEnterHandler)
 {
 	ButtonBlueprintModel buttonConfiguration =
 	{
@@ -34,34 +41,19 @@ std::weak_ptr<ButtonBlueprint> BaseGameScene::CreateButton(const std::string& te
 	return GameObject::Instantiate<ButtonBlueprint>(buttonConfiguration);
 }
 
-std::weak_ptr<GameObject> BaseGameScene::CreateText(const std::string& text, const std::string_view& fontSource)
+ObjectHandle<GameObject> BaseGameScene::CreateText(const std::string& text, const std::string_view& fontSource)
 {
 	auto textMeshObject = GameObject::Instantiate<GameObject>();
 
-	textMeshObject.lock()->AddComponent<TextMesh>(TextMeshComponentModel
+	textMeshObject->AddComponent<TextMesh>(TextMeshComponentModel
 		{
 			.fontSource = fontSource,
 			.text = text,
-			.textColor = SDL_Color(255, 132, 31),
+			.textColor = Color(255, 132, 31),
 			.fontSize = 100,
 			.textObjectInitialScale = Vector2F(0.25f, 0.25f),
 			.isCentered = false
 		});
 
 	return textMeshObject;
-}
-
-std::function<void()> BaseGameScene::MakeAudioPlayAndDestroyCallback(const std::string_view& audioPath, const Vector2F& position, float volume, bool isMusic, bool loop, float destroyDelaySeconds)
-{
-	return [=]()
-		{
-			auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
-				audioPath,
-				position,
-				volume,
-				isMusic,
-				loop);
-
-			CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(destroyDelaySeconds));
-		};
 }

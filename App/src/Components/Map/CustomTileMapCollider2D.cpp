@@ -1,11 +1,15 @@
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Utilities/Debugging/Guards.h>
-#include <Utilities/Helpers/Physics/PhysicsConversion.h>
-#include <Utilities/Helpers/Physics/PhysicsShapeCreators.h>
+
+
+using namespace DF2D::Constants;
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Utilities;
 
 
 CustomTileMapCollider2D::CustomTileMapCollider2D(const PhysicsMaterial& physicsMaterial)
@@ -26,12 +30,12 @@ void CustomTileMapCollider2D::DeleteFixtures()
 	if (fixtures.size() <= 0 || rigidBody == nullptr)
 		return;
 
-	for (auto fix : fixtures)
+	for (auto fixture : fixtures)
 	{
-		if (fix == nullptr)
+		if (fixture <= 0)
 			continue;
 
-		rigidBody->DestroyFixture(fix);
+		rigidBody->DestroyFixture(fixture);
 	}
 }
 
@@ -39,9 +43,7 @@ void CustomTileMapCollider2D::Init()
 {
 	TileCollider2D::Init();
 
-	tileMapRenderer = OwningObject.lock()->GetComponent<CustomTileMapRenderer2D>();
-
-	Tools::Helpers::GuardAgainstNull(tileMapRenderer, "Failed to get CustomTileMapRenderer2D from OwningObject");
+	tileMapRenderer = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<CustomTileMapRenderer2D>(), NAME_OF(tileMapRenderer));
 
 	const auto& tileMap = tileMapRenderer->GetTileMap();
 
@@ -65,8 +67,7 @@ void CustomTileMapCollider2D::RebuildFixture()
 
 	fixtures.clear();
 
-	auto startPos = transform->GetWorldPosition();
-	auto angle = transform->GetWorldRotation() * (MathConstants::PI / 180.0f);
+	auto angle = transform->GetWorldRotation() * (MathConstants::PI_f / 180.0f);
 
 	auto mapWidth = layout.size();
 	auto mapHeight = layout[0].size();
@@ -82,19 +83,14 @@ void CustomTileMapCollider2D::RebuildFixture()
 			if (!isCollidable)
 				continue;
 
-			this->physicsMaterial.shape = PhysicsShapeCreators::CreateBoxShape(
-				tileSize * 0.5f,
-				tileSize * 0.5f,
-				Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
-				angle);
+			physicsMaterial.shape = BoxShapeDefinition2D
+			{
+				.halfExtents = Vector2F(tileSize * 0.5f, tileSize * 0.5f),
+				.center = Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
+				.angle = angle
+			};
 
-			auto def = PhysicsConversion::ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
-
-			fixtures.push_back(rigidBody->CreateFixture(&def));
-
-			// Clean up before creating another shape
-			delete this->physicsMaterial.shape;
-			this->physicsMaterial.shape = nullptr;
+			fixtures.push_back(rigidBody->CreateFixture(physicsMaterial, GetHandleAs<DF2D::Engine::ContactEventProvider>()));
 		}
 	}
 

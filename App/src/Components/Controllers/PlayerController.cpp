@@ -1,28 +1,33 @@
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/Controllers/PlayerController.h"
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Constants/AssetPaths.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Core/SubSystems/Systems/Input/Input.h>
-#include <Core/SubSystems/Systems/TextureManager.h>
+#include <Core/Context/Systems/Graphics/TextureManager.h>
+#include <Core/Context/Systems/Input/Actions/InputActionView.h>
 #include <CustomEvents/LifeLostEvent.h>
-#include <Data/Collision/CollisionInfo.h>
+#include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/BoxCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Collisions/BoxCollider2D.h>
+#include <Engine/ECS/Component/Input/PlayerInput.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 PlayerController::PlayerController(std::string_view idleSpriteSource, std::string_view runSpriteSource)
-	: transform(nullptr),
-	rigidBody(nullptr),
-	spriteAnimator(nullptr),
-	startPos(Vector2F::Zero),
-	flipState(SDL_RendererFlip::SDL_FLIP_NONE),
+	: startPos(Vector2F::Zero),
+	flipState(RenderFlip::NONE),
 	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource),
 	footContacts(0),
@@ -30,32 +35,29 @@ PlayerController::PlayerController(std::string_view idleSpriteSource, std::strin
 	jumpImpulse(50.0f),
 	yThreshold(0.0f)
 {
-	spriteCache =
-	{
-		TextureManager::LoadTexture(idleSpriteSource),
-		TextureManager::LoadTexture(runSpriteSource),
-	};
 }
 
 void PlayerController::OnContactEnterHandler(const CollisionInfo& collisionInfo)
 {
-	if (collisionInfo.otherGameObject.expired())
+	if (!collisionInfo.otherGameObject)
 		return;
 
-	auto tileComponent = collisionInfo.otherGameObject.lock()->GetComponent<CustomTileMapCollider2D>();
+	auto tileComponent = collisionInfo.otherGameObject->GetComponent<CustomTileMapCollider2D>();
 
 	if (tileComponent == nullptr)
 		return;
 
 	++footContacts;
+
+	rigidBody->SetVelocityX(0.0f);
 }
 
 void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
 {
-	if (collisionInfo.otherGameObject.expired())
+	if (!collisionInfo.otherGameObject)
 		return;
 
-	auto tileComponent = collisionInfo.otherGameObject.lock()->GetComponent<CustomTileMapCollider2D>();
+	auto tileComponent = collisionInfo.otherGameObject->GetComponent<CustomTileMapCollider2D>();
 
 	if (tileComponent == nullptr)
 		return;
@@ -63,59 +65,47 @@ void PlayerController::OnContactExitHandler(const CollisionInfo& collisionInfo)
 	--footContacts;
 }
 
-void PlayerController::Move()
+void PlayerController::MoveInputHandler(const InputActionView& inputAction)
 {
-	auto xDir = 0.0f;
+	auto dir = inputAction.ReadValue<Vector2F>();
 
-	if (Input::IsButtonHeld(PlayerInputSlot::PLAYER_1, "Left"))
-	{
-		xDir += -1.0f;
-	}
-	if (Input::IsButtonHeld(PlayerInputSlot::PLAYER_1, "Right"))
-	{
-		xDir += 1.0f;
-	}
+	rigidBody->SetVelocityX(dir.x * speed);
 
-	rigidBody->SetVelocityX(xDir * speed);
+	// Animation State
+	spriteAnimator->PlayAnimation(dir.x != 0.0f ? "Run" : "Idle");
+	spriteAnimator->SetFlipState(dir.x < 0.0f ? RenderFlip::HORIZONTAL : RenderFlip::NONE);
 }
 
-void PlayerController::Jump()
+void PlayerController::JumpInputHandler(const InputActionView& inputAction)
 {
-	if (Input::IsButtonPressed(PlayerInputSlot::PLAYER_1, "Jump") && footContacts > 0)
-	{
-		rigidBody->AddImpulse(Vector2F::Up * jumpImpulse);
+	if (!inputAction.IsStarted() || footContacts <= 0)
+		return;
 
-		// Jump Sound
-		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
+	rigidBody->AddImpulse(Vector2F::Up * jumpImpulse);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
-	}
-}
+	// Jump Sound (self-destroys once the clip finishes)
+	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
 
-void PlayerController::AnimationState()
-{
-	auto xVel = rigidBody->GetVelocity().x;
-
-	auto animationName = xVel != 0.0f ? "Run" : "Idle";
-	auto flipState = xVel < 0.0f ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-	spriteAnimator->PlayAnimation(animationName);
-	spriteAnimator->SetFlipState(flipState);
+	soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 }
 
 void PlayerController::Init()
 {
-	transform = OwningObject.lock()->GetComponent<Transform>();
-	rigidBody = OwningObject.lock()->GetComponent<RigidBody2D>();
-	spriteAnimator = OwningObject.lock()->GetComponent<SpriteAnimator>();
-
-	Tools::Helpers::GuardAgainstNull(transform, "Failed to get Transform from OwningObject");
-	Tools::Helpers::GuardAgainstNull(rigidBody, "Failed to get RigidBody2D from OwningObject");
-	Tools::Helpers::GuardAgainstNull(spriteAnimator, "Failed to get SpriteAnimator from OwningObject");
+	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
+	rigidBody = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<RigidBody2D>(), NAME_OF(rigidBody));
+	spriteAnimator = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<SpriteAnimator>(), NAME_OF(spriteAnimator));
 }
 
 void PlayerController::Start()
 {
+	textureManager = GetGameObject()->CoreContext().textureManager;
+
+	spriteCache =
+	{
+		textureManager->LoadTexture(idleSpriteSource),
+		textureManager->LoadTexture(runSpriteSource),
+	};
+
 	auto idleAnim = SpriteAnimationProperties
 	{
 		.name = "Idle",
@@ -141,43 +131,39 @@ void PlayerController::Start()
 
 	startPos = transform->GetWorldPosition();
 
-	auto boxCollider = OwningObject.lock()->GetComponent<BoxCollider2D>();
-
-	auto tileRenderer = SceneManager::FindObjectOfType<CustomTileMapRenderer2D>();
+	auto tileRenderer = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<CustomTileMapRenderer2D>(), NAME_OF(tileRenderer));
 	
 	auto mapFullSize = tileRenderer->GetMapFullSize();
 
-	auto tileRendererPos = tileRenderer->GetGameObject().lock()->GetTransform()->GetWorldPosition();
+	auto tileRendererPos = tileRenderer->GetGameObject()->GetTransform()->GetWorldPosition();
 
 	yThreshold = tileRendererPos.y + mapFullSize.y + 100.0f; // Add some gap
 
-	if (boxCollider == nullptr)
-		return;
+	auto boxCollider = Guard::AgainstNullAssignment(GetGameObject()->GetComponentInChildren<BoxCollider2D>(), NAME_OF(boxCollider));
 
-	boxCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
-	boxCollider->RegisterContactExitHandler(EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler), reinterpret_cast<uintptr_t>(this));
+	boxCollider->RegisterContactEnterHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactEnterHandler));
+	boxCollider->RegisterContactExitHandler(GetHandle(), EventHelpers::BindFunction(this, &PlayerController::OnContactExitHandler));
+
+	// Input Registration
+	auto playerInput = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<PlayerInput>(), NAME_OF(playerInput));
+
+	playerInput->RegisterAction("Default", "Move", GetHandle(), EventHelpers::BindFunction(this, &PlayerController::MoveInputHandler));
+	playerInput->RegisterAction("Default", "Jump", GetHandle(), EventHelpers::BindFunction(this, &PlayerController::JumpInputHandler));
 }
 
 void PlayerController::Update(float deltaTime)
 {
-	Move();
-	Jump();
-	AnimationState();
-
 	if (transform->GetWorldPosition().y > yThreshold)
 	{
 		LoseLife();
 	}
 }
 
-void PlayerController::Draw()
-{
-
-}
-
 void PlayerController::LoseLife()
 {
-	EventDispatcher::SendEvent(std::make_shared<LifeLostEvent>());
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->SendEvent(std::make_shared<LifeLostEvent>());
 
 	transform->SetWorldPosition(startPos);
 }

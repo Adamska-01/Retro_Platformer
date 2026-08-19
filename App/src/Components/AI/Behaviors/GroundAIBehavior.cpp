@@ -1,7 +1,12 @@
 #include "Components/AI/Behaviors/GroundAIBehavior.h"
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Transform.h>
+#include <Data/Systems/Rendering/RenderFlip.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+
+
+using namespace DF2D::Core;
+using namespace DF2D::Data;
 
 
 GroundAIBehavior::GroundAIBehavior()
@@ -21,8 +26,8 @@ void GroundAIBehavior::Update(SimpleAI* ai, float deltaTime)
 		movingLeft = !movingLeft;
 
 		auto spriteFlipState = movingLeft
-			? SDL_RendererFlip::SDL_FLIP_NONE
-			: SDL_RendererFlip::SDL_FLIP_HORIZONTAL;
+			? RenderFlip::NONE
+			: RenderFlip::HORIZONTAL;
 
 		aiSpriteAnimator->SetFlipState(spriteFlipState);
 	}

@@ -1,8 +1,8 @@
 #pragma once
-#include <Engine/EngineEvents/DispatchableEvent.h>
+#include <Engine/ECS/System/Events/DispatchableEvent.h>
 
 
-class LifeLostEvent : public DispatchableEvent
+class LifeLostEvent : public DF2D::Engine::DispatchableEvent
 {
 public:
 	LifeLostEvent() = default;

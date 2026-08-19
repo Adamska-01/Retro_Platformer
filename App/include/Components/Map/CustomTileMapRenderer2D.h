@@ -1,16 +1,32 @@
 #pragma once
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/TileMap/TileMapRenderer.h>
+#include <Engine/ECS/Component/Rendering/TileMap/Abstractions/TileMapRenderer.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <Models/Map/TileMapModel.h>
 
 
-class Transform;
-
-
-class CustomTileMapRenderer2D : public TileMapRenderer<std::shared_ptr<TileMapModel>>
+namespace DF2D::Core
 {
+	class TextureManager;
+}
+
+namespace DF2D::Engine
+{
+	class Transform;
+}
+
+
+class CustomTileMapRenderer2D : public DF2D::Engine::TileMapRenderer<std::shared_ptr<TileMapModel>>
+{
+	TYPE_INFO(CustomTileMapRenderer2D, DF2D::Engine::TileMapRenderer<std::shared_ptr<TileMapModel>>);
+
+
 private:
-	Transform* transform;
+	bool extendMapToRenderTarget = false;
+
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> transform;
+
+	DF2D::Core::TextureManager* textureManager = nullptr;
 
 
 public:
@@ -19,12 +35,8 @@ public:
 
 	virtual void Init() override;
 
-	virtual void Start() override;
-
-	virtual void Update(float dt) override;
-
 	virtual void Draw() override;
 
 
-	Vector2I GetMapFullSize();
+	DF2D::Core::Vector2I GetMapFullSize();
 };

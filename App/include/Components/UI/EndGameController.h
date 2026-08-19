@@ -1,25 +1,34 @@
 #pragma once
-#include <Engine/Components/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <memory>
 
 
 class MenuManager;
-class DispatchableEvent;
-class TextMesh;
 class StatsController;
 
-
-class EndGameController : public GameComponent
+namespace DF2D::Engine
 {
+	class TextMesh;
+	class DispatchableEvent;
+}
+
+
+
+class EndGameController : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(EndGameController, DF2D::Engine::GameComponent);
+
+
 private:
-	MenuManager* menuManager;
+	DF2D::Engine::ComponentHandle<MenuManager> menuManager;
 
-	TextMesh* endGameTextMesh;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> endGameTextMesh;
 
-	StatsController* statsController;
+	DF2D::Engine::ComponentHandle<StatsController> statsController;
 
 
-	void OnGameEndedHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void OnGameEndedHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
 
 public:
@@ -30,12 +39,6 @@ public:
 
 	virtual void Init() override;
 
-	virtual void Start() override;
 
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
-
-
-	void SetEndGameTextMesh(TextMesh* endGameTextMesh);
+	void SetEndGameTextMesh(DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> endGameTextMesh);
 };

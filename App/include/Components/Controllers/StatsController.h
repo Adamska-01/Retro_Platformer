@@ -1,27 +1,37 @@
 #pragma once
-#include <Engine/Components/GameComponent.h>
-#include <Engine/EngineEvents/DispatchableEvent.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
+#include <Engine/ECS/System/Events/DispatchableEvent.h>
 #include <memory>
 
 
-class TextMesh;
-
-
-class StatsController : public GameComponent
+namespace DF2D::Engine
 {
+	class TextMesh;
+	class EventDispatcher;
+}
+
+
+class StatsController : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(StatsController, DF2D::Engine::GameComponent);
+
+
 private:
+	DF2D::Engine::EventDispatcher* eventDispatcher = nullptr;
+
 	int score;
 
 	int lifes;
 
-	TextMesh* scoreTextMesh;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> scoreTextMesh;
 
-	TextMesh* lifesTextMesh;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> lifesTextMesh;
 
 
-	void PointsScoredEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void PointsScoredEventHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
-	void LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent);
+	void LifeLostEventHandler(std::shared_ptr<DF2D::Engine::DispatchableEvent> dispatchableEvent);
 
 
 public:
@@ -34,14 +44,10 @@ public:
 
 	virtual void Start() override;
 
-	virtual void Update(float deltaTime) override;
 
-	virtual void Draw() override;
+	void SetScoreTextMesh(DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> scoreTextMesh);
 
-
-	void SetScoreTextMesh(TextMesh* scoreTextMesh);
-
-	void SetLifesTextMesh(TextMesh* lifesTextMesh);
+	void SetLifesTextMesh(DF2D::Engine::ComponentHandle<DF2D::Engine::TextMesh> lifesTextMesh);
 
 	int GetScore();
 

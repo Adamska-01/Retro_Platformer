@@ -1,54 +1,35 @@
 #include "Blueprints/Coin.h"
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/Controllers/PlayerController.h"
 #include "Constants/AssetPaths.h"
 #include "CustomEvents/PointsScoredEvent.h"
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
-#include <Data/Collision/CollisionInfo.h>
+#include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 Coin::Coin(Vector2F startPos, std::string_view spriteSource)
-	: score(100),
+	: startPos(startPos),
+	score(100),
 	spriteSource(spriteSource)
 {
 	transform->SetWorldPosition(startPos);
 	transform->SetWorldScale(Vector2F::One * 2.0f);
-}
 
-void Coin::OnContactEnterHandler(const CollisionInfo& collisionInfo)
-{
-	const auto& other = collisionInfo.otherGameObject.lock();
-	
-	if (other == nullptr)
-		return;
-
-	auto playerComponent = other->GetComponent<PlayerController>();
-
-	if (playerComponent == nullptr)
-		return;
-
-	EventDispatcher::SendEvent(std::make_shared<PointsScoredEvent>(score));
-
-	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
-		AssetPaths::Files::COIN_TAKEN,
-		Vector2F::Zero,
-		0.5f);
-
-	CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
-
-	Destroy();
-}
-
-void Coin::ConstructGameObject()
-{
-	AddComponent<Sprite>(spriteSource);
+	AddComponent<SpriteRenderer>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
 	auto coinFlipAnimation = SpriteAnimationProperties
@@ -76,5 +57,32 @@ void Coin::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(GetObjectHandle(), EventHelpers::BindFunction(this, &Coin::OnContactEnterHandler));
+}
+
+void Coin::OnContactEnterHandler(const CollisionInfo& collisionInfo)
+{
+	const auto& other = collisionInfo.otherGameObject;
+	
+	if (other == nullptr)
+		return;
+
+	auto playerComponent = other->GetComponent<PlayerController>();
+
+	if (playerComponent == nullptr)
+		return;
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->SendEvent(std::make_shared<PointsScoredEvent>(score));
+
+	// Coin pickup sound (self-destroys once the clip finishes)
+	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
+		AssetPaths::Files::COIN_TAKEN,
+		Vector2F::Zero,
+		0.5f);
+
+	soundSourceObj->AddComponent<DestroyOnAudioFinished>();
+
+	Destroy();
 }

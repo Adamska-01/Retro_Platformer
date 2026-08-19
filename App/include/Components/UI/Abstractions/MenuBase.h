@@ -1,26 +1,35 @@
 #pragma once
-#include <Engine/Components/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
+#include <functional>
 #include <vector>
 
 
-class IInteractableUI;
 class MenuManager;
 
-
-class MenuBase : public GameComponent
+namespace DF2D::Engine
 {
+	class IInteractableUI;
+}
+
+
+class MenuBase : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(MenuBase, DF2D::Engine::GameComponent);
+
+
 private:
-	void Navigate(IInteractableUI* (*getNext)(IInteractableUI*));
+	void Navigate(std::function<DF2D::Engine::ComponentHandle<DF2D::Engine::IInteractableUI>(DF2D::Engine::ComponentHandle<DF2D::Engine::IInteractableUI>)> getNext);
 
 
 protected:
-	MenuManager* menuManager;
+	DF2D::Engine::ComponentHandle<MenuManager> menuManager;
 
-	MenuBase* previousMenu;
+	DF2D::Engine::ComponentHandle<MenuBase> previousMenu;
 
-	std::vector<IInteractableUI*> allInteractables;
+	std::vector<DF2D::Engine::ComponentHandle<DF2D::Engine::IInteractableUI>> allInteractables;
 
-	IInteractableUI* selectedInteractable;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::IInteractableUI> selectedInteractable;
 
 
 public:
@@ -30,12 +39,6 @@ public:
 
 
 	virtual void Init() override;
-
-	virtual void Start() override;
-
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
 
 
 	virtual void Show();
@@ -57,5 +60,5 @@ public:
 	virtual void GoBack();
 
 
-	void SetPreviousMenu(MenuBase* previousMenu);
+	void SetPreviousMenu(DF2D::Engine::ComponentHandle<MenuBase> previousMenu);
 };

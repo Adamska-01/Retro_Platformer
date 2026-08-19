@@ -13,32 +13,41 @@
 #include "Scenes/MainGameScene.h"
 #include <Blueprints/FollowCameraObject.h>
 #include <Blueprints/Player.h>
-#include <Core/CoreEvents/EventManager.h>
-#include <Core/SubSystems/Systems/Renderer.h>
-#include <Data/Components/UI/TextMeshComponentModel.h>
+#include <Components/UI/MenuFunctions.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Services/Events/EventManager.h>
+#include <Data/Blueprints/UI/Text/TextMeshComponentModel.h>
 #include <Data/UI/MenuID.h>
 #include <Engine/Blueprints/UI/ButtonBlueprint.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Components/UI/Button.h>
-#include <Engine/Components/UI/Canvas.h>
-#include <Engine/Components/UI/Image.h>
-#include <Engine/Components/UI/Layout/VerticalLayoutGroup.h>
-#include <Engine/Components/UI/TextMesh.h>
-#include <Engine/Entity/GameObject.h>
-#include <Engine/SceneSystem/SceneManager.h>
+#include <Engine/ECS/Component/Input/PlayerInput.h>
+#include <Engine/ECS/Component/Rendering/Camera/Camera.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Component/UI/Button.h>
+#include <Engine/ECS/Component/UI/Canvas.h>
+#include <Engine/ECS/Component/UI/Image.h>
+#include <Engine/ECS/Component/UI/Layout/VerticalLayoutGroup.h>
+#include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Scene/SceneManager.h>
 #include <Scenes/MainMenuScene.h>
-#include <Utilities/Serialization/JsonSerializer.h>
+#include <Utilities/IO/Serialization/JsonSerializer.h>
 
 
-std::weak_ptr<GameObject> MainGameScene::CreateText(const std::string& text)
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
+ObjectHandle<GameObject> MainGameScene::CreateText(const std::string& text)
 {
 	auto textMeshObject = GameObject::Instantiate<GameObject>();
 
-	textMeshObject.lock()->AddComponent<TextMesh>(TextMeshComponentModel
+	textMeshObject->AddComponent<TextMesh>(TextMeshComponentModel
 		{
 			.fontSource = AssetPaths::Files::GAMEPLAY_FONT,
 			.text = text,
-			.textColor = SDL_Color(255, 132, 31),
+			.textColor = Color(255, 132, 31),
 			.fontSize = 100,
 			.textObjectInitialScale = Vector2F(0.25f, 0.25f),
 			.isCentered = true
@@ -47,97 +56,96 @@ std::weak_ptr<GameObject> MainGameScene::CreateText(const std::string& text)
 	return textMeshObject;
 }
 
-MenuBase* MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+ComponentHandle<MenuBase> MainGameScene::CreateEndScreen(std::string menuTitle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-	auto renderTargetSize = Renderer::GetResolutionTarget();
+	auto renderTargetSize = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	auto endScreenMenuObject = GameObject::Instantiate<GameObject>();
-	auto endScreenMenuBase = endScreenMenuObject.lock()->AddComponent<MenuBase>();
-	auto endGameController = endScreenMenuObject.lock()->AddComponent<EndGameController>();
+	auto endScreenMenuBase = endScreenMenuObject->AddComponent<MenuBase>();
+	auto endGameController = endScreenMenuObject->AddComponent<EndGameController>();
 
 	auto background = GameObject::Instantiate<GameObject>();
-	auto imageBackground = background.lock()->AddComponent<Image>();
+	auto imageBackground = background->AddComponent<Image>();
 	imageBackground->SetWidgetSize(Vector2F(renderTargetSize.x, renderTargetSize.y));
 	imageBackground->SetAnchor(UIAnchor::TOP_LEFT);
 	imageBackground->SetColor(r, g, b, a);
 
-	auto enterCallback = MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
-	auto title = CreateText(menuTitle);
-	auto spButton = CreateButton("Back To Menu", AssetPaths::Files::GAMEPLAY_FONT, []() { SceneManager::LoadScene<MainMenuScene>(); }, enterCallback);
-	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, []() { EventManager::SendSystemEvent(SDL_EventType::SDL_QUIT); }, enterCallback);
+	auto menuFunctions = GameObject::Instantiate<GameObject>()->AddComponent<MenuFunctions>();
 
-	spButton.lock()->GetComponent<Button>()->SetNavigableUpElement(exitButton.lock()->GetComponent<Button>());
-	spButton.lock()->GetComponent<Button>()->SetNavigableDownElement(exitButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableUpElement(spButton.lock()->GetComponent<Button>());
-	exitButton.lock()->GetComponent<Button>()->SetNavigableDownElement(spButton.lock()->GetComponent<Button>());
+	auto title = CreateText(menuTitle);
+	auto spButton = CreateButton("Back To Menu", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->LoadMenu(), menuFunctions->SelectUI());
+	auto exitButton = CreateButton("Exit", AssetPaths::Files::GAMEPLAY_FONT, menuFunctions->ExitGame(), menuFunctions->SelectUI());
+
+	spButton->GetComponent<Button>()->SetNavigableUpElement(exitButton->GetComponent<Button>());
+	spButton->GetComponent<Button>()->SetNavigableDownElement(exitButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableUpElement(spButton->GetComponent<Button>());
+	exitButton->GetComponent<Button>()->SetNavigableDownElement(spButton->GetComponent<Button>());
 
 	auto menuLayout = GameObject::Instantiate<GameObject>();
-	menuLayout.lock()->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
-	menuLayout.lock()->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
-	menuLayout.lock()->AddChildGameObject(title);
-	menuLayout.lock()->AddChildGameObject(spButton);
-	menuLayout.lock()->AddChildGameObject(exitButton);
+	menuLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
+	menuLayout->GetComponent<Transform>()->SetWorldPosition(Vector2F(renderTargetSize.x * 0.5f, renderTargetSize.y * 0.5f));
+	title->SetParent(menuLayout);
+	spButton->SetParent(menuLayout);
+	exitButton->SetParent(menuLayout);
 
-	endScreenMenuObject.lock()->AddChildGameObject(background);
-	endScreenMenuObject.lock()->AddChildGameObject(menuLayout);
+	background->SetParent(endScreenMenuObject);
+	menuLayout->SetParent(endScreenMenuObject);
 
-	endGameController->SetEndGameTextMesh(title.lock()->GetComponent<TextMesh>());
+	endGameController->SetEndGameTextMesh(title->GetComponent<TextMesh>());
 
 	endScreenMenuBase->Hide();
 
 	return endScreenMenuBase;
 }
 
-MenuBase* MainGameScene::CreateHUD()
+ComponentHandle<MenuBase> MainGameScene::CreateHUD()
 {
-	auto renderTargetSize = Renderer::GetResolutionTarget();
+	auto renderTargetSize = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	auto hudMenuObject = GameObject::Instantiate<GameObject>();
-	auto hudMenuBase = hudMenuObject.lock()->AddComponent<MenuBase>();
+	auto hudMenuBase = hudMenuObject->AddComponent<MenuBase>();
 
 	auto scoreLayout = GameObject::Instantiate<GameObject>();
-	scoreLayout.lock()->GetTransform()->SetWorldPosition(Vector2F(20, 40));
-	auto statsComponent = scoreLayout.lock()->AddComponent<StatsController>();
-	scoreLayout.lock()->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
+	scoreLayout->GetTransform()->SetWorldPosition(Vector2F(20, 40));
+	auto statsComponent = scoreLayout->AddComponent<StatsController>();
+	scoreLayout->AddComponent<VerticalLayoutGroup>(20.0f, LayoutPadding());
 
 	auto scoreTextObj = CreateText("Score: xx");
-	scoreTextObj.lock()->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
+	scoreTextObj->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
 
 	auto lifesTextObj = CreateText("Lifes: xx");
-	lifesTextObj.lock()->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
+	lifesTextObj->GetComponent<TextMesh>()->SetAnchor(UIAnchor::TOP_LEFT);
 
-	scoreLayout.lock()->AddChildGameObject(scoreTextObj);
-	scoreLayout.lock()->AddChildGameObject(lifesTextObj);
+	scoreTextObj->SetParent(scoreLayout);
+	lifesTextObj->SetParent(scoreLayout);
 
-	statsComponent->SetScoreTextMesh(scoreTextObj.lock()->GetComponent<TextMesh>());
-	statsComponent->SetLifesTextMesh(lifesTextObj.lock()->GetComponent<TextMesh>());
+	statsComponent->SetScoreTextMesh(scoreTextObj->GetComponent<TextMesh>());
+	statsComponent->SetLifesTextMesh(lifesTextObj->GetComponent<TextMesh>());
 
-	hudMenuObject.lock()->AddChildGameObject(scoreLayout);
+	scoreLayout->SetParent(hudMenuObject);
 
 	return hudMenuBase;
 }
 
 void MainGameScene::Enter()
 {
-	auto resolutionTarget = Renderer::GetResolutionTarget();
+	auto resolutionTarget = SceneManager::GetCoreContext().renderer->GetResolutionTarget();
 
 	// UI
 	auto canvasObject = GameObject::Instantiate<GameObject>();
-	canvasObject.lock()->AddComponent<Canvas>();
+	canvasObject->AddComponent<Canvas>();
 
 
 	auto hud = CreateHUD();
 	auto endGameMenuBase = CreateEndScreen("GameOver!", 0, 0, 0, 120);
 
-	canvasObject.lock()->AddChildGameObject(hud->GetGameObject());
-	canvasObject.lock()->AddChildGameObject(endGameMenuBase->GetGameObject());
+	hud->GetGameObject()->SetParent(canvasObject);
+	endGameMenuBase->GetGameObject()->SetParent(canvasObject);
 
 	auto menuManagerObject = GameObject::Instantiate<GameObject>();
-	auto menuManagerComponent = menuManagerObject.lock()->AddComponent<MenuManager>();
-
-	menuManagerComponent->RegisterMenu(MenuID::HUD, hud);
-	menuManagerComponent->RegisterMenu(MenuID::END_GAME_MENU, endGameMenuBase);
-
+	auto menuManagerComponent = menuManagerObject->AddComponent<MenuManager>();
+	menuManagerComponent->RegisterMenu(MenuID::HUD, hud->GetHandleAs<MenuBase>());
+	menuManagerComponent->RegisterMenu(MenuID::END_GAME_MENU, endGameMenuBase->GetHandleAs<MenuBase>());
 	menuManagerComponent->HideAll();
 	menuManagerComponent->ShowMenu(MenuID::HUD);
 
@@ -201,10 +209,9 @@ void MainGameScene::Enter()
 		AssetPaths::Files::PLAYER_IDLE_SPRITE, 
 		AssetPaths::Files::PLAYER_RUN_SPRITE);
 
-	
-	auto mapFullSize = gameMap.lock()->GetComponentInChildren<CustomTileMapRenderer2D>()->GetMapFullSize();
-	auto gameMapPosition = gameMap.lock()->GetTransform()->GetWorldPosition();
-	auto mapBounds = SDL_FRect
+	auto mapFullSize = gameMap->GetComponentInChildren<CustomTileMapRenderer2D>()->GetMapFullSize();
+	auto gameMapPosition = gameMap->GetTransform()->GetWorldPosition();
+	auto mapBounds = RectF
 	{
 		gameMapPosition.x,
 		gameMapPosition.y,
@@ -213,4 +220,9 @@ void MainGameScene::Enter()
 	};
 
 	GameObject::Instantiate<FollowCameraObject>(playerObj, mapBounds);
+	
+	// Input
+	auto playerInputObject = GameObject::Instantiate<GameObject>();
+	auto playerInputComponent = playerInputObject->AddComponent<PlayerInput>("Player1");
+	playerInputComponent->EnableActionMap("Default");
 }

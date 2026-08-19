@@ -1,9 +1,14 @@
 #include "Components/AI/Behaviors/FlyingAIBehavior.h"
 #include "Components/AI/SimpleAI.h"
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
+#include <Data/Systems/Rendering/RenderFlip.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+
+
+using namespace DF2D::Core;
+using namespace DF2D::Data;
 
 
 FlyingAIBehavior::FlyingAIBehavior()
@@ -43,7 +48,7 @@ void FlyingAIBehavior::Update(SimpleAI* ai, float deltaTime)
 
 	aiRigidBody->SetVelocity(movementDir * speed);
 
-	auto flipState = (playerPos.x < currentPos.x) ? SDL_RendererFlip::SDL_FLIP_NONE : SDL_RendererFlip::SDL_FLIP_HORIZONTAL;
+	auto flipState = (playerPos.x < currentPos.x) ? RenderFlip::NONE : RenderFlip::HORIZONTAL;
 
 	aiSpriteAnimator->SetFlipState(flipState);
 }

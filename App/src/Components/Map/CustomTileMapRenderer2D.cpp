@@ -1,44 +1,66 @@
 #include "Components/Map/CustomTileMapRenderer2D.h"
-#include <Core/SubSystems/Systems/Renderer.h>
-#include <Core/SubSystems/Systems/TextureManager.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/Entity/GameObject.h>
+#include <Core/Context/Systems/Graphics/TextureManager.h>
+#include <Core/Context/Systems/Rendering/Renderer.h>
+#include <Core/Context/Systems/Rendering/RenderSystem.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Utilities/Debugging/Guards.h>
+
+
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
 
 
 CustomTileMapRenderer2D::CustomTileMapRenderer2D(std::shared_ptr<TileMapModel> tileMap, bool extendMapToRenderTarget)
 {
 	this->tileMap = tileMap;
-
-	if (!extendMapToRenderTarget)
-		return;
-
-	auto width = static_cast<int>(tileMap->layout[0].size());
-	auto height = static_cast<int>(tileMap->layout.size());
-
-	Renderer::SetResolutionTarget({ width * tileMap->tileRenderSize, height * tileMap->tileRenderSize });
+	this->extendMapToRenderTarget = extendMapToRenderTarget;
 }
 
 void CustomTileMapRenderer2D::Init()
 {
-	transform = OwningObject.lock()->GetComponent<Transform>();
-}
+	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
+	textureManager = GetGameObject()->CoreContext().textureManager;
 
-void CustomTileMapRenderer2D::Start()
-{
+	if (extendMapToRenderTarget)
+	{
+		auto renderer = GetGameObject()->CoreContext().renderer;
 
-}
+		if (renderer != nullptr)
+		{
+			auto width = static_cast<int>(tileMap->layout[0].size());
+			auto height = static_cast<int>(tileMap->layout.size());
 
-void CustomTileMapRenderer2D::Update(float dt)
-{
+			renderer->SetResolutionTarget({ width * tileMap->tileRenderSize, height * tileMap->tileRenderSize });
+		}
+	}
 
+	tileMap->tileSet.LoadTexture(textureManager);
 }
 
 void CustomTileMapRenderer2D::Draw()
 {
 	const auto& tileLayout = tileMap->layout;
+	const auto tileSize = tileMap->textureTileSize;
+	const auto tileRenderSize = tileMap->tileRenderSize;
 
-	SDL_Rect srcRect{ 0, 0, tileMap->textureTileSize, tileMap->textureTileSize };
-	SDL_Rect destRect{ 0, 0, tileMap->tileRenderSize, tileMap->tileRenderSize };
+	auto srcRect = RectI
+	{
+		0,
+		0,
+		tileSize,
+		tileSize
+	};
+
+	auto destRect = RectF
+	{
+		0.0f,
+		0.0f,
+		static_cast<float>(tileRenderSize),
+		static_cast<float>(tileRenderSize)
+	};
 
 	auto startPos = transform->GetWorldPosition();
 	auto rotation = transform->GetWorldRotation();
@@ -46,7 +68,9 @@ void CustomTileMapRenderer2D::Draw()
 	auto mapWidth = tileLayout.size();
 	auto mapHeight = tileLayout[0].size();
 
-	// TODO: optimize and draw only what's visible in the camera
+	auto batchData = SpriteBatchRenderData();
+	batchData.spriteBatch.reserve(mapWidth * mapHeight);
+
 	for (auto row = 0; row < mapWidth; row++)
 	{
 		for (auto column = 0; column < mapHeight; column++)
@@ -59,9 +83,21 @@ void CustomTileMapRenderer2D::Draw()
 			destRect.x = startPos.x + column * destRect.w;
 			destRect.y = startPos.y + row * destRect.h;
 
-			TextureManager::DrawTextureWorldSpace(tileMap->tileSet.tileSetTexture, &srcRect, &destRect, rotation);
+			auto renderData = SpriteRenderData
+			{
+				.texture = tileMap->tileSet.tileSetTexture,
+				.srcRect = srcRect,
+				.destRect = destRect,
+				.rotation = rotation
+			};
+
+			batchData.spriteBatch.push_back(renderData);
 		}
 	}
+
+	renderTask.renderData = std::move(batchData);
+
+	RenderSystem::Submit(renderTask);
 }
 
 Vector2I CustomTileMapRenderer2D::GetMapFullSize()

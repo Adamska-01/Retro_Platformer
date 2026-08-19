@@ -1,32 +1,51 @@
 #pragma once
 #include <array>
 #include <Core/Math/Vector2.h>
-#include <Engine/Components/GameComponent.h>
-#include <memory>
-#include <SDL.h>
+#include <Data/Systems/Graphics/TextureID.h>
+#include <Data/Systems/Rendering/RenderFlip.h>
+#include <Engine/ECS/Entity/Component/Core/GameComponent.h>
+#include <Engine/ECS/Entity/Component/Handle/ComponentHandle.h>
 #include <string_view>
 
 
-class Transform;
-class RigidBody2D;
-class SpriteAnimator;
-struct CollisionInfo;
-
-
-class PlayerController : public GameComponent
+namespace DF2D::Core
 {
+	class InputActionView;
+	class TextureManager;
+}
+
+namespace DF2D::Engine
+{
+	class Transform;
+	class RigidBody2D;
+	class SpriteAnimator;
+}
+
+namespace DF2D::Data
+{
+	struct CollisionInfo;
+}
+
+
+class PlayerController : public DF2D::Engine::GameComponent
+{
+	TYPE_INFO(PlayerController, DF2D::Engine::GameComponent);
+
+
 private:
-	Transform* transform;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::Transform> transform;
 
-	RigidBody2D* rigidBody;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::RigidBody2D> rigidBody;
 
-	SpriteAnimator* spriteAnimator;
+	DF2D::Engine::ComponentHandle<DF2D::Engine::SpriteAnimator> spriteAnimator;
 
-	Vector2F startPos;
+	DF2D::Core::TextureManager* textureManager = nullptr;
 
-	SDL_RendererFlip flipState;
+	DF2D::Core::Vector2F startPos;
 
-	std::array<std::shared_ptr<SDL_Texture>, 2> spriteCache;
+	DF2D::Data::RenderFlip flipState;
+
+	std::array<DF2D::Data::TextureID, 2> spriteCache{};
 
 	std::string_view idleSpriteSource;
 
@@ -41,15 +60,14 @@ private:
 	float yThreshold;
 
 
-	void OnContactEnterHandler(const CollisionInfo& collisionInfo);
+	void OnContactEnterHandler(const DF2D::Data::CollisionInfo& collisionInfo);
 
-	void OnContactExitHandler(const CollisionInfo& collisionInfo);
+	void OnContactExitHandler(const DF2D::Data::CollisionInfo& collisionInfo);
 
-	void Move();
 
-	void Jump();
+	void MoveInputHandler(const DF2D::Core::InputActionView& inputAction);
 
-	void AnimationState();
+	void JumpInputHandler(const DF2D::Core::InputActionView& inputAction);
 
 
 public:
@@ -58,13 +76,11 @@ public:
 	virtual ~PlayerController() override = default;
 
 
-	virtual void Init() override;
+	void Init() override;
 
-	virtual void Start() override;
+	void Start() override;
 
-	virtual void Update(float deltaTime) override;
-
-	virtual void Draw() override;
+	void Update(float deltaTime) override;
 
 
 	void LoseLife();

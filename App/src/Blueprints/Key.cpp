@@ -1,46 +1,33 @@
 #include "Blueprints/Key.h"
-#include "Blueprints/Player.h"
 #include "Components/Controllers/PlayerController.h"
 #include "CustomEvents/GameEndedEvent.h"
 #include <CustomEvents/PointsScoredEvent.h>
-#include <Data/Collision/CollisionInfo.h>
-#include <Data/Collision/PhysicsMaterial.h>
-#include <Data/Physics/BodyDefinition2D.h>
-#include <Engine/Components/Animation/SpriteAnimator.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Rendering/Sprite.h>
-#include <Engine/Components/Transform.h>
+#include <Data/Components/Collision/CollisionInfo.h>
+#include <Data/Components/Collision/PhysicsMaterial.h>
+#include <Data/Components/Physics/BodyDefinition2D.h>
+#include <Engine/ECS/Component/Animation/SpriteAnimator.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 Key::Key(Vector2F startPos, std::string_view spriteSource)
-	: spriteSource(spriteSource)
+	: startPos(startPos),
+	spriteSource(spriteSource)
 {
 	transform->SetWorldPosition(startPos);
-}
 
-void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
-{
-	const auto& other = collisionInfo.otherGameObject.lock();
-
-	if (other == nullptr)
-		return;
-
-	auto playerComponent = other->GetComponent<PlayerController>();
-
-	if (playerComponent == nullptr)
-		return;
-
-	EventDispatcher::SendEvent(std::make_shared<PointsScoredEvent>(score));
-	EventDispatcher::SendEvent(std::make_shared<GameEndedEvent>(false));
-
-	Destroy();
-}
-
-void Key::ConstructGameObject()
-{
-	AddComponent<Sprite>(spriteSource);
+	AddComponent<SpriteRenderer>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
 	auto keyFlipAnimation = SpriteAnimationProperties
@@ -54,7 +41,7 @@ void Key::ConstructGameObject()
 
 	spriteAnimator->AddAnimation(keyFlipAnimation);
 	spriteAnimator->PlayAnimation(keyFlipAnimation.name);
-	
+
 	auto physicalMat = PhysicsMaterial
 	{
 		.isSensor = true
@@ -68,5 +55,25 @@ void Key::ConstructGameObject()
 	};
 	AddComponent<RigidBody2D>(bodyDef);
 
-	collider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &Key::OnContactEnterHandler), reinterpret_cast<uintptr_t>(this));
+	collider->RegisterContactEnterHandler(GetObjectHandle(), EventHelpers::BindFunction(this, &Key::OnContactEnterHandler));
+}
+
+void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
+{
+	const auto& other = collisionInfo.otherGameObject;
+
+	if (other == nullptr)
+		return;
+
+	auto playerComponent = other->GetComponent<PlayerController>();
+
+	if (playerComponent == nullptr)
+		return;
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->SendEvent(std::make_shared<PointsScoredEvent>(score));
+	eventDispatcher->SendEvent(std::make_shared<GameEndedEvent>(false));
+
+	Destroy();
 }

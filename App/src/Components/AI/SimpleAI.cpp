@@ -1,32 +1,35 @@
 #include "Components/AI/Abstractions/AIBehavior.h"
 #include "Components/AI/SimpleAI.h"
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/Controllers/PlayerController.h"
 #include <Constants/AssetPaths.h>
-#include <Core/SubSystems/Systems/CoroutineScheduler.h>
 #include <CustomEvents/LifeLostEvent.h>
-#include <Data/Collision/CollisionInfo.h>
+#include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
-#include <Engine/Components/Collisions/CircleCollider2D.h>
-#include <Engine/Components/Physics/RigidBody2D.h>
-#include <Engine/Components/Transform.h>
-#include <Engine/EngineEvents/EventDispatcher.h>
-#include <Engine/Entity/GameObject.h>
+#include <Engine/ECS/Component/Collisions/CircleCollider2D.h>
+#include <Engine/ECS/Component/Physics/RigidBody2D.h>
+#include <Engine/ECS/Component/Transform.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
+#include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
+using namespace DF2D::Core;
+using namespace DF2D::Data;
+using namespace DF2D::Engine;
+using namespace DF2D::Utilities;
+
+
 SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)
 	: behavior(std::move(behavior)),
-	transform(nullptr),
 	startPos(Vector2F::Zero),
 	processingPlayer(true)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), EventHelpers::BindFunction(this, &SimpleAI::LifeLostEventHandler), reinterpret_cast<std::uintptr_t>(this));
 }
 
 SimpleAI::~SimpleAI()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), reinterpret_cast<std::uintptr_t>(this));
 }
 
 void SimpleAI::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -36,8 +39,8 @@ void SimpleAI::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatcha
 
 void SimpleAI::OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo)
 {
-	auto playerPtr = collisionInfo.otherGameObject.lock();
-	auto enemyPtr = collisionInfo.thisGameObject.lock();
+	auto playerPtr = collisionInfo.otherGameObject;
+	auto enemyPtr = collisionInfo.thisGameObject;
 
 	if (playerPtr == nullptr || enemyPtr == nullptr)
 		return;
@@ -60,36 +63,38 @@ void SimpleAI::OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo)
 	// Kill enemy
 	if (dotProduct <= 1.0f && dotProduct >= 0.9f)
 	{
-		OwningObject.lock()->SetActive(false);
+		GetGameObject()->SetActive(false);
 
 		playerRigidBody->SetVelocity(Vector2F::Zero);
 		playerRigidBody->AddImpulse(Vector2F::Up * 30.0f);
 
-		// Jump Sound
+		// Enemy killed sound (self-destroys once the clip finishes)
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::ENEMY_KILLED);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
+		soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 	}
 	// Kill Player
 	else
 	{
 		playerController->LoseLife();
 
-		// Jump Sound
+		// Player killed sound (self-destroys once the clip finishes)
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
-			AssetPaths::Files::PLAYER_KILLED, 
-			Vector2F::Zero, 
+			AssetPaths::Files::PLAYER_KILLED,
+			Vector2F::Zero,
 			0.5f);
 
-		CoroutineScheduler::StartCoroutine(soundSourceObj.lock()->Destroy(1.0f));
+		soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 	}
 }
 
 void SimpleAI::Init()
 {
-	transform = OwningObject.lock()->GetComponent<Transform>();
+	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
 
-	Tools::Helpers::GuardAgainstNull(transform, "Failed to get Transform from OwningObject");
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<LifeLostEvent>(GetHandle(), EventHelpers::BindFunction(this, &SimpleAI::LifeLostEventHandler));
 
 	if (behavior == nullptr)
 		return;
@@ -101,12 +106,12 @@ void SimpleAI::Start()
 {
 	startPos = transform->GetWorldPosition();
 
-	auto circleCollider = OwningObject.lock()->GetComponent<CircleCollider2D>();
+	auto circleCollider = GetGameObject()->GetComponent<CircleCollider2D>();
 
 	if (circleCollider == nullptr)
 		return;
 
-	circleCollider->RegisterContactEnterHandler(EventHelpers::BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers), reinterpret_cast<uintptr_t>(this));
+	circleCollider->RegisterContactEnterHandler(GetHandle(), EventHelpers::BindFunction(this, &SimpleAI::OnCircleContactEnterHandlers));
 }
 
 void SimpleAI::Update(float deltaTime)
@@ -117,14 +122,9 @@ void SimpleAI::Update(float deltaTime)
 	behavior->Update(this, deltaTime);
 }
 
-void SimpleAI::Draw()
-{
-
-}
-
 void SimpleAI::Reset()
 {
-	OwningObject.lock()->SetActive(true);
+	GetGameObject()->SetActive(true);
 
 	transform->SetWorldPosition(startPos);
 

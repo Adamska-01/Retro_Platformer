@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/EngineEvents/DispatchableEvent.h"
+#include <Engine/ECS/System/Events/DispatchableEvent.h>
 
 
-class PointsScoredEvent : public DispatchableEvent
+class PointsScoredEvent : public DF2D::Engine::DispatchableEvent
 {
 public:
 	unsigned int pointsScored;

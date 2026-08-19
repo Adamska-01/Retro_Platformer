@@ -1,19 +1,17 @@
 #pragma once
 #include "Data/Entities/EnemyConfig.h"
 #include <Core/Math/Vector2.h>
-#include <Engine/Entity/GameObject.h>
-#include <string_view>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 
 
-class Enemy : public GameObject
+class Enemy : public DF2D::Engine::GameObject
 {
 private:
 	EnemyConfig enemyConfig;
 
+	DF2D::Core::Vector2F startPos;
+
 
 public:
-	Enemy(Vector2F startPos, const EnemyConfig& enemyConfig);
-
-
-	virtual void ConstructGameObject() override;
+	Enemy(DF2D::Core::Vector2F startPos, const EnemyConfig& enemyConfig);
 };
