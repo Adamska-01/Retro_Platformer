@@ -3,6 +3,7 @@
 #include "CustomEvents/LifeLostEvent.h"
 #include "CustomEvents/PointsScoredEvent.h"
 #include <Engine/ECS/Component/UI/TextMesh.h>
+#include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Engine/ECS/System/Events/EventDispatcher.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
@@ -16,14 +17,10 @@ StatsController::StatsController()
 	: score(0),
 	lifes(3)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(PointsScoredEvent)), this, &StatsController::PointsScoredEventHandler);
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), this, &StatsController::LifeLostEventHandler);
 }
 
 StatsController::~StatsController()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(PointsScoredEvent)), this);
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), this);
 }
 
 void StatsController::PointsScoredEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -46,7 +43,7 @@ void StatsController::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> di
 
 	if (lifes <= 0)
 	{
-		EventDispatcher::SendEvent(std::make_shared<GameEndedEvent>(true));
+		eventDispatcher->SendEvent(std::make_shared<GameEndedEvent>(true));
 	}
 }
 
@@ -54,6 +51,11 @@ void StatsController::Init()
 {
 	Guard::AgainstNull(scoreTextMesh, NAME_OF(scoreTextMesh));
 	Guard::AgainstNull(lifesTextMesh, NAME_OF(lifesTextMesh));
+
+	eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<PointsScoredEvent>(GetHandle(), EventHelpers::BindFunction(this, &StatsController::PointsScoredEventHandler));
+	eventDispatcher->RegisterEventHandler<LifeLostEvent>(GetHandle(), EventHelpers::BindFunction(this, &StatsController::LifeLostEventHandler));
 }
 
 void StatsController::Start()

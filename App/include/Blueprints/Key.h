@@ -25,7 +25,4 @@ private:
 
 public:
 	Key(DF2D::Core::Vector2F startPos, std::string_view spriteSource);
-
-
-	virtual void ConstructGameObject() override;
 };

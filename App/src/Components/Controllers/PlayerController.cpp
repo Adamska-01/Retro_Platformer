@@ -1,7 +1,7 @@
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/Controllers/PlayerController.h"
 #include "Components/Map/CustomTileMapCollider2D.h"
 #include <Constants/AssetPaths.h>
-#include <Core/Context/Systems/Coroutines//CoroutineScheduler.h>
 #include <Core/Context/Systems/Graphics/TextureManager.h>
 #include <Core/Context/Systems/Input/Actions/InputActionView.h>
 #include <CustomEvents/LifeLostEvent.h>
@@ -83,10 +83,10 @@ void PlayerController::JumpInputHandler(const InputActionView& inputAction)
 
 	rigidBody->AddImpulse(Vector2F::Up * jumpImpulse);
 
-	// Jump Sound
+	// Jump Sound (self-destroys once the clip finishes)
 	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::PLAYER_JUMP);
 
-	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
+	soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 }
 
 void PlayerController::Init()
@@ -161,7 +161,9 @@ void PlayerController::Update(float deltaTime)
 
 void PlayerController::LoseLife()
 {
-	EventDispatcher::SendEvent(std::make_shared<LifeLostEvent>());
-	
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->SendEvent(std::make_shared<LifeLostEvent>());
+
 	transform->SetWorldPosition(startPos);
 }

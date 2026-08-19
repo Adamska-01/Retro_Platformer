@@ -8,6 +8,7 @@
 namespace DF2D::Engine
 {
 	class TextMesh;
+	class EventDispatcher;
 }
 
 
@@ -17,6 +18,8 @@ class StatsController : public DF2D::Engine::GameComponent
 
 
 private:
+	DF2D::Engine::EventDispatcher* eventDispatcher = nullptr;
+
 	int score;
 
 	int lifes;

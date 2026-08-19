@@ -13,10 +13,6 @@ using namespace DF2D::Engine;
 GameMap::GameMap(std::shared_ptr<TileMapModel> tileMapModel)
 	: tileMapModel(tileMapModel)
 {
-}
-
-void GameMap::ConstructGameObject()
-{
 	auto bodyDef = BodyDefinition2D
 	{
 		.type = BodyType2D::Static

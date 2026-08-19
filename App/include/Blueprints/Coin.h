@@ -27,7 +27,4 @@ private:
 
 public:
 	Coin(DF2D::Core::Vector2F startPos, std::string_view spriteSource);
-
-
-	virtual void ConstructGameObject() override;
 };

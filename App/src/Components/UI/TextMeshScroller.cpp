@@ -1,13 +1,13 @@
 #include "Components/UI/TextMeshScroller.h"
+#include "Engine/Events/Context/Renderer/RenderTargetSizeChangedEvent.h"
 #include <Components/UI/MenuManager.h>
 #include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
 #include <Core/Context/Systems/Rendering/Renderer.h>
-#include <Core/Services/Time/FrameTimer.h>
+#include <Core/Services/Time/Abstractions/ITimeProvider.h>
 #include <Engine/ECS/Component/Transform.h>
 #include <Engine/ECS/Component/UI/TextMesh.h>
 #include <Engine/ECS/Entity/Object/Core/GameObject.h>
 #include <Engine/ECS/System/Scene/SceneManager.h>
-#include <Engine/Events/Context/Renderer/RenderTargetSizeChangedEvent.h>
 #include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Coroutines/CoroutineHelpers.h>
 
@@ -82,7 +82,7 @@ Task TextMeshScroller::ScrollText()
 	auto t = 0.0f;
 	while (t < 1.0f)
 	{
-		t += FrameTimer::DeltaTime() * scrollSpeed;
+		t += GetGameObject()->ServiceContext().frameTimer->DeltaTime() * scrollSpeed;
 
 		auto newPos = Vector2F::Lerp(startPos, endPos, t);
 

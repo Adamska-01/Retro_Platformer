@@ -1,9 +1,9 @@
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/UI/MenuFunctions.h"
 #include "Components/UI/MenuManager.h"
 #include "Scenes/MainGameScene.h"
 #include "Scenes/MainMenuScene.h"
 #include <Constants/AssetPaths.h>
-#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
 #include <Core/Services/Events/EventManager.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/ECS/Entity/Component/Core/GameComponent.h>
@@ -15,7 +15,7 @@ using namespace DF2D::Data;
 using namespace DF2D::Engine;
 
 
-void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audioPath, const Vector2F& position, float volume, bool isMusic, bool loop, float destroyDelaySeconds)
+void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audioPath, const Vector2F& position, float volume, bool isMusic, bool loop)
 {
 	auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
 		audioPath,
@@ -24,7 +24,11 @@ void MenuFunctions::MakeAudioPlayAndDestroyCallback(const std::string_view& audi
 		isMusic,
 		loop);
 
-	GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(destroyDelaySeconds));
+	// A looping clip is caller-managed; a one-shot self-destroys once it finishes
+	if (!loop)
+	{
+		soundSourceObj->AddComponent<DestroyOnAudioFinished>();
+	}
 }
 
 ButtonCallback MenuFunctions::LoadMenu()
@@ -34,7 +38,7 @@ ButtonCallback MenuFunctions::LoadMenu()
 		.handle = GetHandle(),
 		.callback = [this]()
 		{
-			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false);
 
 			SceneManager::LoadScene<MainMenuScene>();
 		}
@@ -48,7 +52,7 @@ ButtonCallback MenuFunctions::LoadGame()
 		.handle = GetHandle(),
 		.callback = [this]()
 		{
-			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false);
 
 			SceneManager::LoadScene<MainGameScene>();
 		}
@@ -62,7 +66,7 @@ ButtonCallback MenuFunctions::ShowCredits(const ComponentHandle<MenuManager>& me
 		.handle = GetHandle(),
 		.callback = [this, menuManager]()
 		{
-			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false);
 
 			menuManager->HideAll();
 
@@ -78,7 +82,7 @@ ButtonCallback MenuFunctions::ExitGame()
 		.handle = GetHandle(),
 		.callback = [this]()
 		{
-			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::CONFIRM_UI, Vector2F::Zero, 0.5f, false, false);
 
 			GetGameObject()->ServiceContext().eventManager->RequestQuit();
 		}
@@ -92,7 +96,7 @@ ButtonCallback MenuFunctions::SelectUI()
 		.handle = GetHandle(),
 		.callback = [this]()
 		{
-			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::SELECT_UI, Vector2F::Zero, 0.5f, false, false, 1.0f);
+			MakeAudioPlayAndDestroyCallback(AssetPaths::Files::SELECT_UI, Vector2F::Zero, 0.5f, false, false);
 		}
 	};
 }

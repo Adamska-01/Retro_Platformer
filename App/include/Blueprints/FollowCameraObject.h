@@ -19,7 +19,4 @@ private:
 
 public:
 	FollowCameraObject(DF2D::Engine::ObjectHandle<DF2D::Engine::GameObject> target, DF2D::Core::RectF bounds, DF2D::Core::Vector2F offset = DF2D::Core::Vector2F::Zero, float followSpeed = 10.0f);
-
-
-	virtual void ConstructGameObject() override;
 };

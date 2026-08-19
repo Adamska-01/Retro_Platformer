@@ -3,7 +3,7 @@
 #include "Components/UI/MenuManager.h"
 #include "Constants/AssetPaths.h"
 #include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
-#include <Core/Services/Time/FrameTimer.h>
+#include <Core/Services/Time/Abstractions/ITimeProvider.h>
 #include <CustomEvents/GameEndedEvent.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
 #include <Engine/ECS/Component/UI/TextMesh.h>
@@ -21,12 +21,10 @@ using namespace DF2D::Utilities;
 
 EndGameController::EndGameController()
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(GameEndedEvent)), this, &EndGameController::OnGameEndedHandler);
 }
 
 EndGameController::~EndGameController()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(GameEndedEvent)), this);
 }
 
 void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -36,7 +34,7 @@ void EndGameController::OnGameEndedHandler(std::shared_ptr<DispatchableEvent> di
 	if (gameEndedEvent == nullptr)
 		return;
 
-	FrameTimer::SetTimeScale(0.0f);
+	GetGameObject()->ServiceContext().frameTimer->SetTimeScale(0.0f);
 
 	auto endGameSound = gameEndedEvent->isGameLost ? AssetPaths::Files::GAME_OVER : AssetPaths::Files::VICTORY;
 	auto title = gameEndedEvent->isGameLost
@@ -63,6 +61,10 @@ void EndGameController::Init()
 	statsController = Guard::AgainstNullAssignment(SceneManager::FindObjectOfType<StatsController>(), NAME_OF(statsController));
 
 	Guard::AgainstNull(endGameTextMesh, NAME_OF(endGameTextMesh));
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<GameEndedEvent>(GetHandle(), EventHelpers::BindFunction(this, &EndGameController::OnGameEndedHandler));
 }
 
 void EndGameController::SetEndGameTextMesh(ComponentHandle<TextMesh> endGameTextMesh)

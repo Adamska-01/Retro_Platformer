@@ -1,6 +1,7 @@
 #pragma once
 #include "Components/Map/CustomTileMapRenderer2D.h"
 #include <Data/Components/Collision/PhysicsMaterial.h>
+#include <Data/Systems/Physics/FixtureID.h>
 #include <Engine/ECS/Component/Collisions/Tile/TileCollider2D.h>
 
 
@@ -18,7 +19,7 @@ protected:
 
 	std::vector<char> collidableTiles;
 
-	std::vector<b2Fixture*> fixtures;
+	std::vector<DF2D::Data::FixtureID> fixtures;
 
 	int tileSize;
 

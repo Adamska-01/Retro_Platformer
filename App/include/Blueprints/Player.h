@@ -18,7 +18,4 @@ public:
 	Player(DF2D::Core::Vector2F startPos, std::string_view idleSpriteSource, std::string_view runSpriteSource);
 
 	~Player();
-
-
-	virtual void ConstructGameObject() override;
 };

@@ -17,11 +17,6 @@ Enemy::Enemy(Vector2F startPos, const EnemyConfig& enemyConfig)
 	: enemyConfig(enemyConfig),
 	startPos(startPos)
 {
-
-}
-
-void Enemy::ConstructGameObject()
-{
 	auto scale = 0.65f;
 
 	transform->SetWorldPosition(startPos + Vector2F::Up * (enemyConfig.characterSize - enemyConfig.characterSize * scale));

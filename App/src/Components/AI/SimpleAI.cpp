@@ -1,8 +1,8 @@
 #include "Components/AI/Abstractions/AIBehavior.h"
 #include "Components/AI/SimpleAI.h"
+#include "Components/Audio/DestroyOnAudioFinished.h"
 #include "Components/Controllers/PlayerController.h"
 #include <Constants/AssetPaths.h>
-#include <Core/Context/Systems/Coroutines/CoroutineScheduler.h>
 #include <CustomEvents/LifeLostEvent.h>
 #include <Data/Components/Collision/CollisionInfo.h>
 #include <Engine/Blueprints/Audio/AudioClipBlueprint.h>
@@ -26,12 +26,10 @@ SimpleAI::SimpleAI(std::unique_ptr<AIBehavior> behavior)
 	startPos(Vector2F::Zero),
 	processingPlayer(true)
 {
-	EventDispatcher::RegisterEventHandler(std::type_index(typeid(LifeLostEvent)), this, &SimpleAI::LifeLostEventHandler);
 }
 
 SimpleAI::~SimpleAI()
 {
-	EventDispatcher::DeregisterEventHandler(std::type_index(typeid(LifeLostEvent)), this);
 }
 
 void SimpleAI::LifeLostEventHandler(std::shared_ptr<DispatchableEvent> dispatchableEvent)
@@ -70,29 +68,33 @@ void SimpleAI::OnCircleContactEnterHandlers(const CollisionInfo& collisionInfo)
 		playerRigidBody->SetVelocity(Vector2F::Zero);
 		playerRigidBody->AddImpulse(Vector2F::Up * 30.0f);
 
-		// Jump Sound
+		// Enemy killed sound (self-destroys once the clip finishes)
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(AssetPaths::Files::ENEMY_KILLED);
 
-		GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
+		soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 	}
 	// Kill Player
 	else
 	{
 		playerController->LoseLife();
 
-		// Jump Sound
+		// Player killed sound (self-destroys once the clip finishes)
 		auto soundSourceObj = GameObject::Instantiate<AudioClipBlueprint>(
-			AssetPaths::Files::PLAYER_KILLED, 
-			Vector2F::Zero, 
+			AssetPaths::Files::PLAYER_KILLED,
+			Vector2F::Zero,
 			0.5f);
 
-		GetGameObject()->CoreContext().coroutineScheduler->StartCoroutine(soundSourceObj->Destroy(1.0f));
+		soundSourceObj->AddComponent<DestroyOnAudioFinished>();
 	}
 }
 
 void SimpleAI::Init()
 {
 	transform = Guard::AgainstNullAssignment(GetGameObject()->GetComponent<Transform>(), NAME_OF(transform));
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(GetGameObject()->ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->RegisterEventHandler<LifeLostEvent>(GetHandle(), EventHelpers::BindFunction(this, &SimpleAI::LifeLostEventHandler));
 
 	if (behavior == nullptr)
 		return;

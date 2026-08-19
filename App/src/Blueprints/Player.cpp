@@ -20,15 +20,6 @@ Player::Player(Vector2F startPos, std::string_view idleSpriteSource, std::string
 	idleSpriteSource(idleSpriteSource),
 	runSpriteSource(runSpriteSource)
 {
-	
-}
-
-Player::~Player()
-{
-}
-
-void Player::ConstructGameObject()
-{
 	transform->SetWorldPosition(startPos);
 	transform->SetWorldScale(Vector2F::One * 2.0f);
 
@@ -65,4 +56,8 @@ void Player::ConstructGameObject()
 	groundObject->GetTransform()->SetLocalPosition(Vector2F::Zero);
 
 	groundObject->AddComponent<BoxCollider2D>(Vector2F(16.0f, 5.0f), Vector2F(0.0f, 32.0f), 0.0f, physicalMat);
+}
+
+Player::~Player()
+{
 }

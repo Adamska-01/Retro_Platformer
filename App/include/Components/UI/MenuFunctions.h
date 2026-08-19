@@ -18,8 +18,7 @@ private:
 		const DF2D::Core::Vector2F& position,
 		float volume,
 		bool isMusic,
-		bool loop,
-		float destroyDelaySeconds);
+		bool loop);
 
 
 public:

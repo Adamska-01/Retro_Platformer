@@ -11,7 +11,4 @@ private:
 
 public:
 	GameMap(std::shared_ptr<TileMapModel> tileMapModel);
-
-
-	virtual void ConstructGameObject() override;
 };

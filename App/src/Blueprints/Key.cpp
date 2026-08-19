@@ -11,6 +11,7 @@
 #include <Engine/ECS/Component/Rendering/SpriteRenderer.h>
 #include <Engine/ECS/Component/Transform.h>
 #include <Engine/ECS/System/Events/EventDispatcher.h>
+#include <Utilities/Debugging/Guards.h>
 #include <Utilities/Helpers/Events/EventHelpers.h>
 
 
@@ -24,30 +25,8 @@ Key::Key(Vector2F startPos, std::string_view spriteSource)
 	: startPos(startPos),
 	spriteSource(spriteSource)
 {
-}
-
-void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
-{
-	const auto& other = collisionInfo.otherGameObject;
-
-	if (other == nullptr)
-		return;
-
-	auto playerComponent = other->GetComponent<PlayerController>();
-
-	if (playerComponent == nullptr)
-		return;
-
-	EventDispatcher::SendEvent(std::make_shared<PointsScoredEvent>(score));
-	EventDispatcher::SendEvent(std::make_shared<GameEndedEvent>(false));
-
-	Destroy();
-}
-
-void Key::ConstructGameObject()
-{
 	transform->SetWorldPosition(startPos);
-	
+
 	AddComponent<SpriteRenderer>(spriteSource);
 	auto spriteAnimator = AddComponent<SpriteAnimator>();
 
@@ -62,7 +41,7 @@ void Key::ConstructGameObject()
 
 	spriteAnimator->AddAnimation(keyFlipAnimation);
 	spriteAnimator->PlayAnimation(keyFlipAnimation.name);
-	
+
 	auto physicalMat = PhysicsMaterial
 	{
 		.isSensor = true
@@ -77,4 +56,24 @@ void Key::ConstructGameObject()
 	AddComponent<RigidBody2D>(bodyDef);
 
 	collider->RegisterContactEnterHandler(GetObjectHandle(), EventHelpers::BindFunction(this, &Key::OnContactEnterHandler));
+}
+
+void Key::OnContactEnterHandler(const CollisionInfo& collisionInfo)
+{
+	const auto& other = collisionInfo.otherGameObject;
+
+	if (other == nullptr)
+		return;
+
+	auto playerComponent = other->GetComponent<PlayerController>();
+
+	if (playerComponent == nullptr)
+		return;
+
+	auto* eventDispatcher = Guard::AgainstNullAssignment(ServiceContext().eventDispatcher, NAME_OF(eventDispatcher));
+
+	eventDispatcher->SendEvent(std::make_shared<PointsScoredEvent>(score));
+	eventDispatcher->SendEvent(std::make_shared<GameEndedEvent>(false));
+
+	Destroy();
 }

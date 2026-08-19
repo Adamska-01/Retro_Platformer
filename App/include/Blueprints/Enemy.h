@@ -14,7 +14,4 @@ private:
 
 public:
 	Enemy(DF2D::Core::Vector2F startPos, const EnemyConfig& enemyConfig);
-
-
-	virtual void ConstructGameObject() override;
 };

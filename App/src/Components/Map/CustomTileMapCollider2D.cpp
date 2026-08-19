@@ -30,12 +30,12 @@ void CustomTileMapCollider2D::DeleteFixtures()
 	if (fixtures.size() <= 0 || rigidBody == nullptr)
 		return;
 
-	for (auto fix : fixtures)
+	for (auto fixture : fixtures)
 	{
-		if (fix == nullptr)
+		if (fixture <= 0)
 			continue;
 
-		rigidBody->DestroyFixture(fix);
+		rigidBody->DestroyFixture(fixture);
 	}
 }
 
@@ -67,8 +67,7 @@ void CustomTileMapCollider2D::RebuildFixture()
 
 	fixtures.clear();
 
-	auto startPos = transform->GetWorldPosition();
-	auto angle = transform->GetWorldRotation() * (MathConstants::PI / 180.0f);
+	auto angle = transform->GetWorldRotation() * (MathConstants::PI_f / 180.0f);
 
 	auto mapWidth = layout.size();
 	auto mapHeight = layout[0].size();
@@ -84,51 +83,14 @@ void CustomTileMapCollider2D::RebuildFixture()
 			if (!isCollidable)
 				continue;
 
-			// TODO: The code below is not accessible anymore. Refactor TileCollider2D<T> so that the client doesn't have to interact with the Box2D backend
-			/*
-			this->physicsMaterial.shape = Physics::ToB2BoxShape(
-				tileSize * 0.5f,
-				tileSize * 0.5f,
-				Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
-				angle);
+			physicsMaterial.shape = BoxShapeDefinition2D
+			{
+				.halfExtents = Vector2F(tileSize * 0.5f, tileSize * 0.5f),
+				.center = Vector2F((column * tileSize + tileSize * 0.5f), (row * tileSize + tileSize * 0.5f)),
+				.angle = angle
+			};
 
-			auto def = Physics::ToB2FixtureDef(physicsMaterial, reinterpret_cast<uintptr_t>(this));
-			*/
-
-			auto shape = new b2PolygonShape();
-
-			const auto METER_PER_PIXEL = PhysicsEngine2D::GetPhysicsConfig().meterPerPixel;
-
-			shape->SetAsBox(
-				tileSize * 0.5f * METER_PER_PIXEL,
-				tileSize * 0.5f * METER_PER_PIXEL,
-				b2Vec2(
-					(column * tileSize + tileSize * 0.5f) * METER_PER_PIXEL,
-					(row * tileSize + tileSize * 0.5f) * METER_PER_PIXEL),
-				angle);
-
-			this->physicsMaterial.shape = shape;
-
-			b2FixtureDef b2FDef;
-
-			b2FDef.shape = physicsMaterial.shape;
-			b2FDef.friction = physicsMaterial.friction;
-			b2FDef.restitution = physicsMaterial.restitution;
-			b2FDef.restitutionThreshold = physicsMaterial.restitutionThreshold;
-			b2FDef.density = physicsMaterial.density;
-			b2FDef.isSensor = physicsMaterial.isSensor;
-			b2FDef.filter.categoryBits = physicsMaterial.filter.categoryBits;
-			b2FDef.filter.groupIndex = physicsMaterial.filter.groupIndex;
-			b2FDef.filter.maskBits = physicsMaterial.filter.maskBits;
-			b2FDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
-
-			assert(b2FDef.shape != nullptr && "Shape must not be null");
-
-			fixtures.push_back(rigidBody->CreateFixture(&b2FDef));
-
-			// Clean up before creating another shape
-			delete this->physicsMaterial.shape;
-			this->physicsMaterial.shape = nullptr;
+			fixtures.push_back(rigidBody->CreateFixture(physicsMaterial, GetHandleAs<DF2D::Engine::ContactEventProvider>()));
 		}
 	}
 

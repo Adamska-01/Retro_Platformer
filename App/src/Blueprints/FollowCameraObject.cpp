@@ -13,10 +13,6 @@ FollowCameraObject::FollowCameraObject(ObjectHandle<GameObject> target, RectF bo
 	offset(offset),
 	followSpeed(followSpeed)
 {
-}
-
-void FollowCameraObject::ConstructGameObject()
-{
 	auto cameraComonent = AddComponent<Camera>();
 
 	auto cameraFollowComponent = AddComponent<CameraFollow>(cameraComonent, target);
